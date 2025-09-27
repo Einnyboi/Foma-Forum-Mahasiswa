@@ -64,6 +64,14 @@ header {
     gap: 20px;
 }
 
+.main-layout-dashboard {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    max-width: 1000px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
 /* --- Sidebar Kiri (Navigasi) --- */
 .sidebar {
     background: var(--bg-card);
@@ -326,4 +334,63 @@ header {
 /* Gaya spesifik untuk tombol 'Masuk' */
 .btn-secondary {
     background-color: var(--text-secondary); /* Warna sekunder (abu-abu) */
+}
+
+/* --- TAMBAHAN: GAYA UNTUK LABEL PENTING & EVENT --- */
+
+/* Label umum untuk Tipe Post */
+.post-label {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+/* Gaya khusus untuk label PENTING */
+.label-penting {
+    background-color: var(--accent); /* Warna merah */
+    color: white;
+}
+
+/* Gaya khusus untuk label EVENT */
+.label-event {
+    background-color: #3b82f6; /* Warna biru */
+    color: white;
+}
+
+/* Gaya untuk info event di dalam kartu */
+.event-info {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* untuk tulisan event dan penting */
+.sidebar-event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-event-list li {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border-color);
+}
+.sidebar-event-list li:last-child {
+    border-bottom: none;
+}
+.sidebar-event-list a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+}
+.sidebar-event-list small {
+    display: block;
+    color: var(--text-secondary);
 }

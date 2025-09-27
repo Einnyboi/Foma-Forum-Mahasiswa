@@ -9,14 +9,16 @@
 </head>
 <body>
 
-   <header>
-    <h1>Forum Diskusi</h1>
-    
-    <div class="auth-buttons">
-        <a href="#" class="btn btn-secondary">Masuk</a>
-        <a href="#" class="btn btn-primary">Daftar</a>
-    </div>
-</header>
+    <header>
+        <div class="header-title">
+            <h1>Forum Diskusi</h1>
+            <p class="subtitle">Tempat untuk berdiskusi apa saja</p>
+        </div>
+        <div class="auth-buttons">
+            <a href="#" class="btn btn-secondary">Masuk</a>
+            <a href="#" class="btn btn-primary">Daftar</a>
+        </div>
+    </header>
 
     <div class="main-layout">
         
@@ -27,6 +29,12 @@
                 </li>
                 <li id="nav-trending" class="nav-item">
                     <i class="fa-solid fa-arrow-trend-up"></i> Trending
+                </li>
+                <li id="nav-important" class="nav-item">
+                    <i class="fa-solid fa-star"></i> Penting
+                </li>
+                <li id="nav-event" class="nav-item">
+                    <i class="fa-solid fa-calendar-days"></i> Event
                 </li>
                 <li id="nav-category" class="nav-item">
                     <i class="fa-solid fa-shapes"></i> Kategori
@@ -52,8 +60,10 @@
                 <p>Ini adalah tempat untuk berdiskusi berbagai macam topik.</p>
             </div>
             <div class="sidebar-card">
-                <h4>Post Populer</h4>
-                </div>
+                <h4>Events</h4>
+                <ul id="event-list-sidebar" class="sidebar-event-list">
+                    </ul>
+            </div>
         </aside>
 
     </div>
@@ -61,18 +71,27 @@
     <div id="post-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2>Buat Thread Baru</h2>
             <form id="add-thread-form">
+                <h2>Buat Thread Baru</h2>
+                <label for="post-type">Tipe Post:</label>
+                <select id="post-type" name="postType">
+                    <option value="normal">Normal</option>
+                    <option value="penting">Penting (Selalu di Atas)</option>
+                    <option value="event">Event</option>
+                </select>
+                
+                <div id="event-fields" class="hidden">
+                    <input type="date" id="event-date" name="event_date">
+                    <input type="text" id="event-location" placeholder="Lokasi Event">
+                </div>
+
                 <input type="text" id="thread-title" placeholder="Judul Thread" required>
                 <textarea id="thread-description" placeholder="Jelaskan maksud dari post Anda di sini..." required></textarea>
                 <input type="text" id="thread-author" placeholder="Nama Anda" required>
                 <label for="thread-category">Pilih Kategori:</label>
                 <select id="thread-category" name="category"></select>
                 <input type="text" id="new-category-input" class="hidden" placeholder="Nama Kategori Baru...">
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="is-important-checkbox" name="important">
-                    <label for="is-important-checkbox">Tandai sebagai post penting (selalu di atas)</label>
-                </div>
+                
                 <button type="submit">Publikasikan</button>
             </form>
         </div>
