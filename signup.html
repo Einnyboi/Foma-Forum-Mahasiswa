@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Foma</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <a href="dashboard.html" class="logo">Foma</a>
+            <a href="dashboard.html" class="back-to-dashboard">↩ Back</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Join Foma Community</h2>
+            <p>Create your account to start discussions</p>
+        </div>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <span class="error" id="fullNameError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="signupEmail">Email Address</label>
+                <input type="email" id="signupEmail" name="email" required>
+                <span class="error" id="signupEmailError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="signupPass">Password</label>
+                <input type="password" id="signupPass" name="password" required>
+                <span class="error" id="signupPassError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPass">Confirm Password</label>
+                <input type="password" id="confirmPass" name="confirmPassword" required>
+                <span class="error" id="confirmPassError"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            Already have an account? <a href="dashboard.html">Log in here</a>
+        </div>
+    </div>
+
+    <script src="signup.js"></script>
+</body>
+</html>
