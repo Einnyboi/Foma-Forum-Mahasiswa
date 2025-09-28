@@ -87,7 +87,7 @@ body
     flex: 1;
     padding: 0.5rem;
     font-size: 1rem;
-    color: #0c120c;
+    color: #c20114;
     font-family: 'Lato', sans-serif;
 }
 
@@ -528,7 +528,7 @@ body
     font-size: 1rem;
     transition: all 0.3s ease;
     background: #ecebf3;
-    color: #0c120c;
+    color: #c20114;
     font-family: 'Lato', sans-serif;
 }
 
