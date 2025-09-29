@@ -32,7 +32,6 @@ header {
     justify-content: space-between;
     align-items: center;
 }
-
 .header-nav {
     display: flex;
     align-items: center;
@@ -272,35 +271,46 @@ header {
     cursor: pointer;
 }
 
-#add-thread-form input, 
-#add-thread-form select, 
-#add-thread-form textarea {
+.modal-content form input,
+.modal-content form select,
+.modal-content form textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
-#add-thread-form textarea {
+.modal-content form textarea {
     height: 140px;
     resize: vertical;
 }
 
-#add-thread-form .checkbox-wrapper {
+.modal-content form .checkbox-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-#add-thread-form input[type="checkbox"] {
+.modal-content form input[type="checkbox"] {
     width: auto;
+}
+
+.modal-content form button[type="submit"] {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
 }
 /* --- GAYA UNTUK HEADER & TOMBOL OTENTIKASI --- */
 
-/* Atur header agar item di dalamnya terpisah */
 header {
     background-color: var(--bg-card);
     padding: 10px 40px;
@@ -310,13 +320,11 @@ header {
     align-items: center;
 }
 
-/* Wadah untuk tombol-tombol */
 .auth-buttons {
     display: flex;
-    gap: 10px; /* Jarak antara tombol Masuk dan Daftar */
+    gap: 10px;
 }
 
-/* Gaya umum untuk semua tombol */
 .btn {
     text-decoration: none;
     color: white;
@@ -324,21 +332,18 @@ header {
     padding: 8px 15px;
     border-radius: 6px;
     border: none;
+    cursor: pointer;
 }
 
-/* Gaya spesifik untuk tombol 'Daftar' */
 .btn-primary {
-    background-color: var(--accent); /* Warna aksen (merah) */
+    background-color: var(--accent);
 }
 
-/* Gaya spesifik untuk tombol 'Masuk' */
 .btn-secondary {
-    background-color: var(--text-secondary); /* Warna sekunder (abu-abu) */
+    background-color: var(--text-secondary);
 }
 
 /* --- TAMBAHAN: GAYA UNTUK LABEL PENTING & EVENT --- */
-
-/* Label umum untuk Tipe Post */
 .post-label {
     display: inline-block;
     padding: 4px 10px;
@@ -349,19 +354,16 @@ header {
     vertical-align: middle;
 }
 
-/* Gaya khusus untuk label PENTING */
 .label-penting {
-    background-color: var(--accent); /* Warna merah */
+    background-color: var(--accent);
     color: white;
 }
 
-/* Gaya khusus untuk label EVENT */
 .label-event {
-    background-color: #3b82f6; /* Warna biru */
+    background-color: #3b82f6;
     color: white;
 }
 
-/* Gaya untuk info event di dalam kartu */
 .event-info {
     font-size: 0.9em;
     color: var(--text-secondary);
@@ -370,7 +372,6 @@ header {
     border-top: 1px solid var(--border-color);
 }
 
-/* untuk tulisan event dan penting */
 .sidebar-event-list {
     list-style: none;
     padding: 0;
@@ -393,4 +394,154 @@ header {
 .sidebar-event-list small {
     display: block;
     color: var(--text-secondary);
+}
+
+/* --- SEMUA GAYA BARU ATAU YANG DIMODIFIKASI UNTUK FITUR BARU --- */
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--bg-card);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.content-header h2 {
+    margin: 0;
+}
+
+.content-header .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+/* GAYA BANNER KECIL DI KARTU KOMUNITAS */
+.card-banner {
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+#community-cards-container .community-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 0; /* Hapus padding default */
+    overflow: hidden; /* Pastikan banner tidak keluar dari radius */
+}
+
+#community-cards-container .community-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+#community-cards-container .community-card h3 {
+    margin: 0 0 8px 0;
+    color: var(--accent);
+}
+
+#community-cards-container .community-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* GAYA BANNER BESAR DI HALAMAN KOMUNITAS */
+#community-banner {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#community-banner-image {
+    height: 220px;
+    background-color: var(--bg-main);
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+}
+
+#community-banner .community-header-card {
+    position: relative;
+    bottom: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: -40px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#community-info h2 {
+    margin: 0;
+    color: var(--accent);
+}
+
+#community-info p {
+    margin: 5px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* --- GAYA UNTUK MENU BANNER (TIGA TITIK) --- */
+
+.banner-menu-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+#banner-menu-trigger {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s;
+}
+
+#banner-menu-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+.dropdown-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+    background-color: var(--bg-main);
 }
