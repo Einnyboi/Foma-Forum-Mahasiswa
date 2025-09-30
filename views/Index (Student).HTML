@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="../src/css/Style(Student).css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistem saran acara</h1>
+
+        <!--Event suggestion System-->
+        <section id="student-selection">
+            <h2>Sarankan acara</h2>
+            <form id="event-form">
+                <div class="form-group">
+                    <label for="event-title">Judul acara</label>
+                    <input type="text" id="Event-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-date">Tanggal Acara</label>
+                    <input type="text" id="event-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-time">Waktu Acara</label>
+                    <input type="time" id="event-time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-location">Location *</label>
+                    <input type="text" id="event-location" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-description">Deskripsi Acara (Wajib)</label>
+                    <textarea id="event-description" rows="4" placeholder="Deskripsi acara tersebut..."></textarea>
+                </div>
+                
+                 <div class="form-group">
+                    <label for="event-category">Kategori</label>
+                    <select id="event-category" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="academic">Akademik</option>
+                        <option value="social">Sosial</option>
+                        <option value="sports">Olahraga</option>
+                        <option value="cultural">Kultural</option>
+                        <option value="other">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-image">Gambar Acara (Optional)</label>
+                    <input type="file" id="event-image" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="student-name">Nama Mahasiswa (Optional)</label>
+                    <input type="text" id="student-name" placeholder="Anonim">
+                </div>
+
+                <button type="submit">Kirim Saran</button>
+            </form>
+        </section>  
+    </div>
+
+    <!--JavaScript-->
+    <script src="../src/js/Script(Student).js"></script>
+    </div>
+</body>
+</html>
