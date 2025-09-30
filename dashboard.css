@@ -37,6 +37,14 @@ body
 
 .navi-title
 {
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    flex: 1;
+    max-width: 30px;
+    margin-right: 7rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
     font-size: 2.2rem;
     font-weight: 700;
     color: #0c120c;
@@ -44,11 +52,15 @@ body
     font-family: 'Poppins', sans-serif;
 }
 
-.navi-title img
+.foma-icon
+{
+    margin-right: 0.5rem
+}
+
+.foma-icon img
 {
     width: 35px;
     height: 35px;
-    padding-right: 1px;
 }
 
 .navi-link
@@ -444,6 +456,7 @@ body
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    height: fit-content;
 }
 
 .widget
@@ -453,6 +466,21 @@ body
     padding: 2rem;
     border: 1px solid rgba(199, 214, 213, 0.3);
     box-shadow: 0 2px 4px #dad9e0;
+}
+
+/* Sticky positioning for widgets */
+.widget:first-child
+{
+    top: 120px;
+    z-index: 10;
+}
+
+/* Adjust sticky positioning based on actual content */
+.widget.events-widget
+{
+    position: sticky;
+    top: 120px;
+    z-index: 10;
 }
 
 .widget h3
@@ -471,6 +499,13 @@ body
 {
     width: 20px;
     height: 20px;
+}
+
+.events-widget 
+{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1rem;
 }
 
 .event-item
@@ -603,6 +638,7 @@ body
     border: 2px dashed rgba(12, 18, 12, 0.3);
     border-radius: 20px;
     padding: 3rem;
+    margin-bottom: 1.3rem;
     text-align: center;
     color: rgba(12, 18, 12, 0.6);
 }
@@ -639,23 +675,21 @@ body
     grid-area: right-sidebar;
 }
 
-@media (max-width: 1024px)
+@media (max-width: 1024px) 
 {
-    .main-dashboard
+    .main-dashboard 
     {
         grid-template-columns: 1fr;
-        grid-template-areas: 
-            "main-content"
+        grid-template-areas:
             "left-sidebar"
+            "main-content"
             "right-sidebar";
         gap: 1.5rem;
     }
     
-    .right-sidebar
+    .right-sidebar 
     {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
+        display: block;
     }
 }
 
@@ -663,7 +697,7 @@ body
 {
     .navigation
     {
-        flex-direction: column;
+        flex-direction: horizontal;
         gap: 1rem;
         padding: 1rem;
     }

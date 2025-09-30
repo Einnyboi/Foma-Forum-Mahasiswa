@@ -16,19 +16,18 @@ function initializeApp()
     loadUsersFromStorage();
     loadPostsFromStorage();
     updateNavi();
-    loadPosts();
+    showpage('home');
     console.log('Dashboard loaded successfully!');
 }
 
 // Load users from localStorage or initialize with test data
 function loadUsersFromStorage()
 {
-    try 
+    try
     {
         const storedUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
         registeredUsers = storedUsers;
         
-        // Add test user if no users exist
         if (registeredUsers.length === 0)
         {
             registeredUsers.push(
@@ -40,17 +39,15 @@ function loadUsersFromStorage()
             });
         }
         
-        // Check for logged in user
         const loggedInUser = localStorage.getItem('currentUser');
         if (loggedInUser)
         {
             currentUser = JSON.parse(loggedInUser);
         }
-    }
+    } 
     catch (error)
     {
         console.log('LocalStorage not available, using memory storage only');
-        // Initialize with test user
         registeredUsers.push(
         {
             name: "Test",
@@ -91,7 +88,7 @@ function saveToStorage()
         {
             localStorage.removeItem('currentUser');
         }
-    }
+    } 
     catch (error)
     {
         console.log('Could not save to localStorage');
@@ -101,71 +98,357 @@ function saveToStorage()
 // Setup all event listeners
 function setupEventListeners()
 {
-    // Post form handler
     const postForm = document.getElementById('postForm');
     if (postForm)
     {
         postForm.addEventListener('submit', handlePostSubmit);
     }
 
-    // Search functionality
     const searchInput = document.getElementById('searchInput');
     if (searchInput)
     {
         searchInput.addEventListener('input', handleSearch);
-    }
-
-    // Login form handler (if exists on page)
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm)
-    {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-
-    // Signup form handler (if exists on page)
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm)
-    {
-        signupForm.addEventListener('submit', handleSignup);
     }
 }
 
 // Page navigation function
 function showpage(pageID)
 {
-    // Hide all pages
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => page.classList.remove('active'));
-    
-    // Show selected page
-    const targetPage = document.getElementById(pageID);
-    if (targetPage)
-    {
-        targetPage.classList.add('active');
-    }
-
-    // Update sidebar active state
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     sidebarItems.forEach(item => item.classList.remove('active'));
     
-    // Set active sidebar item based on page
-    const activeSidebarItem = document.querySelector(`.sidebar-item[onclick="showpage('${pageID}')"]`);
+    const activeSidebarItem = document.querySelector(`.sidebar-item[onclick*="'${pageID}'"]`);
     if (activeSidebarItem)
     {
         activeSidebarItem.classList.add('active');
     }
 
-    // Close dropdown if open
     closeDropdown();
+    loadPageContent(pageID);
+}
+
+// Load different page content dynamically
+function loadPageContent(pageID)
+{
+    const pageTitle = document.getElementById('pageTitle');
+    const createPostBtn = document.getElementById('createPostBtn');
+    const createPostSection = document.getElementById('createPostSection');
     
-    // Update navigation based on page
-    if (pageID === 'home')
+    createPostSection.style.display = 'none';
+    
+    switch(pageID)
     {
-        updateCreatePostVisibility();
+        case 'home':
+            pageTitle.textContent = 'Latest Discussions';
+            updateCreatePostVisibility();
+            loadPostsContent();
+            break;
+            
+        case 'trending':
+            pageTitle.textContent = 'Trending Topics';
+            createPostBtn.style.display = 'none';
+            loadTrendingContent();
+            break;
+            
+        case 'programming':
+            pageTitle.textContent = 'Programming Discussions';
+            updateCreatePostVisibility();
+            loadCategoryContent('programming');
+            break;
+            
+        case 'general':
+            pageTitle.textContent = 'General Discussions';
+            updateCreatePostVisibility();
+            loadCategoryContent('general');
+            break;
+            
+        case 'login':
+            pageTitle.textContent = 'Login to Your Account';
+            createPostBtn.style.display = 'none';
+            loadLoginContent();
+            break;
+            
+        case 'signup':
+            pageTitle.textContent = 'Sign Up to Your Account';
+            createPostBtn.style.display = 'none';
+            loadSignupContent();
+            break;
+
+        default:
+            pageTitle.textContent = 'Latest Discussions';
+            updateCreatePostVisibility();
+            loadPostsContent();
     }
 }
 
-// Dropdown functionality
+// Generic function to load external HTML content
+function loadExternalContent(filePath, selector = '.auth-container')
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    
+    return fetch(filePath)
+        .then(response =>
+        {
+            if (!response.ok)
+            {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html =>
+        {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const content = doc.querySelector(selector);
+            
+            if (content)
+            {
+                mainContentArea.innerHTML = content.innerHTML;
+                return true;
+            }
+            else
+            {
+                throw new Error('Content selector not found');
+            }
+        })
+        .catch(error =>
+        {
+            console.error(`Error loading ${filePath}:`, error);
+            mainContentArea.innerHTML = `<div class="placeholder-section"><h3>Unable to load content</h3><p>Please try <a href="${filePath}">clicking here</a> to open the page.</p></div>`;
+            return false;
+        });
+}
+
+// Load login.html
+function loadLoginContent()
+{
+    loadExternalContent('login.html', '.auth-container')
+        .then(success =>
+        {
+            if (success)
+            {
+                // Re-attach event listener after loading
+                setTimeout(() =>
+                {
+                    const loginForm = document.getElementById('loginForm');
+                    if (loginForm)
+                    {
+                        loginForm.addEventListener('submit', handleLogin);
+                    }
+                }, 100);
+            }
+        });
+}
+
+// Load Signup.html
+function loadSignupContent()
+{
+    loadExternalContent('signup.html', '.auth-container')
+        .then(success =>
+        {
+            if (success)
+                {
+                // Re-attach event listener after loading
+                setTimeout(() =>
+                {
+                    const signupForm = document.getElementById('signupForm');
+                    if (signupForm)
+                    {
+                        signupForm.addEventListener('submit', handleSignup);
+                    }
+                }, 100);
+            }
+        });
+}
+
+// Load Posts.html
+function loadPostsContent()
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    
+    const samplePosts =
+    [
+        {
+            id: 'sample1',
+            category: 'programming',
+            title: 'How to optimize database queries in Node.js?',
+            author: 'Ahmad Rahman',
+            timestamp: '2 hours ago',
+            replies: 12,
+            views: 45
+        },
+        {
+            id: 'sample2', 
+            category: 'general',
+            title: 'Study group for calculus - anyone interested?',
+            author: 'Sarah Kim',
+            timestamp: '4 hours ago',
+            replies: 8,
+            views: 23
+        },
+        {
+            id: 'sample3',
+            category: 'programming',
+            title: 'Best practices for React component structure?',
+            author: 'David Chen',
+            timestamp: '6 hours ago',
+            replies: 15,
+            views: 67
+        }
+    ];
+
+    const allPosts = [...posts, ...samplePosts];
+    
+    const postsHtml = allPosts.map(post => 
+    `
+        <div class="thread-item" onclick="openThread('${post.id}')">
+            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
+            <div class="thread-title">${post.title}</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
+                </div>
+                <div class="thread-stats">
+                    <span>${post.replies} replies</span>
+                    <span>${post.views} views</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    mainContentArea.innerHTML = postsHtml || '<div class="placeholder-section"><h3>No posts found</h3><p>Be the first to start a discussion!</p></div>';
+}
+
+// Load Trending.html
+function loadTrendingContent()
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    
+    const trendingHtml =
+    `
+        <div class="placeholder-section">
+            <h3>🔥 Trending This Week</h3>
+            <p>Most popular discussions based on views and replies</p>
+        </div>
+        
+        <div class="thread-item" onclick="openThread('trend1')">
+            <div class="category-highlight">Programming</div>
+            <div class="thread-title">JavaScript vs Python: Which should beginners learn first?</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">Tech Mentor</span> • 1 day ago</div>
+                </div>
+                <div class="thread-stats">
+                    <span>89 replies</span>
+                    <span>1.2k views</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="thread-item" onclick="openThread('trend2')">
+            <div class="category-highlight">General</div>
+            <div class="thread-title">Tips for effective online learning during university</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">Student Helper</span> • 2 days ago</div>
+                </div>
+                <div class="thread-stats">
+                    <span>67 replies</span>
+                    <span>890 views</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="thread-item" onclick="openThread('trend3')">
+            <div class="category-highlight">Programming</div>
+            <div class="thread-title">Free resources for learning web development</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">Code Guru</span> • 3 days ago</div>
+                </div>
+                <div class="thread-stats">
+                    <span>45 replies</span>
+                    <span>678 views</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    mainContentArea.innerHTML = trendingHtml;
+}
+
+// Load Category.html (specific content based on category)
+function loadCategoryContent(category)
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    
+    const samplePosts =
+    [
+        {
+            id: 'sample1',
+            category: 'programming',
+            title: 'How to optimize database queries in Node.js?',
+            author: 'Ahmad Rahman',
+            timestamp: '2 hours ago',
+            replies: 12,
+            views: 45
+        },
+        {
+            id: 'sample2', 
+            category: 'general',
+            title: 'Study group for calculus - anyone interested?',
+            author: 'Sarah Kim',
+            timestamp: '4 hours ago',
+            replies: 8,
+            views: 23
+        },
+        {
+            id: 'sample3',
+            category: 'programming',
+            title: 'Best practices for React component structure?',
+            author: 'David Chen',
+            timestamp: '6 hours ago',
+            replies: 15,
+            views: 67
+        }
+    ];
+
+    const allPosts = [...posts, ...samplePosts];
+    const filteredPosts = allPosts.filter(post => post.category === category);
+    
+    if (filteredPosts.length === 0)
+    {
+        mainContentArea.innerHTML =
+        `
+            <div class="placeholder-section">
+                <h3>No ${category} discussions yet</h3>
+                <p>Be the first to start a ${category} discussion!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const postsHtml = filteredPosts.map(post =>
+    `
+        <div class="thread-item" onclick="openThread('${post.id}')">
+            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
+            <div class="thread-title">${post.title}</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
+                </div>
+                <div class="thread-stats">
+                    <span>${post.replies} replies</span>
+                    <span>${post.views} views</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    mainContentArea.innerHTML = postsHtml;
+}
+
+// Dropdown profile
 function dropdown()
 {
     const dropdownEl = document.getElementById('dropdown');
@@ -173,7 +456,6 @@ function dropdown()
     {
         dropdownEl.classList.toggle('show');
         
-        // Close dropdown when clicking outside
         document.addEventListener('click', function closeOnClickOutside(e)
         {
             if (!e.target.closest('.profile-btn'))
@@ -205,12 +487,10 @@ function updateNavi()
 
     if (currentUser)
     {
-        // Hide login/signup, show profile
         if (loginLink) loginLink.style.display = 'none';
         if (signupLink) signupLink.style.display = 'none';
         if (profileBtn) profileBtn.style.display = 'flex';
         
-        // Set user info
         if (userInit) userInit.textContent = currentUser.name.charAt(0).toUpperCase();
         if (userName) userName.textContent = currentUser.name.split(' ')[0];
         
@@ -218,7 +498,6 @@ function updateNavi()
     }
     else
     {
-        // Show login/signup, hide profile
         if (loginLink) loginLink.style.display = 'inline-flex';
         if (signupLink) signupLink.style.display = 'inline-flex';
         if (profileBtn) profileBtn.style.display = 'none';
@@ -275,6 +554,68 @@ function toggleCategories()
             categoryList.style.display = 'none';
         }
     }
+}
+
+// Handle post form submission
+function handlePostSubmit(e)
+{
+    e.preventDefault();
+
+    if (!currentUser)
+    {
+        alert('You must be logged in to create a post!');
+        return;
+    }
+
+    const title = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+    const category = document.getElementById('postCategory').value;
+
+    if (title && content)
+    {
+        const newPost =
+        {
+            id: Date.now(),
+            title: title,
+            content: content,
+            category: category,
+            author: currentUser.name,
+            authorEmail: currentUser.email,
+            date: new Date().toLocaleDateString('id-ID'),
+            timestamp: 'just now',
+            replies: 0,
+            views: 0
+        };
+
+        posts.push(newPost);
+        saveToStorage();
+        document.getElementById('postForm').reset();
+        toggleCreatePost();
+        loadPostsContent();
+        alert('Post berhasil dibuat!');
+    }
+}
+
+// Handle search functionality
+function handleSearch(e)
+{
+    const searchTerm = e.target.value.toLowerCase();
+    const threadItems = document.querySelectorAll('.thread-item');
+    
+    threadItems.forEach(item =>
+    {
+        const title = item.querySelector('.thread-title')?.textContent.toLowerCase() || '';
+        const author = item.querySelector('.thread-author')?.textContent.toLowerCase() || '';
+        
+        if (title.includes(searchTerm) || author.includes(searchTerm))
+        {
+            item.style.display = 'block';
+        }
+        else
+        {
+            item.style.display = searchTerm === '' ? 'block' : 'none';
+        }
+    });
 }
 
 // Logout function
@@ -335,126 +676,6 @@ function openThread(threadId)
     alert(`Opening thread ${threadId} - This would navigate to the full thread view`);
 }
 
-// Load and display posts
-function loadPosts()
-{
-    const postsContainer = document.getElementById('postsContainer');
-    if (!postsContainer) return;
-    
-    // Sample posts HTML
-    const samplePosts =
-    `
-        <div class="thread-item" onclick="openThread(1)">
-            <div class="category-highlight">Programming</div>
-            <div class="thread-title">How to optimize database queries in Node.js?</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">Ahmad Rahman</span> • 2 hours ago</div>
-                </div>
-                <div class="thread-stats">
-                    <span>12 replies</span>
-                    <span>45 views</span>
-                </div>
-            </div>
-        </div>
-        <div class="thread-item" onclick="openThread(2)">
-            <div class="category-highlight">General</div>
-            <div class="thread-title">Study group for calculus - anyone interested?</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">Sarah Kim</span> • 4 hours ago</div>
-                </div>
-                <div class="thread-stats">
-                    <span>8 replies</span>
-                    <span>23 views</span>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // User posts HTML
-    const userPostsHtml = posts.map(post =>
-    `
-        <div class="thread-item" onclick="openThread(${post.id})">
-            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
-            <div class="thread-title">${post.title}</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
-                </div>
-                <div class="thread-stats">
-                    <span>${post.replies} replies</span>
-                    <span>${post.views} views</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    postsContainer.innerHTML = userPostsHtml + samplePosts;
-}
-
-// Handle post form submission
-function handlePostSubmit(e)
-{
-    e.preventDefault();
-
-    if (!currentUser)
-    {
-        alert('You must be logged in to create a post!');
-        return;
-    }
-
-    const title = document.getElementById('postTitle').value.trim();
-    const content = document.getElementById('postContent').value.trim();
-    const category = document.getElementById('postCategory').value;
-
-    if (title && content)
-    {
-        const newPost =
-        {
-            id: Date.now(),
-            title: title,
-            content: content,
-            category: category,
-            author: currentUser.name,
-            authorEmail: currentUser.email,
-            date: new Date().toLocaleDateString('id-ID'),
-            timestamp: getRelativeTime(new Date()),
-            replies: 0,
-            views: 0
-        };
-
-        posts.push(newPost);
-        saveToStorage();
-        document.getElementById('postForm').reset();
-        toggleCreatePost();
-        loadPosts();
-        alert('Post berhasil dibuat!');
-    }
-}
-
-// Handle search functionality
-function handleSearch(e)
-{
-    const searchTerm = e.target.value.toLowerCase();
-    const threadItems = document.querySelectorAll('.thread-item');
-    
-    threadItems.forEach(item =>
-    {
-        const title = item.querySelector('.thread-title')?.textContent.toLowerCase() || '';
-        const author = item.querySelector('.thread-author')?.textContent.toLowerCase() || '';
-        
-        if (title.includes(searchTerm) || author.includes(searchTerm))
-        {
-            item.style.display = 'block';
-        }
-        else
-        {
-            item.style.display = searchTerm === '' ? 'block' : 'none';
-        }
-    });
-}
-
 // Handle login form submission
 function handleLogin(e)
 {
@@ -482,7 +703,7 @@ function handleLogin(e)
     if (login(email, password))
     {
         alert(`Selamat datang kembali, ${currentUser.name}!`);
-        window.location.href = 'dashboard.html';
+        showpage('home');
     }
     else
     {
@@ -507,59 +728,57 @@ function handleSignup(e)
     // Name validation
     if (!name)
     {
-        const nameError = document.getElementById('fullNameError');
-        if (nameError) nameError.textContent = 'Nama harus diisi!';
+        document.getElementById('fullNameError').textContent = 'Nama harus diisi!';
         isValid = false;
     }
     else if (!validateName(name))
     {
-        const nameError = document.getElementById('fullNameError');
-        if (nameError) nameError.textContent = 'Format nama Anda salah! Nama terdiri atas 3-32 karakter tanpa angka';
+        document.getElementById('fullNameError').textContent = 'Format nama Anda salah! Nama terdiri atas 3-32 karakter tanpa angka';
         isValid = false;
     }
 
     // Email validation
-    if (!email) 
+    if (!email)
     {
-        const emailError = document.getElementById('signupEmailError');
-        if (emailError) emailError.textContent = 'Email harus diisi!';
+        document.getElementById('signupEmailError').textContent = 'Email harus diisi!';
         isValid = false;
     }
     else if (!validateEmail(email))
     {
-        const emailError = document.getElementById('signupEmailError');
-        if (emailError) emailError.textContent = 'Format email Anda tidak valid!';
+        document.getElementById('signupEmailError').textContent = 'Format email Anda tidak valid!';
         isValid = false;
     }
     else if (findUserByEmail(email))
     {
-        const emailError = document.getElementById('signupEmailError');
-        if (emailError) emailError.textContent = 'Email sudah terdaftar!';
+        document.getElementById('signupEmailError').textContent = 'Email sudah terdaftar!';
         isValid = false;
     }
 
     // Password validation
     if (!pass)
     {
-        const passError = document.getElementById('signupPassError');
-        if (passError) passError.textContent = 'Password harus diisi!';
+        document.getElementById('signupPassError').textContent = 'Password harus diisi!';
         isValid = false;
     }
     else if (pass.length < 8)
     {
-        const passError = document.getElementById('signupPassError');
-        if (passError) passError.textContent = 'Password minimal 8 karakter!';
+        document.getElementById('signupPassError').textContent = 'Password minimal 8 karakter!';
         isValid = false;
     }
 
     // Confirm password validation
-    if (pass !== confpass)
+    if (!confpass)
     {
-        const confPassError = document.getElementById('confirmPassError');
-        if (confPassError) confPassError.textContent = 'Konfirmasi Password tidak sesuai dengan Password!';
+        document.getElementById('confirmPassError').textContent = 'Konfirmasi password harus diisi!';
+        isValid = false;
+    }
+    else if (pass !== confpass)
+    {
+        document.getElementById('confirmPassError').textContent = 'Konfirmasi Password tidak sesuai dengan Password!';
         isValid = false;
     }
 
+    // If all validations pass
     if (isValid)
     {
         const newUser =
@@ -572,15 +791,9 @@ function handleSignup(e)
         
         registeredUsers.push(newUser);
         saveToStorage();
-        alert('Pendaftaran akun berhasil!');
         
-        const form = document.getElementById('signupForm');
-        if (form) form.reset();
-        
-        setTimeout(() =>
-        {
-            showpage('login');
-        }, 500);
+        alert('Pendaftaran akun berhasil! Silakan login.');
+        showpage('login');
     }
 }
 

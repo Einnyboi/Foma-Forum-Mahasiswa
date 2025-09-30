@@ -2,40 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width , initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum Mahasiswa</title>
     <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
-    <!--Navigation Bar-->
+    <!-- Navigation -->
     <nav class="navigation">
         <div class="navi-title">
-            <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
+            <div class="foma-icon">
+                <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
+            </div>
             Foma
         </div>
-
-        <!--Search Bar-->
+    
+        <!-- Search Bar -->
         <div class="search">
             <input type="text" placeholder="Searching for something?" id="searchInput">
-            <div class="search-icon"><img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=000000" alt="Search"></div>
+            <div class="search-icon">
+                <img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=000000" alt="Search">
+            </div>
         </div>
 
-        <!--Login, Sign Up, and Profile links-->
+        <!-- Login, Sign Up, and Profile links -->
         <div class="navi-link" id="links">
-            <!--Default navbar buat user belom login-->
-            <a href="login.html" class="btn navi-links" id="loginLink">Log In</a>
-            <a href="signup.html" class="btn navi-links" id="signupLink">Sign Up</a>
+            <!-- Default navbar for users not logged in -->
+            <a href="#" class="btn navi-links" id="loginLink" onclick="showpage('login'); return false;">Log In</a>
+            <a href="#" class="btn navi-links" id="signupLink" onclick="showpage('signup'); return false;">Sign Up</a>
 
-            <!--Hidden navbar buat user-->
+            <!-- Hidden navbar for logged in users -->
             <div class="profile-btn" id="profileBtn" style="display: none;" onclick="dropdown()">
-                <span id="userInit"></span>
-                <span id="userName"></span>
+                <span id="userInit">T</span>
+                <span id="userName">User</span>
 
-                <!--Dropdown Menu-->
+                <!-- Dropdown Menu -->
                 <div class="profile-dropdown" id="dropdown">
-                    
-                    <!--Profile Page Pop-Up-->
+                    <!-- Profile Page Link -->
                     <a href="profile.html" class="dropdown-item" id="profileLink">
                         <span>
                             <img src="https://img.icons8.com/?size=100&id=2QXdHDYztybb&format=png&color=000000" alt="Profile">
@@ -43,112 +46,114 @@
                         <span>User Profile</span>
                     </a>
 
-                    <!--Logout Option-->
+                    <!-- Logout Option -->
                     <div class="dropdown-item" onclick="logout()">
                         <span>
                             <img src="https://img.icons8.com/?size=100&id=BdksXmxLaK8r&format=png&color=000000" alt="Logout">
                         </span>
                         <span>Logout</span>
                     </div>
-
                 </div>
             </div>
         </div>
     </nav>
 
-    <!--Main Dashboard-->
+    <!-- Main Dashboard -->
     <div class="container">
         <div class="main-dashboard">
-
-            <!--Left Sidebar-->
+            <!-- Left Sidebar -->
             <div class="left-sidebar">
-
-                <!--Link to Homepage (gaada beda)-->
+                <!-- Link to Homepage -->
                 <a href="#" class="sidebar-item active" onclick="showpage('home')">
-                    <span class="icon"><img src="https://img.icons8.com/?size=100&id=i6fZC6wuprSu&format=png&color=000000" alt="Home"></span>
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=i6fZC6wuprSu&format=png&color=000000" alt="Home">
+                    </span>
                     <span>Home</span>
                 </a>
 
-                <!--Link to Trending Page-->
-                <a href="trending.html" class="sidebar-item" id="trendingLink">
-                    <span class="icon"><img src="https://img.icons8.com/?size=100&id=qP2C3yLXaZnV&format=png&color=000000" alt="Trending"></span>
+                <!-- Link to Trending Page -->
+                <a href="#" class="sidebar-item" onclick="showpage('trending')">
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=qP2C3yLXaZnV&format=png&color=000000" alt="Trending">
+                    </span>
                     <span>Trending</span>
                 </a>
 
-                <!--Link to Category Page-->
-                <a href="search.html" class="sidebar-item" id="categoryLink">
-                    <span class="icon"><img src="https://img.icons8.com/?size=100&id=82774&format=png&color=000000" alt="Category"></span>
-                    <span>Category</span>
+                <!-- Link to Category Page -->
+                <a href="#" class="sidebar-item" onclick="toggleCategories()">
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=82774&format=png&color=000000" alt="Category">
+                    </span>
+                    <span>Categories</span>
                 </a>
                 <div id="categoryList" style="display: none; margin-left: 1rem;">
-                    <div class="sidebar-item" style="padding: 0.5rem;">Programming</div>
-                    <div class="sidebar-item" style="padding: 0.5rem;">General</div>
+                    <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer;" onclick="showpage('programming')">Programming</div>
+                    <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer;" onclick="showpage('general')">General</div>
+                </div>
+
+                <!-- Popular Topics Widget -->
+                <div class="widget topics-widget">
+                    <h3>
+                        <img src="https://img.icons8.com/?size=100&id=lhrKPeMFIFdF&format=png&color=000000" alt="Popular">
+                        Popular Topics
+                    </h3>
+                    <!-- Popular Topics Examples -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <span class="category-highlight">#JavaScript</span>
+                        <span class="category-highlight">#Python</span>
+                        <span class="category-highlight">#StudyGroup</span>
+                        <span class="category-highlight">#Career</span>
+                    </div>
                 </div>
             </div>
 
-            <!--Main Content-->
+            <!-- Main Content -->
             <div class="main-content">
-                <!--Homepage-->
-                <div id="home" class="page active">
-
-                    <!--Create New Post-->
-                    <div class="section-header">
-                        <h2>Latest Discussions</h2>
-                        <button class="btn btn-primary" onclick="toggleCreatePost()" id="createPostBtn" style="display: none;">
-                            Create Post
-                            <img src="https://img.icons8.com/?size=100&id=85479&format=png&color=000000" alt="Create">
-                        </button>
-                    </div>
-                    <div id="createPostSection" class="create-post" style="display: none;">
-                        <h3>Create New Post</h3>
-                        <form id="postForm">
-                            <div class="form-group">
-                                <input type="text" id="postTitle" placeholder="What's your discussion topic?" required>
-                            </div>
-                            <div class="form-group">
-                                <textarea id="postContent" placeholder="Share your thoughts..." required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <select id="postCategory">
-                                    <option value="general">General</option>
-                                    <option value="programming">Programming</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Post Discussion</button>
-                            <button type="button" class="btn btn-outline" onclick="toggleCreatePost()">Cancel</button>
-                        </form>
-                    </div>
-
-                    <div id="postsContainer">
-                        <!--
-                        Add Sample Posts like this ↓
-                        <div class="thread-item" onclick="openThread(1)">
-                            <div class="category-highlight">Programming</div>
-                            <div class="thread-title">How to optimize database queries in Node.js?</div>
-                            <div class="thread-header">
-                                <div>
-                                    <div class="thread-meta">by <span class="thread-author">Ahmad Rahman</span> • 2 hours ago</div>
-                                </div>
-                                <div class="thread-stats">
-                                    <span>12 replies</span>
-                                    <span>45 views</span>
-                                </div>
-                            </div>
+                <!-- Dynamic Section Header -->
+                <div class="section-header" id="sectionHeader">
+                    <h2 id="pageTitle">Latest Discussions</h2>
+                    <button class="btn btn-primary" onclick="toggleCreatePost()" id="createPostBtn" style="display: none;">
+                        Create Post
+                        <img src="https://img.icons8.com/?size=100&id=85479&format=png&color=000000" alt="Create">
+                    </button>
+                </div>
+                
+                <!-- Dynamic Create Post Section -->
+                <div id="createPostSection" class="create-post" style="display: none;">
+                    <h3>Create New Post</h3>
+                    <form id="postForm">
+                        <div class="form-group">
+                            <input type="text" id="postTitle" placeholder="What's your discussion topic?" required>
                         </div>
-                        -->
-                    </div>
+                        <div class="form-group">
+                            <textarea id="postContent" placeholder="Share your thoughts..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <select id="postCategory">
+                                <option value="general">General</option>
+                                <option value="programming">Programming</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Discussion</button>
+                        <button type="button" class="btn btn-outline" onclick="toggleCreatePost()">Cancel</button>
+                    </form>
+                </div>
+
+                <!-- Dynamic Main Content Area -->
+                <div id="mainContentArea">
+                    <!-- Content will be loaded here by JavaScript -->
                 </div>
             </div>
 
-            <!--Right Sidebar-->
+            <!-- Right Sidebar -->
             <div class="right-sidebar">
-                <!--Events-->
-                <div class="widget">
+                <!-- Events -->
+                <div class="widget events-widget">
                     <h3>
                         <img src="https://img.icons8.com/?size=100&id=26057&format=png&color=000000" alt="Upcoming">
                         Upcoming Events
                     </h3>
-                    <!--This is Events Lists Examples ↓-->
+                    <!-- Events List Examples -->
                     <div class="event-item">
                         <div class="event-date">Oct 5, 2025</div>
                         <div class="event-title">Coding Bootcamp Workshop</div>
@@ -162,20 +167,7 @@
                         <div class="event-title">Career Fair 2025</div>
                     </div>
                 </div>
-
-                <!--Popular Topics Widget-->
-                <div class="widget">
-                    <h3><img src="https://img.icons8.com/?size=100&id=lhrKPeMFIFdF&format=png&color=000000" alt="Popular"> Popular Topics</h3>
-                    <!--This is Examples for Popular Topics ↓-->
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        <span class="category-highlight">#JavaScript</span>
-                        <span class="category-highlight">#Python</span>
-                        <span class="category-highlight">#StudyGroup</span>
-                        <span class="category-highlight">#Career</span>
-                    </div>
-                </div>
             </div>
-
         </div>
     </div>
 
