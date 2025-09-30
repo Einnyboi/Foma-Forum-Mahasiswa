@@ -237,7 +237,8 @@ function loadLoginContent()
                     }
                 }, 100);
             }
-        });
+        }
+    );
 }
 
 // Load Signup.html
@@ -258,7 +259,8 @@ function loadSignupContent()
                     }
                 }, 100);
             }
-        });
+        }
+    );
 }
 
 // Load Posts.html
