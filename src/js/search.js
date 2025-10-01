@@ -1,83 +1,65 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- BAGIAN 1: MENGAMBIL ELEMEN DARI HTML ---
     const searchInput = document.querySelector('.search-box .input');
     const searchButton = document.querySelector('.search-box .button');
     const popularCategories = document.querySelectorAll('.filter-section .btn-secondary');
     const searchResultsSection = document.querySelector('.search-results');
 
-    // --- BAGIAN 2: DATA DUMMY (Sesuai dengan konten yang mungkin ada) ---
-    // Ini adalah array objek yang akan Anda cari.
-    // Anda bisa mengganti data ini nanti dengan data dari database, API, atau localStorage.
+    // --- DUMMY DATA ---
     const allContent = [
-        { id: 1, type: 'thread', title: 'Lowongan magang di perusahaan teknologi', category: 'Info Karir', description: 'Beberapa lowongan magang terbaru untuk mahasiswa IT, cocok untuk pemula.' },
-        { id: 2, type: 'thread', title: 'Rekomendasi tempat nongkrong di Jakarta', category: 'Hobi & Hiburan', description: 'Daftar kafe dengan Wi-Fi kencang dan suasana nyaman untuk nugas atau sekadar santai.' },
-        { id: 3, type: 'thread', title: 'Tips belajar efektif untuk ujian semester', category: 'Akademik', description: 'Metode belajar yang terbukti meningkatkan nilai dan mengurangi stres.' },
-        { id: 4, type: 'thread', title: 'Cara membuat robot sederhana dari barang bekas', category: 'Hobi & Hiburan', description: 'Panduan langkah demi langkah untuk proyek DIY robotik.' },
-        { id: 5, type: 'thread', title: 'Beasiswa ke luar negeri tahun 2025', category: 'Info Karir', description: 'Informasi lengkap tentang beasiswa fully-funded di berbagai negara.' },
-        { id: 6, type: 'thread', title: 'Forum tanya jawab seputar tugas akhir', category: 'Akademik', description: 'Tempat diskusi untuk membantu mahasiswa menyelesaikan skripsi.' },
-        { id: 7, type: 'popular', title: 'Lowongan magang', category: null, description: null },
-        { id: 8, type: 'popular', title: 'Rekomendasi tempat nongkrong', category: null, description: null }
+        { id: 1, type: 'thread', title: 'Internship vacancies in tech companies', category: 'Career Info', description: 'Some of the latest internship vacancies for IT students, suitable for beginners.' },
+        { id: 2, type: 'thread', title: 'Recommended hangout spots in Jakarta', category: 'Hobbies & Entertainment', description: 'A list of cafes with fast Wi-Fi and a comfortable atmosphere for work or just relaxing.' },
+        { id: 3, type: 'thread', title: 'Effective study tips for semester exams', category: 'Academics', description: 'Study methods proven to increase grades and reduce stress.' },
+        { id: 4, type: 'thread', title: 'How to make a simple robot from recycled materials', category: 'Hobbies & Entertainment', description: 'A step-by-step guide for a DIY robotics project.' },
+        { id: 5, type: 'thread', title: 'Scholarships abroad in 2025', category: 'Career Info', description: 'Complete information about fully-funded scholarships in various countries.' },
+        { id: 6, type: 'thread', title: 'Q&A forum about final projects', category: 'Academics', description: 'A discussion space to help students complete their theses.' },
+        { id: 7, type: 'popular', title: 'Internship vacancies', category: null, description: null },
+        { id: 8, type: 'popular', title: 'Recommended hangout spots', category: null, description: null }
     ];
 
-    // --- BAGIAN 3: FUNGSI UTAMA PENCARIAN & RENDERING ---
-    
-    /**
-     * Merender hasil pencarian ke dalam halaman.
-     * @param {Array} results - Array dari objek konten yang akan ditampilkan.
-     */
+    // --- CORE SEARCH & RENDERING FUNCTIONS ---
     function renderResults(results) {
-    const searchResultsSection = document.querySelector('.search-results');
-    searchResultsSection.innerHTML = '';
-    
-    const heading = document.createElement('h6');
-    heading.textContent = results.length > 0 ? 'Hasil Pencarian:' : 'Tidak Ditemukan';
-    searchResultsSection.appendChild(heading);
+        const searchResultsSection = document.querySelector('.search-results');
+        searchResultsSection.innerHTML = '';
+        
+        const heading = document.createElement('h6');
+        heading.textContent = results.length > 0 ? 'Search Results:' : 'No Results Found';
+        searchResultsSection.appendChild(heading);
 
-    if (results.length === 0) {
-        const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = 'Maaf, tidak ada hasil yang cocok dengan pencarian Anda.';
-        searchResultsSection.appendChild(noResultsMessage);
-        return;
+        if (results.length === 0) {
+            const noResultsMessage = document.createElement('p');
+            noResultsMessage.textContent = 'Sorry, no results matched your search.';
+            searchResultsSection.appendChild(noResultsMessage);
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        results.forEach(item => {
+            if (item.type !== 'popular') {
+                const resultItemDiv = document.createElement('div');
+                resultItemDiv.className = 'popular-search-item';
+
+                const titleElement = document.createElement('strong');
+                titleElement.textContent = item.title;
+                
+                const descriptionElement = document.createElement('small');
+                descriptionElement.textContent = item.description;
+
+                resultItemDiv.appendChild(titleElement);
+                if (item.description) {
+                    resultItemDiv.appendChild(document.createElement('br'));
+                    resultItemDiv.appendChild(descriptionElement);
+                }
+                
+                fragment.appendChild(resultItemDiv);
+            }
+        });
+
+        searchResultsSection.appendChild(fragment);
     }
 
-    // Menggunakan Fragment untuk performa yang lebih baik
-    const fragment = document.createDocumentFragment();
-
-    results.forEach(item => {
-        // HANYA RENDER ITEM JIKA BUKAN "POPULAR" SEARCH
-        if (item.type !== 'popular') {
-            // Buat kontainer div untuk setiap item hasil pencarian
-            const resultItemDiv = document.createElement('div');
-            resultItemDiv.className = 'popular-search-item'; // Gunakan kelas ini untuk styling kolom
-
-            // Tambahkan judul dan deskripsi ke dalam div
-            const titleElement = document.createElement('strong');
-            titleElement.textContent = item.title;
-            
-            const descriptionElement = document.createElement('small');
-            descriptionElement.textContent = item.description;
-
-            resultItemDiv.appendChild(titleElement);
-            if (item.description) {
-                resultItemDiv.appendChild(document.createElement('br'));
-                resultItemDiv.appendChild(descriptionElement);
-            }
-            
-            fragment.appendChild(resultItemDiv);
-        }
-    });
-
-    searchResultsSection.appendChild(fragment);
-}
-
-    /**
-     * Menangani logika pencarian berdasarkan kata kunci.
-     * @param {string} searchTerm - Kata kunci dari input pencarian.
-     */
     function handleSearch(searchTerm) {
         const filteredResults = allContent.filter(item => {
-            // Saring berdasarkan judul atau deskripsi
             const titleMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
             const descriptionMatch = item.description ? item.description.toLowerCase().includes(searchTerm.toLowerCase()) : false;
             return titleMatch || descriptionMatch;
@@ -86,50 +68,40 @@ document.addEventListener('DOMContentLoaded', () => {
         renderResults(filteredResults);
     }
     
-    /**
-     * Menangani logika filter berdasarkan kategori.
-     * @param {string} category - Nama kategori yang dipilih.
-     */
     function handleCategoryFilter(category) {
         const filteredResults = allContent.filter(item => {
-            // Saring hanya item yang memiliki kategori yang cocok
             return item.category && item.category.toLowerCase() === category.toLowerCase();
         });
 
         renderResults(filteredResults);
     }
 
-    // --- BAGIAN 4: EVENT LISTENERS ---
-
-    // Mengaktifkan pencarian saat tombol "Cari" diklik
+    // --- EVENT LISTENERS ---
     searchButton.addEventListener('click', () => {
         const searchTerm = searchInput.value.trim();
         if (searchTerm) {
             handleSearch(searchTerm);
         } else {
-            // Jika input kosong, tampilkan kembali "Pencarian Populer"
             renderResults(allContent.filter(item => item.type === 'popular'));
         }
     });
 
-    // Mengaktifkan pencarian saat tombol "Enter" ditekan di input
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            searchButton.click(); // Memicu event klik pada tombol cari
+            searchButton.click();
         }
     });
 
-    // Mengaktifkan filter kategori saat tombol kategori diklik
     popularCategories.forEach(button => {
         button.addEventListener('click', (e) => {
             const category = e.target.textContent;
-            searchInput.value = ''; // Kosongkan input pencarian untuk kejelasan
+            searchInput.value = '';
             handleCategoryFilter(category);
         });
     });
 
-    // Inisialisasi: Tampilkan "Pencarian Populer" saat halaman pertama kali dimuat
+    // Initialization: Display "Popular Searches" on initial page load
     renderResults(allContent.filter(item => item.type === 'popular'));
 
 });

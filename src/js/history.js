@@ -43,20 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedPosts.forEach(post => activityContainer.appendChild(post));
     });
 
-    // Fungsi helper untuk mendapatkan tanggal dari footer
     function getDateFromFooter(postElement) {
         const dateSpan = postElement.querySelector('.post-footer > span:first-child');
         const dateString = dateSpan.textContent.trim();
-        // Mengubah format tanggal Indonesia ke format yang bisa dipahami oleh Date
-        const dateParts = dateString.split(' ');
-        const day = dateParts[0];
-        const monthMap = {
-            'Januari': '01', 'Februari': '02', 'Maret': '03', 'April': '04', 'Mei': '05', 'Juni': '06',
-            'Juli': '07', 'Agustus': '08', 'September': '09', 'Oktober': '10', 'November': '11', 'Desember': '12'
-        };
-        const month = monthMap[dateParts[1]];
-        const year = dateParts[2];
-        return `${year}-${month}-${day}`;
+        const dateObject = new Date(dateString);
+        // Pastikan tanggalnya valid sebelum digunakan
+        if (isNaN(dateObject.getTime())) {
+            console.error("Error: Invalid date.");
+            return null; 
+        }
+        return dateObject;
     }
 
     // Fungsi helper untuk mendapatkan jumlah suka dari footer
