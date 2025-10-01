@@ -95,10 +95,10 @@ To get a local copy up and running, follow these simple steps.
 ### ## Our Team
 **Group 6 || Kelompok 6:**
 
-| Name                      | NIM       |
-| ------------------------- | --------- |
-| Vanesa Yolanda            | 535240071 |
-| Cathrine Sandrina         | 535240075 |
-| Cornelius Clarence        | 535240076 |
-| Naomi William Sugiantara  | 535240078 |
-| Jessica Perez Chen        | 535240188 |
+| Name                                     | NIM       |
+| ---------------------------------------- | --------- |
+| nesa28 - Vanesa Yolanda                  | 535240071 |
+| Einnyboi - Cathrine Sandrina             | 535240075 |
+| Cornelius-27 - Cornelius Clarence        | 535240076 |
+| nomii1568 - Naomi William Sugiantara     | 535240078 |
+| Jessica Perez Chen                       | 535240188 |
