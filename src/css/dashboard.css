@@ -457,6 +457,8 @@ body
     flex-direction: column;
     gap: 2rem;
     height: fit-content;
+    position: sticky; 
+    top: 120px; 
 }
 
 .widget
@@ -466,21 +468,6 @@ body
     padding: 2rem;
     border: 1px solid rgba(199, 214, 213, 0.3);
     box-shadow: 0 2px 4px #dad9e0;
-}
-
-/* Sticky positioning for widgets */
-.widget:first-child
-{
-    top: 120px;
-    z-index: 10;
-}
-
-/* Adjust sticky positioning based on actual content */
-.widget.events-widget
-{
-    position: sticky;
-    top: 120px;
-    z-index: 10;
 }
 
 .widget h3
@@ -499,13 +486,6 @@ body
 {
     width: 20px;
     height: 20px;
-}
-
-.events-widget 
-{
-    position: -webkit-sticky;
-    position: sticky;
-    top: 1rem;
 }
 
 .event-item
@@ -670,7 +650,7 @@ body
     grid-area: main-content;
 }
 
-.right-sidebar  
+.right-sidebar
 {
     grid-area: right-sidebar;
 }
@@ -687,9 +667,17 @@ body
         gap: 1.5rem;
     }
     
+    .left-sidebar 
+    {
+        position: static; 
+        top: auto;
+    }
+
     .right-sidebar 
     {
         display: block;
+        position: static; 
+        top: auto; 
     }
 }
 
