@@ -25,25 +25,6 @@
         </div>
 
         <div class="navi-link" id="links">
-            <div class="auth-buttons">
-                <a href="#" class="btn btn-secondary">Masuk</a>
-                <a href="#" class="btn btn-primary">Daftar</a>
-            </div>
-            
-            <div class="profile-btn" id="profileBtn" style="display: none;" onclick="dropdown()">
-                <span id="userInit">T</span>
-                <span id="userName">User</span>
-                <div class="profile-dropdown" id="dropdown">
-                    <a href="profile.html" class="dropdown-item" id="profileLink">
-                        <span><img src="https://img.icons8.com/?size=100&id=2QXdHDYztybb&format=png&color=000000" alt="Profile"></span>
-                        <span>User Profile</span>
-                    </a>
-                    <div class="dropdown-item" onclick="logout()">
-                        <span><img src="https://img.icons8.com/?size=100&id=BdksXmxLaK8r&format=png&color=000000" alt="Logout"></span>
-                        <span>Logout</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 
@@ -123,50 +104,6 @@
                 </div>
             </aside>
 
-        </div>
-    </div>
-
-    <div id="post-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <form id="add-thread-form">
-                <h2>Buat Post Baru</h2>
-                <label for="post-type">Tipe Post:</label>
-                <select id="post-type" name="postType">
-                    <option value="normal">Normal</option>
-                    <option value="penting">Penting (Selalu di Atas)</option>
-                    <option value="event">Event</option>
-                </select>
-                <div id="event-fields" class="hidden">
-                    <input type="date" id="event-date" name="event_date">
-                    <input type="text" id="event-location" placeholder="Lokasi Event">
-                </div>
-                <input type="text" id="thread-title" placeholder="Judul Post" required>
-                <textarea id="thread-description" placeholder="Jelaskan maksud dari post Anda di sini..." required></textarea>
-                <input type="text" id="thread-author" placeholder="Nama Anda" required>
-                <label for="thread-category">Pilih Komunitas:</label>
-                <select id="thread-category" name="category"></select>
-                <input type="text" id="new-category-input" class="hidden" placeholder="Nama Komunitas Baru...">
-                <button type="submit">Publikasikan</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="community-modal" class="modal hidden">
-        <div class="modal-content"> 
-            <span class="close-button">&times;</span>
-            <form id="add-community-form">
-                <h2>Buat Komunitas Baru</h2>
-                <label for="community-name">Nama Komunitas (tanpa "r/")</label>
-                <input type="text" id="community-name" placeholder="Contoh: PecintaKucing" required>
-                <label for="community-desc">Deskripsi</label>
-                <textarea id="community-desc" placeholder="Jelaskan tentang komunitas Anda..." required></textarea>
-
-                <label for="community-banner">Gambar Banner (opsional)</label>
-                <input type="file" id="community-banner-upload" accept="image/*">
-
-                <button type="submit">Buat Komunitas</button>
-            </form>
         </div>
     </div>
 

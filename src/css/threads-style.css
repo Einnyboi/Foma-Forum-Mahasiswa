@@ -112,58 +112,6 @@ body {
     align-items: center;
 }
 
-/* Tombol Login/Signup */
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-/* User Profile (setelah login) */
-.profile-btn {
-    background: var(--bg-card);
-    color: var(--text-main);
-    border-radius: 50px;
-    padding: 0.8rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    cursor: pointer;
-    position: relative;
-    font-weight: 500;
-}
-
-.profile-dropdown {
-    position: absolute;
-    top: 120%;
-    right: 0;
-    background: var(--bg-container);
-    border-radius: 16px;
-    box-shadow: 0 10px 40px var(--shadow-color);
-    min-width: 200px;
-    z-index: 1001;
-    display: none; /* Atur dengan JS untuk 'block' */
-    border: 1px solid var(--border-color);
-}
-.profile-dropdown.show {
-    display: block;
-}
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 1rem 1.2rem;
-    cursor: pointer;
-    color: var(--text-main);
-    text-decoration: none;
-}
-.dropdown-item:hover {
-    background: var(--bg-card);
-}
-.dropdown-item img {
-    width: 20px;
-    height: 20px;
-}
-
 
 /* --- [BAGIAN 3] LAYOUT UTAMA & SIDEBAR (DARI DESAIN BARU) --- */
 .container {
@@ -350,6 +298,18 @@ body {
     margin-bottom: 20px;
 }
 
+/* GAYA UNTUK GAMBAR DI DALAM POST */
+.thread-image-container {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.thread-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px; /* Sudut yang lebih bulat agar sesuai desain */
+    display: block;
+}
+
 /* Tombol Aksi (Suka, Balas, dll.) */
 .card-actions {
     border-top: 1px solid #F3F4F6; /* Garis pemisah yang sangat tipis */
@@ -368,13 +328,28 @@ body {
     display: flex;
     align-items: center;
     gap: 6px; /* Jarak antara ikon dan teks */
+    cursor: pointer; /* Menambahkan cursor pointer */
 }
 
 .action-item:hover {
     color: var(--accent); /* Warna berubah saat disentuh mouse */
 }
 
-/* Bagian Balasan */
+/* BAGIAN BALASAN DENGAN ANIMASI */
+
+/* Pembungkus untuk mengontrol animasi */
+.replies-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+/* State ketika wrapper terlihat */
+.replies-wrapper.visible {
+    max-height: 500px; /* Atur ketinggian maksimum yang cukup besar */
+}
+
+
 .replies-section {
     margin-top: 16px;
 }
@@ -383,18 +358,41 @@ body {
     margin-bottom: 12px;
 }
 
+/* --- [PERUBAHAN] MEMBUAT AREA BALASAN DAPAT DI-SCROLL --- */
+.replies-container {
+    max-height: 300px; /* Atur ketinggian maksimum untuk area komentar */
+    overflow-y: auto;  /* Tambahkan scrollbar vertikal jika konten melebihi max-height */
+    padding-right: 10px; /* Beri sedikit ruang agar scrollbar tidak menempel konten */
+}
+
+/* (Opsional) Gaya untuk scrollbar agar lebih modern */
+.replies-container::-webkit-scrollbar {
+  width: 8px;
+}
+.replies-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.replies-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.replies-container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
 .reply {
-    border: none; /* Hapus border kiri dari gaya lama */
+    border: none;
     padding: 0 0 12px 0;
     margin-bottom: 12px;
-    border-bottom: 1px solid #F3F4F6; /* Garis tipis antar balasan */
+    border-bottom: 1px solid #F3F4F6;
 }
 .reply:last-child {
-    border-bottom: none; /* Hapus border untuk balasan terakhir */
+    border-bottom: none;
 }
 
 .reply strong {
-    display: block; /* Nama pengguna di baris sendiri */
+    display: block;
     font-weight: 600;
     color: #111827;
 }
@@ -403,6 +401,18 @@ body {
     margin: 2px 0 0 0;
     color: #4B5563;
 }
+
+/* GAYA UNTUK GAMBAR DI DALAM BALASAN */
+.reply-image-container {
+    margin-top: 8px;
+}
+.reply-image-container img {
+    max-width: 250px; /* Batasi lebar gambar di balasan agar tidak terlalu besar */
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
 
 /* Form untuk Balasan Baru */
 .reply-form {
@@ -413,8 +423,8 @@ body {
 }
 
 .reply-form input.reply-text-input {
-    border: 1px solid #D1D5DB; /* Border abu-abu biasa */
-    border-radius: 20px;       /* Bentuk oval/pil */
+    border: 1px solid #D1D5DB;
+    border-radius: 20px;
     background-color: #F9FAFB;
     flex-grow: 1;
     padding: 8px 16px;
@@ -427,9 +437,9 @@ body {
     background-color: #FFFFFF;
 }
 
+/* GAYA UNTUK TOMBOL BARU DI FORM BALASAN */
+/* Tombol generik di form balasan */
 .reply-form button {
-    background-color: var(--accent);
-    color: white;
     border: none;
     border-radius: 50%; /* Membuat tombol menjadi lingkaran */
     width: 36px;
@@ -437,11 +447,29 @@ body {
     font-weight: 500;
     cursor: pointer;
     flex-shrink: 0; /* Mencegah tombol menyusut */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+/* Tombol Kirim */
+.reply-form button.submit-reply-btn {
+    background-color: var(--accent);
+    color: white;
+}
+
+/* Tombol Lampirkan File */
+.reply-form button.attach-reply-image-btn {
+    background-color: #E5E7EB; /* Warna abu-abu */
+    color: #4B5563;
+}
+.reply-form button.attach-reply-image-btn:hover {
+    background-color: #D1D5DB;
 }
 
 
 /* --- [BAGIAN 5] TOMBOL, LABEL & MODAL --- */
-/* Tombol (dari desain baru) */
 .btn {
     padding: 0.8rem 1.8rem;
     border: none;

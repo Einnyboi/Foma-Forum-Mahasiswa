@@ -3,66 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- [BAGIAN 1] PENGAMBILAN ELEMEN HTML & INISIALISASI ---
 
-    // Mengambil elemen-elemen utama dari layout
-    const mainContentArea = document.querySelector('.main-content'); // Area konten utama yang baru
+    const mainContentArea = document.querySelector('.main-content');
     const leftSidebar = document.querySelector('.left-sidebar');
-
-    // Elemen Navigasi & Otentikasi
-    const loginLink = document.getElementById('loginLink');
-    const signupLink = document.getElementById('signupLink');
-    const profileBtn = document.getElementById('profileBtn');
-    const authButtons = document.querySelector('.auth-buttons'); // Kontainer untuk tombol Masuk/Daftar
     
-    // Variabel Global untuk state aplikasi
-    let currentUser = null; // Menyimpan data user yang sedang login
-    let currentView = 'community-list'; // Mengontrol tampilan (daftar komunitas atau daftar thread)
-    let currentCommunity = null; // Menyimpan nama komunitas yang sedang dilihat
+    let currentView = 'community-list';
+    let currentCommunity = null;
 
-    // --- [BAGIAN 2] FUNGSI MANAJEMEN PENGGUNA (DARI SCRIPT KEDUA) ---
-
-    // Mengambil data pengguna dari localStorage
-    function getUsers() {
-        const users = localStorage.getItem('forumUsers');
-        // Jika tidak ada user, buat user 'test' sebagai contoh
-        return users ? JSON.parse(users) : [{ name: "Test User", email: "test@example.com", password: "password123" }];
-    }
-
-    // Menyimpan data pengguna ke localStorage
-    function saveUsers(users) {
-        localStorage.setItem('forumUsers', JSON.stringify(users));
-    }
-
-    // Memperbarui tampilan navigasi berdasarkan status login
-    function updateNavUI() {
-        const userInit = document.getElementById('userInit');
-        const userName = document.getElementById('userName');
-
-        if (currentUser) {
-            // Jika ada user login, tampilkan tombol profil dan sembunyikan tombol Masuk/Daftar
-            if (authButtons) authButtons.style.display = 'none';
-            if (profileBtn) profileBtn.style.display = 'flex';
-            
-            if (userInit) userInit.textContent = currentUser.name.charAt(0).toUpperCase();
-            if (userName) userName.textContent = currentUser.name.split(' ')[0];
-        } else {
-            // Jika tidak ada user login, lakukan sebaliknya
-            if (authButtons) authButtons.style.display = 'flex';
-            if (profileBtn) profileBtn.style.display = 'none';
-        }
-    }
-
-    // Fungsi untuk logout
-    function logout() {
-        currentUser = null;
-        localStorage.removeItem('currentUser');
-        alert('Anda berhasil logout.');
-        updateNavUI();
-        // Kembali ke halaman utama setelah logout
-        currentView = 'community-list';
-        renderPage();
-    }
-    
-    // --- [BAGIAN 3] FUNGSI MANAJEMEN DATA FORUM (DARI SCRIPT PERTAMA) ---
+    // --- [BAGIAN 3] FUNGSI MANAJEMEN DATA FORUM ---
 
     function getCommunities() {
         const communities = localStorage.getItem('forumCommunities');
@@ -92,11 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- [BAGIAN 4] FUNGSI RENDER TAMPILAN (GABUNGAN) ---
+    // --- [BAGIAN 4] FUNGSI RENDER TAMPILAN ---
 
-    // Fungsi utama untuk menampilkan konten berdasarkan state `currentView`
     function renderPage() {
-        mainContentArea.innerHTML = ''; // Kosongkan area konten utama
+        mainContentArea.innerHTML = ''; 
 
         switch (currentView) {
             case 'community-list':
@@ -105,15 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'thread-list':
                 renderThreadView();
-                setActiveSidebarItem(null); // Tidak ada item aktif saat di dalam komunitas
-                break;
-            case 'login':
-                renderAuthPage('login');
-                setActiveSidebarItem(null);
-                break;
-            case 'signup':
-                renderAuthPage('signup');
-                setActiveSidebarItem(null);
+                setActiveSidebarItem(null); 
                 break;
             default:
                 renderCommunityListPage();
@@ -122,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderEventsSidebar();
     }
 
-    // Menampilkan halaman daftar komunitas
     function renderCommunityListPage() {
         const communities = getCommunities();
         let communityCardsHTML = communities.map(community => `
@@ -145,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
-    // Menampilkan halaman daftar thread dalam satu komunitas
     function renderThreadView() {
         const community = getCommunities().find(c => c.name === currentCommunity);
         if (!community) {
@@ -159,13 +95,30 @@ document.addEventListener('DOMContentLoaded', () => {
              let postLabel = thread.isImportant ? '<span class="post-label label-penting">⭐ PENTING</span>' : 
                             (thread.type === 'event' ? '<span class="post-label label-event">📅 EVENT</span>' : '');
              let eventInfoHTML = thread.type === 'event' ? `<div class="event-info">Lokasi: ${thread.eventLocation} | Tanggal: ${thread.eventDate}</div>` : '';
-             let repliesHTML = (thread.replies || []).map(reply => `<div class="reply"><strong>${reply.author}:</strong><p>${reply.text}</p></div>`).join('');
             
+            // --- [PERUBAHAN 1.A] MEMPROSES TAMPILAN GAMBAR DI BALASAN ---
+            let repliesHTML = (thread.replies || []).map(reply => {
+                const replyImageHTML = reply.imageUrl 
+                    ? `<div class="reply-image-container"><img src="${reply.imageUrl}" alt="Gambar balasan"></div>`
+                    : '';
+                return `
+                    <div class="reply">
+                        <strong>${reply.author}:</strong>
+                        <p>${reply.text}</p>
+                        ${replyImageHTML}
+                    </div>`;
+            }).join('');
+            
+            let imageHTML = thread.imageUrl 
+                ? `<div class="thread-image-container"><img src="${thread.imageUrl}" alt="Gambar post"></div>` 
+                : '';
+
             return `
             <div class="thread-card">
                 <h3>${thread.title} ${postLabel}</h3>
                 <div class="thread-meta">Diposting oleh: <strong>${thread.author}</strong></div>
                 <p class="thread-description">${thread.description}</p>
+                ${imageHTML}
                 ${eventInfoHTML}
                 <div class="card-actions">
                     <div class="action-item like-button" data-thread-id="${thread.id}"><i class="fa-solid fa-thumbs-up"></i> <span>Suka (${thread.likes})</span></div>
@@ -178,7 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="replies-container">${repliesHTML || '<p>Belum ada balasan.</p>'}</div>
                         <form class="reply-form" data-thread-id="${thread.id}">
                             <input type="text" class="reply-text-input" placeholder="Tulis balasan..." required>
-                            <button type="submit">Kirim</button>
+                            <input type="file" class="reply-image-input" accept="image/*" style="display: none;">
+                            <button type="button" class="attach-reply-image-btn" title="Lampirkan gambar">
+                                <i class="fa-solid fa-paperclip"></i>
+                            </button>
+                            <button type="submit" class="submit-reply-btn">Kirim</button>
                         </form>
                     </div>
                 </div>
@@ -206,38 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
-    // Menampilkan halaman login atau signup
-    function renderAuthPage(type) {
-        const isLogin = type === 'login';
-        mainContentArea.innerHTML = `
-            <div class="auth-container">
-                <h2>${isLogin ? 'Login ke Akun Anda' : 'Buat Akun Baru'}</h2>
-                <form id="${isLogin ? 'login-form' : 'signup-form'}">
-                    ${!isLogin ? `
-                        <div class="form-group">
-                            <label for="fullName">Nama Lengkap</label>
-                            <input type="text" id="fullName" required>
-                        </div>` : ''}
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" required>
-                    </div>
-                     ${!isLogin ? `
-                        <div class="form-group">
-                            <label for="confirmPass">Konfirmasi Password</label>
-                            <input type="password" id="confirmPass" required>
-                        </div>` : ''}
-                    <button type="submit" class="btn btn-primary">${isLogin ? 'Masuk' : 'Daftar'}</button>
-                    <p class="auth-switch">${isLogin ? 'Belum punya akun?' : 'Sudah punya akun?'} <a href="#" id="auth-switch-link">${isLogin ? 'Daftar di sini' : 'Masuk di sini'}</a></p>
-                </form>
-            </div>`;
-    }
-    
-    // Render elemen-elemen di sidebar
     function renderCommunityListSidebar() {
         const communities = getCommunities();
         const categoryListEl = document.getElementById('categoryList');
@@ -247,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function renderEventsSidebar() {
         const eventListSidebar = document.querySelector('.right-sidebar .sidebar-card:last-child ul');
-        if (!eventListSidebar) { // Jika struktur event di sidebar kanan belum ada, buat
+        if (!eventListSidebar) { 
             const rightSidebar = document.querySelector('.right-sidebar');
             const eventCard = document.createElement('div');
             eventCard.className = 'sidebar-card';
@@ -262,43 +187,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- [BAGIAN 5] EVENT LISTENERS & LOGIKA APLIKASI ---
 
-    // Meng-handle semua klik di dokumen untuk navigasi dan aksi
     document.body.addEventListener('click', async (e) => {
-        // Navigasi Sidebar
         if (e.target.closest('#nav-home')) { currentView = 'community-list'; renderPage(); }
         if (e.target.closest('.category-link')) { currentCommunity = e.target.dataset.communityName; currentView = 'thread-list'; renderPage(); }
-        
-        // Navigasi Otentikasi
-        if (e.target.closest('#loginLink')) { e.preventDefault(); currentView = 'login'; renderPage(); }
-        if (e.target.closest('#signupLink')) { e.preventDefault(); currentView = 'signup'; renderPage(); }
-        if (e.target.id === 'auth-switch-link') { e.preventDefault(); currentView = (currentView === 'login' ? 'signup' : 'login'); renderPage(); }
-        if (e.target.closest('.dropdown-item span')?.textContent === 'Logout') { logout(); }
-
-        // Interaksi dalam Konten
         if (e.target.closest('.community-card')) { currentCommunity = e.target.closest('.community-card').dataset.communityName; currentView = 'thread-list'; renderPage(); }
-        if (e.target.closest('#create-community-btn')) { if (!currentUser) { alert('Silakan login untuk membuat komunitas.'); return; } renderModal('community'); }
-        if (e.target.closest('#start-post-btn')) { if (!currentUser) { alert('Silakan login untuk membuat post.'); return; } renderModal('post'); }
+        if (e.target.closest('#create-community-btn')) { renderModal('community'); }
+        if (e.target.closest('#start-post-btn')) { renderModal('post'); }
         if (e.target.closest('.modal .close-button')) { document.querySelector('.modal')?.remove(); }
         if (e.target.closest('.like-button')) handleLikeDislike(e.target.closest('.like-button').dataset.threadId, 'like');
-        if (e.target.closest('.dislike-button')) handleLikeDislike(e.target.closest('.like-button').dataset.threadId, 'dislike');
+        if (e.target.closest('.dislike-button')) handleLikeDislike(e.target.closest('.dislike-button').dataset.threadId, 'dislike');
         if (e.target.closest('.comment-toggle-button')) e.target.closest('.thread-card').querySelector('.replies-wrapper').classList.toggle('visible');
-
-        // Menu Banner
         if (e.target.closest('#banner-menu-trigger')) document.getElementById('banner-dropdown-menu').classList.toggle('hidden');
         if (e.target.closest('#change-banner-action')) document.getElementById('change-banner-input').click();
+
+        // --- [PERUBAHAN 2] EVENT HANDLER UNTUK TOMBOL LAMPIRKAN FILE ---
+        if (e.target.closest('.attach-reply-image-btn')) {
+            // Cari input file tersembunyi di dalam form yang sama dan klik
+            e.target.closest('.reply-form').querySelector('.reply-image-input').click();
+        }
     });
     
-    // Meng-handle semua submit form
     document.body.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (e.target.id === 'login-form') handleLogin(e.target);
-        if (e.target.id === 'signup-form') handleSignup(e.target);
         if (e.target.id === 'add-community-form') handleAddCommunity(e.target);
-        if (e.target.id === 'add-thread-form') handleAddThread(e.target);
-        if (e.target.classList.contains('reply-form')) handleAddReply(e.target);
+        if (e.target.id === 'add-thread-form') await handleAddThread(e.target);
+        // --- [PERUBAHAN 4] MENJADIKAN PANGGILAN FUNGSI ASYNCHRONOUS ---
+        if (e.target.classList.contains('reply-form')) await handleAddReply(e.target);
     });
     
-    // Handler untuk Ganti Banner
     document.body.addEventListener('change', async (e) => {
         if (e.target.id === 'change-banner-input') {
             const file = e.target.files[0];
@@ -309,46 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetCommunity) {
                 targetCommunity.bannerUrl = newBannerUrl;
                 saveCommunities(communities);
-                renderPage(); // Render ulang seluruh halaman untuk update banner
+                renderPage(); 
             }
         }
     });
 
     // --- [BAGIAN 6] FUNGSI HANDLER UNTUK AKSI ---
-
-    function handleLogin(form) {
-        const email = form.querySelector('#email').value;
-        const password = form.querySelector('#password').value;
-        const user = getUsers().find(u => u.email === email && u.password === password);
-        if (user) {
-            currentUser = user;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            alert(`Selamat datang kembali, ${currentUser.name}!`);
-            updateNavUI();
-            currentView = 'community-list';
-            renderPage();
-        } else {
-            alert('Email atau password salah.');
-        }
-    }
-
-    function handleSignup(form) {
-        const name = form.querySelector('#fullName').value;
-        const email = form.querySelector('#email').value;
-        const password = form.querySelector('#password').value;
-        const confirmPass = form.querySelector('#confirmPass').value;
-        
-        if (password !== confirmPass) { alert('Konfirmasi password tidak cocok!'); return; }
-        
-        const users = getUsers();
-        if (users.some(u => u.email === email)) { alert('Email sudah terdaftar.'); return; }
-        
-        users.push({ name, email, password });
-        saveUsers(users);
-        alert('Pendaftaran berhasil! Silakan login.');
-        currentView = 'login';
-        renderPage();
-    }
     
     function handleAddCommunity(form) {
         const name = form.querySelector('#community-name').value;
@@ -373,28 +255,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function handleAddThread(form) {
+    async function handleAddThread(form) {
         const threads = getThreads();
         const postType = form.querySelector('#post-type').value;
+        const imageFile = form.querySelector('#thread-image-upload').files[0];
+        let imageUrl = null;
+
+        if (imageFile) {
+            try {
+                imageUrl = await fileToBase64(imageFile);
+            } catch (error) {
+                console.error("Gagal mengubah gambar:", error);
+                alert("Gagal mengunggah gambar.");
+                return;
+            }
+        }
+
         threads.push({
             id: Date.now(),
             type: postType,
             isImportant: postType === 'penting',
             title: form.querySelector('#thread-title').value,
             description: form.querySelector('#thread-description').value,
-            author: currentUser.name, // Otomatis dari user yang login
+            author: form.querySelector('#thread-author').value || 'Anonymous',
+            imageUrl: imageUrl,
             community: currentCommunity,
             eventDate: form.querySelector('#event-date').value,
             eventLocation: form.querySelector('#event-location').value,
             likes: 0, dislikes: 0, replies: []
         });
+
         saveThreads(threads);
         document.querySelector('.modal')?.remove();
         renderPage();
     }
     
     function handleLikeDislike(threadId, action) {
-        if (!currentUser) { alert('Silakan login untuk memberi rating.'); return; }
         const threads = getThreads();
         const thread = threads.find(t => t.id == threadId);
         if(thread) {
@@ -405,23 +301,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function handleAddReply(form) {
-        if (!currentUser) { alert('Silakan login untuk membalas.'); return; }
+    // --- [PERUBAHAN 3] FUNGSI HANDLEADDREPLY DIPERBARUI UNTUK MEMPROSES GAMBAR ---
+    async function handleAddReply(form) {
         const text = form.querySelector('.reply-text-input').value;
         const threadId = form.dataset.threadId;
+        const imageFile = form.querySelector('.reply-image-input').files[0];
+        let imageUrl = null;
+
+        if (imageFile) {
+            try {
+                imageUrl = await fileToBase64(imageFile);
+            } catch (error) {
+                console.error("Gagal mengubah gambar balasan:", error);
+                alert("Gagal mengunggah gambar balasan.");
+                return;
+            }
+        }
+
         const threads = getThreads();
         const thread = threads.find(t => t.id == threadId);
         if (thread) {
             if (!thread.replies) thread.replies = [];
-            thread.replies.push({ author: currentUser.name, text });
+            thread.replies.push({ author: 'Guest', text, imageUrl }); // Tambahkan imageUrl
             saveThreads(threads);
             renderPage();
+
+            const repliedCard = document.querySelector(`.reply-form[data-thread-id='${threadId}']`);
+            if (repliedCard) {
+                repliedCard.closest('.thread-card').querySelector('.replies-wrapper').classList.add('visible');
+            }
         }
     }
 
     // --- [BAGIAN 7] FUNGSI UTILITAS & INISIALISASI AKHIR ---
 
-    // Menampilkan modal
     function renderModal(type) {
         const modal = document.createElement('div');
         modal.className = 'modal';
@@ -444,13 +357,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div id="event-fields" class="hidden"><input type="date" id="event-date"><input type="text" id="event-location" placeholder="Lokasi"></div>
                 <input type="text" id="thread-title" placeholder="Judul Post" required>
                 <textarea id="thread-description" placeholder="Deskripsi..." required></textarea>
+                <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem;">Gambar (Opsional)</label>
+                <input type="file" id="thread-image-upload" accept="image/*">
+                <input type="text" id="thread-author" placeholder="Nama Anda" required style="margin-top: 1rem;">
                 <button type="submit">Publikasikan</button>
             </form>`;
         }
         modal.innerHTML = `<div class="modal-content"><span class="close-button">&times;</span>${contentHTML}</div>`;
         document.body.appendChild(modal);
         
-        // Listener untuk select tipe post di dalam modal
         const postTypeSelect = modal.querySelector('#post-type');
         if(postTypeSelect) {
             postTypeSelect.addEventListener('change', () => {
@@ -459,21 +374,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Memberi tanda aktif pada item sidebar
     function setActiveSidebarItem(id) {
         document.querySelectorAll('.left-sidebar .sidebar-item').forEach(item => item.classList.remove('active'));
         if (id) document.getElementById(id)?.closest('.sidebar-item').classList.add('active');
     }
     
-    // Fungsi inisialisasi utama aplikasi
     function initializeApp() {
-        const loggedInUser = localStorage.getItem('currentUser');
-        if (loggedInUser) {
-            currentUser = JSON.parse(loggedInUser);
-        }
-        updateNavUI();
         renderPage();
     }
 
-    initializeApp(); // Jalankan aplikasi!
+    initializeApp();
 });
