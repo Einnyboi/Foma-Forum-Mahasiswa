@@ -1,9 +1,5 @@
-// Menunggu sampai seluruh halaman HTML selesai dimuat
-document.addEventListener('DOMContentLoaded', () => {
-
+function initializeCommunityPage() {
     // --- 1. DATA KOMUNITAS ---
-    // Di proyek nyata, data ini datang dari database.
-    // Untuk sekarang, kita simpan di sini sebagai array of objects.
     let communities = [
         {
             name: 'Pecinta Front-End',
@@ -29,24 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- 2. REFERENSI ELEMEN HTML ---
+    // Note: These elements only exist AFTER community.html is loaded.
     const communityGrid = document.getElementById('communityGrid');
     const searchInput = document.getElementById('searchInput');
     const createCommunityBtn = document.getElementById('createCommunityBtn');
 
+    // Check if elements exist before adding listeners
+    if (!communityGrid || !searchInput || !createCommunityBtn) {
+        console.error("Community elements not found! Make sure community.html is loaded correctly.");
+        return;
+    }
 
     // --- 3. FUNGSI UNTUK MENAMPILKAN KOMUNITAS ---
-    // Fungsi ini akan mengambil data dari array 'communities' dan mengubahnya menjadi kartu HTML
     function renderCommunities(communityArray) {
-        // Kosongkan grid terlebih dahulu
         communityGrid.innerHTML = '';
-
-        // Jika tidak ada komunitas yang cocok, tampilkan pesan
         if (communityArray.length === 0) {
             communityGrid.innerHTML = '<p>Komunitas tidak ditemukan.</p>';
             return;
         }
-
-        // Loop untuk setiap objek di dalam array dan buat kartu HTML-nya
         communityArray.forEach(community => {
             const cardHTML = `
                 <div class="community-card">
@@ -56,17 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="category-tag">${community.category}</span>
                         <p>${community.description}</p>
                         <div class="card-footer">
-                            <span>${community.members} Anggota</span>
+                            <span>${community.members} Members</span>
                             <a href="#" class="btn btn-primary">+ Join</a>
                         </div>
                     </div>
                 </div>
             `;
-            // Masukkan kartu yang sudah jadi ke dalam grid
             communityGrid.innerHTML += cardHTML;
         });
     }
-
 
     // --- 4. FUNGSI PENCARIAN (SEARCH) ---
     searchInput.addEventListener('keyup', (e) => {
@@ -77,33 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCommunities(filteredCommunities);
     });
 
-
     // --- 5. FUNGSI BUAT KOMUNITAS BARU ---
     createCommunityBtn.addEventListener('click', () => {
         const newName = prompt("Masukkan nama komunitas baru:");
-        if (!newName) return; // Jika pengguna klik cancel
-
+        if (!newName) return;
         const newDescription = prompt("Masukkan deskripsi singkat untuk " + newName + ":");
         if (!newDescription) return;
-
-        // Buat objek komunitas baru
         const newCommunity = {
             name: newName,
             category: 'Baru',
             description: newDescription,
-            members: 1, // Dimulai dari 1 anggota (si pembuat)
-            image: 'https://images.pexels.com/photos/1591060/pexels-photo-1591060.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' // Gambar default
+            members: 1,
+            image: 'https://images.pexels.com/photos/1591060/pexels-photo-1591060.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
         };
-
-        // Tambahkan komunitas baru ke awal array
         communities.unshift(newCommunity);
-
-        // Tampilkan ulang semua komunitas, termasuk yang baru
         renderCommunities(communities);
     });
 
-
-    // --- INISIASI: TAMPILKAN SEMUA KOMUNITAS SAAT HALAMAN PERTAMA KALI DIBUKA ---
+    // --- INISIASI ---
     renderCommunities(communities);
-
-});
+}
