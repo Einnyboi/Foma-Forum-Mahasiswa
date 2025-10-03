@@ -15,6 +15,13 @@ function initializeApp()
 {
     loadUsersFromStorage();
     loadPostsFromStorage();
+
+    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
+    if (!currentUser && registeredUsers.length > 0) {
+        currentUser = registeredUsers[0]; // Set the current user to the first registered user.
+        saveToStorage(); // Save this login state to localStorage.
+    }
+
     updateNavi();
     showpage('home');
     console.log('Dashboard loaded successfully!');
@@ -174,6 +181,12 @@ function loadPageContent(pageID)
             loadSignupContent();
             break;
 
+        case 'community':
+            pageTitle.textContent = 'Explore Communities';
+            createPostBtn.style.display = 'none';
+            loadCommunityContent();
+            break;
+
         default:
             pageTitle.textContent = 'Latest Discussions';
             updateCreatePostVisibility();
@@ -216,6 +229,31 @@ function loadExternalContent(filePath, selector = '.auth-container')
             console.error(`Error loading ${filePath}:`, error);
             mainContentArea.innerHTML = `<div class="placeholder-section"><h3>Unable to load content</h3><p>Please try <a href="${filePath}">clicking here</a> to open the page.</p></div>`;
             return false;
+        });
+}
+
+// Load Community.html
+function loadCommunityContent() {
+    const mainContentArea = document.getElementById('mainContentArea');
+    const communityStylesheet = document.createElement('link');
+
+    communityStylesheet.id = 'community-styles'; // Unique ID to find it later
+    communityStylesheet.rel = 'stylesheet';
+    communityStylesheet.href = '../src/css/community.css'; // Make sure this path is correct
+    document.head.appendChild(communityStylesheet);
+
+    fetch('community.html') 
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.text();
+        })
+        .then(html => {
+            mainContentArea.innerHTML = html;
+            initializeCommunityPage(); 
+        })
+        .catch(error => {
+            console.error('Error loading community page:', error);
+            mainContentArea.innerHTML = '<h2>Error: Could not load community content.</h2>';
         });
 }
 

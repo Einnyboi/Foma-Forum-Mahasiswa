@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Profile - Foma</title>
+    <link rel="stylesheet" href="../src/css/dashboard.css">
+    <link rel="stylesheet" href="../src/css/userprofile.css">
+</head>
+
+<body>
+    <nav class="navigation">
+        <div class="navi-title">
+            <div class="foma-icon">
+                <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
+            </div>
+            Foma
+        </div>
+    
+        <div class="search">
+            <input type="text" placeholder="Searching for something?" id="searchInput">
+            <div class="search-icon">
+                <img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=000000" alt="Search">
+            </div>
+        </div>
+
+        <div class="navi-link" id="links">
+            <a href="#" class="btn navi-links" id="loginLink" style="display: none;">Log In</a>
+            <a href="#" class="btn navi-links" id="signupLink" style="display: none;">Sign Up</a>
+
+            <div class="profile-btn" id="profileBtn" style="display: flex;" onclick="dropdown()">
+                <span id="userInit">U</span>
+                <span id="userName">User</span>
+
+                <div class="profile-dropdown" id="dropdown">
+                    <a href="userprofile.html" class="dropdown-item" id="profileLink">
+                        <span><img src="https://img.icons8.com/?size=100&id=2QXdHDYztybb&format=png&color=000000" alt="Profile"></span>
+                        <span>User Profile</span>
+                    </a>
+                    <div class="dropdown-item" onclick="logout()">
+                        <span><img src="https://img.icons8.com/?size=100&id=BdksXmxLaK8r&format=png&color=000000" alt="Logout"></span>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-dashboard">
+            <div class="left-sidebar">
+                <a href="dashboard.html" class="sidebar-item">
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=i6fZC6wuprSu&format=png&color=000000" alt="Home">
+                    </span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="#" class="sidebar-item active">
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=2QXdHDYztybb&format=png&color=000000" alt="Profile Settings">
+                    </span>
+                    <span>Profile Settings</span>
+                </a>
+                <a href="history.html" class="sidebar-item">
+                     <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=2625&format=png&color=000000" alt="History">
+                    </span>
+                    <span>Post History</span>
+                </a>
+            </div>
+
+            <div class="main-content">
+                <div class="section-header">
+                    <h2 id="pageTitle">Account Profile</h2>
+                </div>
+
+                <div class="profile-details-card">
+                    <h3>Your Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Full Name:</span>
+                        <span id="profileName">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email Address:</span>
+                        <span id="profileEmail">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Member Since:</span>
+                        <span id="profileRegDate">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="account-actions-card">
+                    <h3>Account Actions</h3>
+                    <p>Warning: Deleting your account is permanent and cannot be undone.</p>
+                    <button class="btn-danger" id="deleteAccountBtn">Delete My Account</button>
+                </div>
+            </div>
+
+            <div class="right-sidebar">
+                <div class="widget events-widget">
+                    <h3>
+                        <img src="https://img.icons8.com/?size=100&id=26057&format=png&color=000000" alt="Upcoming">
+                        Upcoming Events
+                    </h3>
+                    <div class="event-item">
+                        <div class="event-date">Oct 5, 2025</div>
+                        <div class="event-title">Coding Bootcamp Workshop</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">Oct 12, 2025</div>
+                        <div class="event-title">Mathematics Competition</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/js/userprofile.js"></script>
+</body>
+</html>

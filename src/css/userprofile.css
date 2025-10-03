@@ -1,0 +1,65 @@
+/* Styles for the profile page content */
+
+/* Main Content Cards */
+.profile-details-card,
+.account-actions-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+}
+
+.profile-details-card h3,
+.account-actions-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 0.75rem;
+    font-size: 1.4rem;
+    color: #333333;
+}
+
+/* Profile Information Item Styling */
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555555;
+    width: 150px; /* Fixed width for alignment */
+    flex-shrink: 0;
+}
+
+/* Account Actions */
+.account-actions-card p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Custom Button for Danger Action */
+.btn-danger {
+    background-color: #c20114; /* Red color for warning */
+    color: #ffffff;
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #a00110; /* Darker red on hover */
+    transform: translateY(-2px);
+    color: #ffffff;
+    text-decoration: none;
+}
