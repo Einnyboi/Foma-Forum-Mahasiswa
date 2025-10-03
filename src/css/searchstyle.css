@@ -11,7 +11,7 @@ body {
     color: var(--secondary-color);
     line-height: 1.6;
 }
-.container{
+.search-container{
     margin-top:20px;
     justify-items: center;
     border: 1px solid black;

@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap');
+
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body
+{
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #c7d6d5;
+    color: #0c120c;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+    padding-top: 80px;
+}
+
+/* Header */
+.header
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ecebf3;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 20px rgba(12, 18, 12, 0.08);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(199, 214, 213, 0.3);
+}
+
+.header img
+{
+    width: 35px;
+    height: 35px;
+    padding-right: 1px;
+}
+
+.header-content
+{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo
+{
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #0c120c;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.back-to-dashboard
+{
+    color: #0c120c;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 2px solid #c7d6d5;
+    font-family: 'Poppins', sans-serif;
+}
+
+.back-to-dashboard:hover
+{
+    background: #c7d6d5;
+    color: #0c120c;
+    transform: translateY(-1px);
+}
+
+/* Auth container */
+.auth-container
+{
+    width: 100%;
+    max-width: 450px;
+    background: #ecebf3;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(12, 18, 12, 0.1);
+    margin-top: 100px;
+    border: 1px solid rgba(199, 214, 213, 0.3);
+}
+
+.auth-header
+{
+    text-align: center;
+    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2
+{
+    color: #0c120c;
+    margin-bottom: 0.8rem;
+    font-size: 2rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+}
+
+.auth-header p
+{
+    color: rgba(12, 18, 12, 0.7);
+    font-family: 'Lato', sans-serif;
+    font-size: 1.05rem;
+}
+
+.form-group
+{
+    margin-bottom: 1.8rem;
+}
+
+.form-group label
+{
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+    color: #0c120c;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-group input
+{
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 2px solid #c7d6d5;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #ecebf3;
+    color: #c20114;
+    font-family: 'Lato', sans-serif;
+}
+
+.form-group input:focus
+{
+    outline: none;
+    border-color: #0c120c;
+    box-shadow: 0 0 0 3px rgba(12, 18, 12, 0.1);
+}
+
+.form-group input::placeholder
+{
+    color: rgba(12, 18, 12, 0.5);
+}
+
+.btn
+{
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary
+{
+    background: #c20114;
+    color: #ecebf3;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(194, 1, 20, 0.2);
+    margin-bottom: 2rem;
+}
+
+.btn-primary:hover
+{
+    background: #a00110;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(194, 1, 20, 0.3);
+}
+
+.btn-primary:disabled
+{
+    background: rgba(199, 214, 213, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.error
+{
+    color: #c20114;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    display: block;
+    font-family: 'Lato', sans-serif;
+}
+
+.success
+{
+    color: #0c120c;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    display: block;
+    font-family: 'Lato', sans-serif;
+}
+
+.auth-footer
+{
+    text-align: center;
+    margin-top: 2rem;
+    color: rgba(12, 18, 12, 0.7);
+    font-family: 'Lato', sans-serif;
+}
+
+.auth-footer a
+{
+    color: #c20114;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.auth-footer a:hover
+{
+    color: #a00110;
+    text-decoration: underline;
+}
+
+/* Loading state */
+.loading
+{
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px)
+{
+    .auth-container
+    {
+        margin: 1rem;
+        margin-top: 120px;
+        padding: 2rem;
+    }
+
+    .header
+    {
+        padding: 1rem;
+    }
+
+    .auth-header h2
+    {
+        font-size: 1.6rem;
+    }
+    
+    .back-to-dashboard
+    {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}

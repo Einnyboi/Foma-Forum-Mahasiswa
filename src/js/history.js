@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterSelect = document.querySelector('select[name="filter"]');
-    const activityContainer = document.querySelector('.btn-primary'); 
+    const activityContainer = document.querySelector('#activity-container'); 
     const postItems = Array.from(activityContainer.querySelectorAll('article'));
 
     filterSelect.addEventListener('change', (event) => {
