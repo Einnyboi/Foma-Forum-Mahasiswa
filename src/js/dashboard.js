@@ -15,6 +15,13 @@ function initializeApp()
 {
     loadUsersFromStorage();
     loadPostsFromStorage();
+
+    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
+    if (!currentUser && registeredUsers.length > 0) {
+        currentUser = registeredUsers[0]; // Set the current user to the first registered user.
+        saveToStorage(); // Save this login state to localStorage.
+    }
+
     updateNavi();
     showpage('home');
     console.log('Dashboard loaded successfully!');
