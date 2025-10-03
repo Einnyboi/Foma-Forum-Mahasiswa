@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Forum</title>
+    <link rel="stylesheet" href="../src/css/Style(Login).css">
+</head>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Masuk ke Forum</h1>
+            <p>Silakan masuk untuk melanjutkan</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+                <div class="error-message" id="emailError">Email tidak valid</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" name="password" placeholder="Masukkan kata sandi Anda" required>
+                <div class="error-message" id="passwordError">Kata sandi salah</div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Ingat saya</label>
+            </div>
+            
+            <button type="submit" class="btn-login">Masuk</button>
+            
+            <div class="signup-link">
+                Tidak punya akun? <a href="#">Daftar di sini</a>
+            </div>
+        </form>
+    </div>
+    <script src="../src/js/Script(Login).js"></script>
+</body>
