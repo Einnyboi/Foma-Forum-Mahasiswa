@@ -30,7 +30,27 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Could not load data from localStorage:', error);
         }
     }
+    // fungsi untuk  load history
+    function loadHistoryContent() {
+        // Sembunyikan setiap bagian profil satu per satu berdasarkan kelasnya
+        document.querySelector('.section-header').style.display = 'none';
+        document.querySelector('.profile-details-card').style.display = 'none';
+        document.querySelector('.account-actions-card').style.display = 'none';
 
+        // Cari dan tampilkan iframe
+        const frame = document.getElementById('historyFrame');
+        frame.src = 'history.html'; // Pastikan path/nama file ini benar
+        frame.style.display = 'block';
+    }
+
+    // Tambahkan event listener untuk tautan history
+    const historyLink = document.getElementById('historyLink');
+    if (historyLink) {
+        historyLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            loadHistoryContent();
+        });
+    }
     // 
     function saveUsersToStorage() {
         try {
@@ -76,6 +96,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const deleteBtn = document.getElementById('deleteAccountBtn');
         if (deleteBtn) {
             deleteBtn.addEventListener('click', handleDeleteAccount);
+        }
+        const backLink = document.getElementById('backToProfileLink');
+        if (backLink) {
+            backLink.addEventListener('click', function(event) {
+                event.preventDefault(); // Mencegah link pindah halaman
+                
+                // Lakukan kebalikannya: tampilkan profil, sembunyikan riwayat
+                document.getElementById('profile-info').style.display = 'block';
+                document.getElementById('historyContent').style.display = 'none';
+            });
         }
     }
 
@@ -123,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-
     // --- Start the application ---
     initializeProfilePage();
 });

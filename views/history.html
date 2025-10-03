@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="../src/css/historystyle.css">
+</head>
+<body class="history-page-body">
+    <div class="history-content-wrapper">
+        <div class="history-container" >
+            <div class="history-main">
+                <h2>History</h2>
+                <div class="history-filter-container">
+                    <label for="filter" id="filter">Urutkan berdasarkan:</label>
+                    <select name="filter" id="filter">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="most-likes">Most Liked</option>
+                        <option value="most-comments">Most Commented</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="activity-container">
+                <article class="post-item">
+                    <h5><a href="#">[REVIEW] Introduction to Visual Communication Design (DKV)</a></h3>
+                    <div>
+                        <span class="type">Created a thread</span> in category <a href="#" id="kategori">Academics</a>
+                    </div>
+                    <p>Hello everyone! Just wanted to share a little review of the Visual Communication Design introductory course this semester. The lecturer is really cool and the assignments are fun, especially the final project...</p>
+                    <div class="post-footer">
+                        <span>May 2, 2025</span> | <span>35 Likes</span> | <span>10 Replies</span>
+                    </div>
+                </article>
+                <article class="post-item">
+                    <h5><a href="#">Re: Internship Vacancy at PT. Pertamina</a></h3>
+                        <div>
+                            <span class="type">Replied to a thread</span> in category <a href="#"id="kategori">Career Info</a>
+                        </div>
+                        <p>Wow, what a coincidence, I also applied there. Have you received a call for an interview yet?</p>
+                        <div class="post-footer">
+                            <span>January 19, 2025</span> | <span>250 Likes</span> | <span>30 Replies</span>
+                        </div>
+                </article>
+                <article class="post-item">
+                    <h5><a href="#">Re: Drakor Recommendation: Resident Playbook (2025) - A Must-Watch!</a></h3>
+                    <div>
+                        <span class="type">Replied to a thread</span> in category <a href="#"id="kategori">Hobbies</a>
+                    </div>
+                    <p>I totally agree! I think this drama is more than just entertainment, it has so many life lessons. We learn about empathy from the perspective of both doctors and patients. It's not just about illness, but also about being truly human amidst all the busyness.</p>
+                    <div class="post-footer">
+                        <span>September 27,2025</span> | <span>300 Likes</span> | <span>28 Replies</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+    <script src="../src/js/history.js"></script>
+</body>
+</html>
