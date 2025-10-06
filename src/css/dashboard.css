@@ -110,10 +110,12 @@ body
 
 .search-icon
 {
+    background-color: var(--primary-color);
     color: #0c120c;
     margin-left: 0.5rem;
     margin-top: 7px;
     opacity: 0.7;
+    border:none;
 }
 
 .search-icon img

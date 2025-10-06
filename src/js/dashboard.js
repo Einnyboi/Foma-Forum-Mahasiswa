@@ -2,6 +2,16 @@
 let currentUser = null;
 let registeredUsers = [];
 let posts = [];
+// Data 
+    const allContent = [
+        { id: 1, type: 'thread', title: 'Internship vacancies in tech companies', category: 'Career Info', author: 'Ahmad Rahman', description: 'Some of the latest internship vacancies for IT students, suitable for beginners.' },
+        { id: 2, type: 'thread', title: 'Recommended hangout spots in Jakarta', category: 'Hobbies & Entertainment', author: 'Sarah Kim', description: 'A list of cafes with fast Wi-Fi and a comfortable atmosphere for work or just relaxing.' },
+        { id: 3, type: 'thread', title: 'Effective study tips for semester exams', category: 'Academics', author: 'David Chen', description: 'Study methods proven to increase grades and reduce stress.' },
+        { id: 4, type: 'thread', title: 'How to make a simple robot from recycled materials', category: 'Hobbies & Entertainment', author: 'Tech Mentor', description: 'A step-by-step guide for a DIY robotics project.' },
+        { id: 5, type: 'thread', title: 'Scholarships abroad in 2025', category: 'Career Info', author: 'Code Guru', description: 'Complete information about fully-funded scholarships in various countries.' },
+        { id: 6, type: 'thread', title: 'Q&A forum about final projects', category: 'Academics', author: 'Student Helper', description: 'A discussion space to help students complete their theses.' },
+        { id: 7, type: 'thread', title: 'JavaScript vs Python: Which should beginners learn first?', category: 'Programming', author: 'Tech Mentor', description: 'A deep dive into the pros and cons of each language for newcomers.' }
+    ];
 
 // Initialize and load data on page load
 document.addEventListener('DOMContentLoaded', function()
@@ -111,10 +121,9 @@ function setupEventListeners()
         postForm.addEventListener('submit', handlePostSubmit);
     }
 
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput)
-    {
-        searchInput.addEventListener('input', handleSearch);
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', handleSearch);
     }
 }
 
@@ -129,7 +138,16 @@ function showpage(pageID)
     {
         activeSidebarItem.classList.add('active');
     }
+    // Setiap kali pindah halaman, sembunyikan iframe pencarian
+    const searchFrame = document.getElementById('searchFrame');
+    if (searchFrame) searchFrame.style.display = 'none';
 
+    // tampilkan kembali konten utama
+    const mainContentArea = document.getElementById('mainContentArea');
+    const sectionHeader = document.getElementById('sectionHeader');
+    if (mainContentArea) mainContentArea.style.display = 'block';
+    if (sectionHeader) sectionHeader.style.display = 'flex'; 
+   
     closeDropdown();
     loadPageContent(pageID);
 }
@@ -639,23 +657,14 @@ function handlePostSubmit(e)
 // Handle search functionality
 function handleSearch(e)
 {
-    const searchTerm = e.target.value.toLowerCase();
-    const threadItems = document.querySelectorAll('.thread-item');
+    e.preventDefault(); // Mencegah form mengirim data secara default
     
-    threadItems.forEach(item =>
-    {
-        const title = item.querySelector('.thread-title')?.textContent.toLowerCase() || '';
-        const author = item.querySelector('.thread-author')?.textContent.toLowerCase() || '';
-        
-        if (title.includes(searchTerm) || author.includes(searchTerm))
-        {
-            item.style.display = 'block';
-        }
-        else
-        {
-            item.style.display = searchTerm === '' ? 'block' : 'none';
-        }
-    });
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.trim();
+    
+    if (searchTerm) {
+        loadSearchInIframe(searchTerm);
+    }
 }
 
 // Logout function
@@ -868,6 +877,54 @@ function testLogin()
     {
         alert('No test users available');
     }
+}
+// fungsi loadSearchResults
+function loadSearchInIframe(searchTerm) {
+    const mainContentArea = document.getElementById('mainContentArea');
+    const sectionHeader = document.getElementById('sectionHeader');
+    const searchFrame = document.getElementById('searchFrame');
+
+    // Sembunyikan konten utama dashboard
+    if (mainContentArea) mainContentArea.style.display = 'none';
+    if (sectionHeader) sectionHeader.style.display = 'none';
+
+    //  Tampilkan iframe dan atur sumbernya
+    if (searchFrame) {
+        searchFrame.src = `searchPage.html?query=${encodeURIComponent(searchTerm)}`;
+        searchFrame.style.display = 'block';
+    }
+}
+// Fungsi untuk menampilkan hasil
+function loadSearchResults(searchTerm) {
+    const mainContentArea = document.getElementById('mainContentArea');
+    const pageTitle = document.getElementById('pageTitle');
+    const createPostBtn = document.getElementById('createPostBtn');
+
+    if (pageTitle) pageTitle.textContent = `Search Results for: "${searchTerm}"`;
+    if (createPostBtn) createPostBtn.style.display = 'none';
+
+    // Filter data untuk menemukan yang cocok
+    const filteredResults = allContent.filter(item =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    let resultsHtml = '';
+    if (filteredResults.length === 0) {
+        resultsHtml = `<div class="placeholder-section"><h3>No Results Found</h3><p>Sorry, no results matched your search.</p></div>`;
+    } else {
+        resultsHtml = filteredResults.map(item => `
+            <div class="thread-item">
+                <div class="category-highlight">${item.category}</div>
+                <div class="thread-title">${item.title}</div>
+                <div class="thread-description" >${item.description}</div>
+                <div class="thread-header">
+                    <div class="thread-meta" >by <span class="thread-author">${item.author}</span></div>
+                </div>
+            </div>
+        `).join('');
+    }
+    mainContentArea.innerHTML = resultsHtml;
 }
 
 // Console helpers for development

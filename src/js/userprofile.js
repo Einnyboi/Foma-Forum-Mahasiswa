@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Cari dan tampilkan iframe
         const frame = document.getElementById('historyFrame');
-        frame.src = 'history.html'; // Pastikan path/nama file ini benar
+        frame.src = 'history.html'; 
         frame.style.display = 'block';
     }
 
