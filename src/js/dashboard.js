@@ -548,19 +548,6 @@ function loadPostsContent()
     );
 }
 
-function loadProfileContent()
-{
-    loadExternalContent('userprofile.html', '.container', '../src/css/userprofile.css', '../src/js/userprofile.js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Profile content and userprofile.js loaded. Profile logic is now handled by userprofile.js.');
-            }
-        }
-    );
-}
-
 function loadStudentEventsWidget()
 {
     loadExternalSidebarContent('Index(Student).html', 'eventsListContainer', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js')
