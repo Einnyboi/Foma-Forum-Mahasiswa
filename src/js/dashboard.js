@@ -195,6 +195,25 @@ function showpage(pageID)
     loadPageContent(pageID);
 }
 
+function unloadExternalAssets() 
+{
+    // Remove previous external CSS
+    const oldLink = document.querySelector(`.external-style`);
+    if (oldLink) 
+    {
+        oldLink.remove();
+        currentExternalCss = null;
+    }
+    
+    // Remove previous external JS
+    const oldScript = document.querySelector(`.external-script`);
+    if (oldScript)
+    {
+        oldScript.remove();
+        currentExternalJs = null;
+    }
+}
+
 // Load different page content dynamically
 function loadPageContent(pageID)
 {
