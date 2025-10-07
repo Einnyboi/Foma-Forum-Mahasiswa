@@ -1,33 +1,22 @@
 /* ==========================================================================
    1. DASAR DESAIN & VARIABEL GLOBAL
    ========================================================================== */
-
-/* [PERUBAHAN] Menambahkan Font Lato dari Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@400;700&display=swap');
-
-/* [PERUBAHAN] Variabel disesuaikan dengan Design Style baru */
 :root {
-  /* Colors */
-  --bg-body: #c7d6d5;
-  --bg-card: #ecebf3;
-  --text-main: #0c120c;
-  --text-secondary: #6b7280;
-  --accent: #c20114;
-  --border-color: #e5e7eb;
+  /* Warna diambil dari desain baru */
+  --bg-body: #b8c5c4;
+  --white-color: #ecebf3;
+  --bg-card: #c7d6d5;
+  --secondary-color: #0c120c;
+  --text-secondary: #6D7275;
+  --error-red: #c20114;
+  --border-color: rgba(199, 214, 213, 0.8);
+  --border-light: rgba(12, 18, 12, 0.1);
+  --shadow-color: rgba(12, 18, 12, 0.08);
 
-  /* Fonts */
+  /* Font diambil dari desain baru */
   --font-primary: 'Poppins', sans-serif;
   --font-secondary: 'Lato', sans-serif;
-
-  /* Typography Scale */
-  --h1-size: 2.986rem;
-  --h2-size: 2.488rem;
-  --h3-size: 2.074rem;
-  --h4-size: 1.728rem;
-  --p-size: 1rem;
-  --small-caption-size: 0.694rem;
 }
-
 * { 
     margin: 0; 
     padding: 0; 
@@ -37,7 +26,7 @@
 body {
     font-family: var(--font-primary);
     background-color: var(--bg-body);
-    color: var(--text-main);
+    color: var(--secondary-color);
     line-height: 1.6;
     font-size: var(--p-size); /* Menggunakan ukuran paragraf standar */
 }
@@ -135,7 +124,7 @@ p {
     gap: 0.8rem;
 }
 .profile-btn #userInit {
-    background-color: var(--accent);
+    background-color: var(--error-red);
     color: white;
     width: 35px;
     height: 35px;
@@ -176,10 +165,10 @@ p {
 }
 .sidebar-item:hover { 
     background-color: #e0e5e4; 
-    color: var(--text-main); 
+    color: var(--secondary-color); 
 }
 .sidebar-item.active { 
-    background-color: var(--accent); 
+    background-color: var(--error-red); 
     color: white; 
 }
 
@@ -276,7 +265,7 @@ tbody tr:hover {
 .event-date { 
     font-size: 0.8rem; 
     font-weight: 600; 
-    color: var(--accent); 
+    color: var(--error-red); 
 }
 .event-title { 
     font-weight: 500; 
@@ -305,7 +294,7 @@ tbody tr:hover {
     text-align: right; 
 }
 .btn-primary {
-    background-color: var(--accent); 
+    background-color: var(--error-red); 
     color: white; 
     border: none;
     padding: 0.6rem 1.2rem; 

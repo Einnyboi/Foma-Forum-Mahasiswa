@@ -1,15 +1,9 @@
-// Menunggu seluruh konten HTML dimuat sebelum menjalankan skrip
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- [BAGIAN 1] PENGAMBILAN ELEMEN HTML & INISIALISASI ---
-
     const mainContentArea = document.querySelector('.main-content');
-    const leftSidebar = document.querySelector('.left-sidebar');
     
     let currentView = 'community-list';
     let currentCommunity = null;
-
-    // --- [BAGIAN 3] FUNGSI MANAJEMEN DATA FORUM ---
 
     function getCommunities() {
         const communities = localStorage.getItem('forumCommunities');
@@ -39,25 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- [BAGIAN 4] FUNGSI RENDER TAMPILAN ---
-
     function renderPage() {
         mainContentArea.innerHTML = ''; 
 
         switch (currentView) {
             case 'community-list':
                 renderCommunityListPage();
-                setActiveSidebarItem('nav-home');
                 break;
             case 'thread-list':
                 renderThreadView();
-                setActiveSidebarItem(null); 
                 break;
             default:
                 renderCommunityListPage();
         }
-        renderCommunityListSidebar();
-        renderEventsSidebar();
     }
 
     function renderCommunityListPage() {
@@ -96,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             (thread.type === 'event' ? '<span class="post-label label-event">📅 EVENT</span>' : '');
              let eventInfoHTML = thread.type === 'event' ? `<div class="event-info">Lokasi: ${thread.eventLocation} | Tanggal: ${thread.eventDate}</div>` : '';
             
-            // --- [PERUBAHAN 1.A] MEMPROSES TAMPILAN GAMBAR DI BALASAN ---
             let repliesHTML = (thread.replies || []).map(reply => {
                 const replyImageHTML = reply.imageUrl 
                     ? `<div class="reply-image-container"><img src="${reply.imageUrl}" alt="Gambar balasan"></div>`
@@ -163,56 +150,30 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
-    function renderCommunityListSidebar() {
-        const communities = getCommunities();
-        const categoryListEl = document.getElementById('categoryList');
-        if (categoryListEl) {
-            categoryListEl.innerHTML = communities.map(c => `<div class="sidebar-item category-link" data-community-name="${c.name}">${c.name}</div>`).join('');
-        }
-    }
-    function renderEventsSidebar() {
-        const eventListSidebar = document.querySelector('.right-sidebar .sidebar-card:last-child ul');
-        if (!eventListSidebar) { 
-            const rightSidebar = document.querySelector('.right-sidebar');
-            const eventCard = document.createElement('div');
-            eventCard.className = 'sidebar-card';
-            eventCard.innerHTML = '<h4>Events Terbaru</h4><ul id="event-list-sidebar"></ul>';
-            rightSidebar.appendChild(eventCard);
-        }
-        const events = getThreads().filter(t => t.type === 'event').slice(0, 3);
-        const ul = document.getElementById('event-list-sidebar');
-        ul.innerHTML = events.length > 0 ? events.map(e => `<li><a href="#">${e.title}</a><small>${e.eventDate}</small></li>`).join('') : '<li><small>Belum ada event.</small></li>';
-    }
-
-
-    // --- [BAGIAN 5] EVENT LISTENERS & LOGIKA APLIKASI ---
-
     document.body.addEventListener('click', async (e) => {
-        if (e.target.closest('#nav-home')) { currentView = 'community-list'; renderPage(); }
-        if (e.target.closest('.category-link')) { currentCommunity = e.target.dataset.communityName; currentView = 'thread-list'; renderPage(); }
-        if (e.target.closest('.community-card')) { currentCommunity = e.target.closest('.community-card').dataset.communityName; currentView = 'thread-list'; renderPage(); }
+        if (e.target.closest('.community-card')) { 
+            currentCommunity = e.target.closest('.community-card').dataset.communityName; 
+            currentView = 'thread-list'; 
+            renderPage(); 
+        }
         if (e.target.closest('#create-community-btn')) { renderModal('community'); }
         if (e.target.closest('#start-post-btn')) { renderModal('post'); }
         if (e.target.closest('.modal .close-button')) { document.querySelector('.modal')?.remove(); }
-        if (e.target.closest('.like-button')) handleLikeDislike(e.target.closest('.like-button').dataset.threadId, 'like');
-        if (e.target.closest('.dislike-button')) handleLikeDislike(e.target.closest('.dislike-button').dataset.threadId, 'dislike');
-        if (e.target.closest('.comment-toggle-button')) e.target.closest('.thread-card').querySelector('.replies-wrapper').classList.toggle('visible');
-        if (e.target.closest('#banner-menu-trigger')) document.getElementById('banner-dropdown-menu').classList.toggle('hidden');
-        if (e.target.closest('#change-banner-action')) document.getElementById('change-banner-input').click();
-
-        // --- [PERUBAHAN 2] EVENT HANDLER UNTUK TOMBOL LAMPIRKAN FILE ---
+        if (e.target.closest('.like-button')) { handleLikeDislike(e.target.closest('.like-button').dataset.threadId, 'like'); }
+        if (e.target.closest('.dislike-button')) { handleLikeDislike(e.target.closest('.dislike-button').dataset.threadId, 'dislike'); }
+        if (e.target.closest('.comment-toggle-button')) { e.target.closest('.thread-card').querySelector('.replies-wrapper').classList.toggle('visible'); }
+        if (e.target.closest('#banner-menu-trigger')) { document.getElementById('banner-dropdown-menu').classList.toggle('hidden'); }
+        if (e.target.closest('#change-banner-action')) { document.getElementById('change-banner-input').click(); }
         if (e.target.closest('.attach-reply-image-btn')) {
-            // Cari input file tersembunyi di dalam form yang sama dan klik
             e.target.closest('.reply-form').querySelector('.reply-image-input').click();
         }
     });
     
     document.body.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (e.target.id === 'add-community-form') handleAddCommunity(e.target);
-        if (e.target.id === 'add-thread-form') await handleAddThread(e.target);
-        // --- [PERUBAHAN 4] MENJADIKAN PANGGILAN FUNGSI ASYNCHRONOUS ---
-        if (e.target.classList.contains('reply-form')) await handleAddReply(e.target);
+        if (e.target.id === 'add-community-form') { handleAddCommunity(e.target); }
+        if (e.target.id === 'add-thread-form') { await handleAddThread(e.target); }
+        if (e.target.classList.contains('reply-form')) { await handleAddReply(e.target); }
     });
     
     document.body.addEventListener('change', async (e) => {
@@ -229,8 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    // --- [BAGIAN 6] FUNGSI HANDLER UNTUK AKSI ---
     
     function handleAddCommunity(form) {
         const name = form.querySelector('#community-name').value;
@@ -301,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- [PERUBAHAN 3] FUNGSI HANDLEADDREPLY DIPERBARUI UNTUK MEMPROSES GAMBAR ---
     async function handleAddReply(form) {
         const text = form.querySelector('.reply-text-input').value;
         const threadId = form.dataset.threadId;
@@ -322,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const thread = threads.find(t => t.id == threadId);
         if (thread) {
             if (!thread.replies) thread.replies = [];
-            thread.replies.push({ author: 'Guest', text, imageUrl }); // Tambahkan imageUrl
+            thread.replies.push({ author: 'Guest', text, imageUrl });
             saveThreads(threads);
             renderPage();
 
@@ -332,8 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
-    // --- [BAGIAN 7] FUNGSI UTILITAS & INISIALISASI AKHIR ---
 
     function renderModal(type) {
         const modal = document.createElement('div');
@@ -372,11 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.querySelector('#event-fields').classList.toggle('hidden', postTypeSelect.value !== 'event');
             });
         }
-    }
-    
-    function setActiveSidebarItem(id) {
-        document.querySelectorAll('.left-sidebar .sidebar-item').forEach(item => item.classList.remove('active'));
-        if (id) document.getElementById(id)?.closest('.sidebar-item').classList.add('active');
     }
     
     function initializeApp() {
