@@ -214,6 +214,59 @@ function unloadExternalAssets()
     }
 }
 
+function loadCSS(href) 
+{
+    // Remove previous external CSS first
+    const oldLink = document.querySelector(`.external-style`);
+    if (oldLink) 
+    {
+        oldLink.remove();
+    }
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.className = 'external-style';
+    
+    // Add scoping by wrapping all CSS rules to only affect #mainContentArea
+    link.onload = function()
+    {
+        scopeExternalCSS(href);
+    };
+    
+    document.head.appendChild(link);
+    currentExternalCss = href;
+}
+
+function loadJS(src)
+{
+    // Remove previous external JS first
+    const oldScript = document.querySelector(`.external-script`);
+    if (oldScript)
+    {
+        oldScript.remove();
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.type = 'text/javascript';
+    script.className = 'external-script';
+    
+    // Wrap the script execution in a scope to prevent global pollution
+    script.onload = function()
+    {
+        console.log(`External script loaded: ${src}`);
+    };
+    
+    script.onerror = function()
+    {
+        console.error(`Failed to load external script: ${src}`);
+    };
+    
+    document.body.appendChild(script);
+    currentExternalJs = src;
+}
+
 // Load different page content dynamically
 function loadPageContent(pageID)
 {
