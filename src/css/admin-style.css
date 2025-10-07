@@ -1,159 +1,345 @@
-/* --- Gaya Dasar & Reset --- */
+/* ==========================================================================
+   1. DASAR DESAIN & VARIABEL GLOBAL
+   ========================================================================== */
+
+/* [PERUBAHAN] Menambahkan Font Lato dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@400;700&display=swap');
+
+/* [PERUBAHAN] Variabel disesuaikan dengan Design Style baru */
 :root {
-  --sidebar-bg: #1f2937;
-  --main-bg: #f3f4f6;
-  --text-light: #d1d5db;
-  --text-dark: #111827;
-  --accent: #ef4444;
-  --card-bg: #ffffff;
+  /* Colors */
+  --bg-body: #c7d6d5;
+  --bg-card: #ecebf3;
+  --text-main: #0c120c;
+  --text-secondary: #6b7280;
+  --accent: #c20114;
+  --border-color: #e5e7eb;
+
+  /* Fonts */
+  --font-primary: 'Poppins', sans-serif;
+  --font-secondary: 'Lato', sans-serif;
+
+  /* Typography Scale */
+  --h1-size: 2.986rem;
+  --h2-size: 2.488rem;
+  --h3-size: 2.074rem;
+  --h4-size: 1.728rem;
+  --p-size: 1rem;
+  --small-caption-size: 0.694rem;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    background-color: var(--main-bg);
-    color: var(--text-dark);
+    font-family: var(--font-primary);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    font-size: var(--p-size); /* Menggunakan ukuran paragraf standar */
 }
 
-/* --- Layout Utama Dasbor --- */
-.dashboard-container {
+/* ==========================================================================
+   2. TIPOGRAFI BARU
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+h4 { font-size: var(--h4-size); }
+p {
+  font-family: var(--font-secondary);
+  font-size: var(--p-size);
+}
+
+/* ==========================================================================
+   3. LAYOUT UTAMA
+   ========================================================================== */
+.container { 
+    max-width: 1400px; 
+    margin: 0 auto; 
+    padding: 1.5rem; 
+}
+
+.main-dashboard { 
+    display: grid; 
+    grid-template-columns: 260px 1fr 300px; 
+    gap: 1.5rem; 
+}
+
+/* ==========================================================================
+   4. KOMPONEN UTAMA (NAVIGASI & SIDEBAR)
+   ========================================================================== */
+
+/* Navigasi Atas */
+.navigation {
+    background: var(--bg-card);
+    padding: 0.8rem 2rem;
+    height: 76px;
     display: flex;
-    min-height: 100vh;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
 }
-
-/* --- Sidebar (Kolom 1) --- */
-.sidebar {
-    width: 250px;
-    background-color: var(--sidebar-bg);
-    color: var(--text-light);
-    display: flex;
-    flex-direction: column;
+.navi-title { 
+    display: flex; 
+    align-items: center; 
+    font-size: 1.8rem; 
+    font-weight: 700; 
 }
-
-.sidebar-header {
-    padding: 20px;
-    text-align: center;
-    border-bottom: 1px solid #374151;
+.foma-icon img { 
+    width: 30px; 
+    margin-right: 0.5rem; 
 }
-
-.sidebar-header h2 {
-    margin: 0;
+.search { 
+    flex: 1; 
+    max-width: 500px; 
+    margin: 0 2rem; 
+    position: relative;
 }
-
-.sidebar-nav {
-    list-style: none;
-    padding: 20px 0;
-    margin: 0;
-    flex-grow: 1; /* Mendorong item logout ke bawah */
+.search input {
+    width: 100%;
+    background: #e9ecef;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 0.6rem 2.5rem 0.6rem 1rem;
+    font-size: 0.9rem;
 }
-
-.nav-item {
+.search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+.navi-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.8rem; 
+    font-weight: 500; 
+}
+.profile-btn {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
+    gap: 0.8rem;
+}
+.profile-btn #userInit {
+    background-color: var(--accent);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+}
+
+/* Sidebar Kiri & Kanan */
+.left-sidebar, .right-sidebar .widget {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    height: fit-content;
+}
+.left-sidebar { 
+    position: sticky; 
+    top: 90px;
+}
+.sidebar-item {
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.5rem; 
+    border-radius: 8px; 
     cursor: pointer;
+    color: var(--text-secondary); 
+    text-decoration: none; 
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.sidebar-item .icon { 
+    font-size: 1.2rem; 
+    width: 25px; 
+    text-align: center; 
+}
+.sidebar-item:hover { 
+    background-color: #e0e5e4; 
+    color: var(--text-main); 
+}
+.sidebar-item.active { 
+    background-color: var(--accent); 
+    color: white; 
+}
+
+/* ==========================================================================
+   5. KONTEN UTAMA (AREA TENGAH)
+   ========================================================================== */
+.main-content .section-header { 
+    margin-bottom: 1.5rem; 
+}
+.main-content h2 { 
+    font-size: var(--h2-size); 
+}
+.content-card {
+    background-color: var(--bg-card); /* Menggunakan warna kartu yang sama */
+    border-radius: 12px; 
+    padding: 1.5rem; 
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+.content-card h3 { 
+    font-size: var(--h3-size);
+    margin: 0 0 1rem 0; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 1rem; 
+}
+.card-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1.5rem; 
+}
+.card-header h3 { 
+    margin: 0; 
+    border: none; 
+    padding: 0; 
+}
+.stats-cards { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 1rem; 
+}
+.stat-item { 
+    background: #dde3df; /* Sedikit lebih gelap dari kartu */
+    padding: 1rem; 
+    border-radius: 8px; 
+}
+.stat-item p, table p { 
+    margin: 0; 
+    font-weight: 500; 
+    color: var(--text-secondary); 
+    font-family: var(--font-secondary);
+}
+.stat-item span { 
+    font-size: 1.8rem; 
+    font-weight: 600; 
+}
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+th, td { 
+    padding: 1rem; 
+    text-align: left; 
+    border-bottom: 1px solid var(--border-color); 
+    font-family: var(--font-secondary);
+}
+thead { 
+    background-color: #dde3df;
+}
+tbody tr:hover { 
+    background-color: #f8f9fa; 
+}
+
+/* Widget Sidebar Kanan */
+.right-sidebar .widget h3 { 
+    margin: 0 0 1rem 0; 
+    font-size: 1.2rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+}
+.event-item { 
+    background-color: var(--bg-body); 
+    padding: 0.8rem; 
+    border-radius: 8px; 
+    margin-bottom: 0.8rem; 
+}
+.event-date { 
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    color: var(--accent); 
+}
+.event-title { 
+    font-weight: 500; 
+    font-family: var(--font-secondary);
+}
+
+/* ==========================================================================
+   6. FORM & TOMBOL
+   ========================================================================== */
+.settings-form { 
+    display: grid; 
+    gap: 1rem; 
+}
+.form-item label { 
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-weight: 500; 
+}
+.form-item input { 
+    width: 100%; 
+    padding: 0.7rem; 
+    border: 1px solid var(--border-color); 
+    border-radius: 5px; 
+}
+.form-actions { 
+    text-align: right; 
+}
+.btn-primary {
+    background-color: var(--accent); 
+    color: white; 
+    border: none;
+    padding: 0.6rem 1.2rem; 
+    border-radius: 5px; 
+    cursor: pointer;
+    font-weight: 500; 
     transition: background-color 0.2s;
 }
-
-.nav-item i {
-    width: 20px;
-    margin-right: 15px;
-    font-size: 1.1em;
+.btn-primary:hover { 
+    background-color: #a00110; 
 }
 
-.nav-item:hover {
-    background-color: #374151;
+/* ==========================================================================
+   7. RESPONSIVE DESIGN (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 1200px) {
+    .main-dashboard {
+        grid-template-columns: 260px 1fr;
+    }
+    .right-sidebar { 
+        display: none; 
+    }
 }
-
-.nav-item.active {
-    background-color: var(--accent);
-    color: white;
+@media (max-width: 992px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
 }
-
-/* Item logout diletakkan di bawah */
-#logout-btn {
-    margin-top: auto;
-    border-top: 1px solid #374151;
-}
-
-/* --- Konten Utama (Kolom 2) --- */
-.main-content {
-    flex-grow: 1; /* Mengisi sisa ruang */
-    padding: 30px;
-}
-
-.content-header {
-    border-bottom: 1px solid #d1d5db;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
-}
-
-.content-header h1 {
-    margin: 0;
-}
-
-/* --- Komponen di Dalam Konten --- */
-.stats-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.card {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.card-icon {
-    font-size: 2em;
-    color: var(--accent);
-}
-
-.card-info h3 {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 1em;
-}
-
-.card-info p {
-    margin: 5px 0 0;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-.content-table {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-thead {
-    background-color: #f9fafb;
-}
-
-.action-btn {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+@media (max-width: 768px) {
+    .main-dashboard {
+        grid-template-columns: 1fr;
+    }
+    .left-sidebar {
+        position: static;
+        margin-bottom: 1.5rem;
+    }
 }
