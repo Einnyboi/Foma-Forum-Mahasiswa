@@ -18,12 +18,12 @@
         </div>
     
         <!-- Search Bar -->
-        <div class="search">
-            <input type="text" placeholder="Searching for something?" id="searchInput">
-            <div class="search-icon">
+        <form class="search" id="searchForm">
+            <input type="text" placeholder="Searching for something?" id="searchInput" name="query">
+            <button type="submit" class="search-icon">
                 <img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=000000" alt="Search">
-            </div>
-        </div>
+            </button>
+        </form>
 
         <!-- Login, Sign Up, and Profile links -->
         <div class="navi-link" id="links">
@@ -91,6 +91,14 @@
                     <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer; padding-left: 1.3rem;" onclick="showpage('general')">General</div>
                 </div>
 
+                <!-- Community tab -->
+                <a href="#" class="sidebar-item" onclick="showpage('community')">
+                    <span class="icon">
+                        <img src="https://img.icons8.com/?size=100&id=82774&format=png&color=000000" alt="Category">
+                    </span>
+                    <span>Community</span>
+                </a>
+
                 <!-- Popular Topics Widget -->
                 <div class="widget topics-widget">
                     <h3>
@@ -118,6 +126,7 @@
                 <div id="mainContentArea">
                     <!-- Content will be loaded here by JavaScript -->
                 </div>
+                <iframe id="searchFrame" style="display: none; width: 100%; height: 80vh; border: none;"></iframe>
             </div>
 
             <!-- Right Sidebar -->
@@ -140,5 +149,6 @@
     </div>
 
     <script src="../src/js/dashboard.js"></script>
+    <script src="../src/js/communityscript.js"></script>
 </body>
 </html>

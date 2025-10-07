@@ -37,6 +37,13 @@ function initializeApp()
         }
     }
 
+
+    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
+    if (!currentUser && registeredUsers.length > 0) {
+        currentUser = registeredUsers[0]; // Set the current user to the first registered user.
+        saveToStorage(); // Save this login state to localStorage.
+    }
+
     updateNavi();
     showpage('home');
     console.log('Dashboard loaded successfully!');
@@ -183,235 +190,6 @@ function showpage(pageID)
     {
         activeSidebarItem.classList.add('active');
     }
-    // Setiap kali pindah halaman, sembunyikan iframe pencarian
-    const searchFrame = document.getElementById('searchFrame');
-    if (searchFrame) searchFrame.style.display = 'none';
-
-    // tampilkan kembali konten utama
-    const mainContentArea = document.getElementById('mainContentArea');
-    const sectionHeader = document.getElementById('sectionHeader');
-    if (mainContentArea) mainContentArea.style.display = 'block';
-    if (sectionHeader) sectionHeader.style.display = 'flex'; 
-   
-    closeDropdown();
-    loadPageContent(pageID);
-}
-
-// --- Dynamic Asset Loading Functions ---
-
-// Dynamically load CSS file with scoping to main-content area
-function loadCSS(href) 
-{
-    // Remove previous external CSS first
-    const oldLink = document.querySelector(`.external-style`);
-    if (oldLink) 
-    {
-        oldLink.remove();
-    }
-
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    link.className = 'external-style';
-    
-    // Add scoping by wrapping all CSS rules to only affect #mainContentArea
-    link.onload = function()
-    {
-        scopeExternalCSS(href);
-    };
-    
-    document.head.appendChild(link);
-    currentExternalCss = href;
-}
-
-// Scope external CSS to only affect main content area
-function scopeExternalCSS(href)
-{
-    // Find the newly loaded stylesheet
-    const sheets = document.styleSheets;
-    let targetSheet = null;
-    
-    for (let i = sheets.length - 1; i >= 0; i--)
-    {
-        try
-        {
-            if (sheets[i].href && sheets[i].href.includes(href))
-            {
-                targetSheet = sheets[i];
-                break;
-            }
-        }
-        catch (e)
-        {
-            // Cross-origin stylesheets can't be accessed
-            continue;
-        }
-    }
-    
-    if (!targetSheet) return;
-    
-    try
-    {
-        const rules = Array.from(targetSheet.cssRules || targetSheet.rules || []);
-        
-        // Remove all rules
-        while (targetSheet.cssRules.length > 0)
-        {
-            targetSheet.deleteRule(0);
-        }
-        
-        // Re-add rules with scoping
-        rules.forEach(rule =>
-        {
-            let ruleText = rule.cssText;
-            
-            // Skip @import, @font-face, @keyframes, and other @ rules
-            if (ruleText.startsWith('@'))
-            {
-                targetSheet.insertRule(ruleText, targetSheet.cssRules.length);
-                return;
-            }
-            
-            // Extract selector and styles
-            const match = ruleText.match(/^([^{]+)\{(.+)\}$/);
-            if (!match) return;
-            
-            let selector = match[1].trim();
-            const styles = match[2];
-            
-            // Don't scope selectors that already target specific elements
-            // or are too broad (html, body, *)
-            if (selector === '*' || selector === 'body' || selector === 'html')
-            {
-                // Skip these to prevent overriding dashboard styles
-                return;
-            }
-            
-            // Scope the selector to main content area
-            const scopedSelectors = selector.split(',').map(s =>
-            {
-                s = s.trim();
-                return `#mainContentArea ${s}`;
-            }).join(', ');
-            
-            const scopedRule = `${scopedSelectors} { ${styles} }`;
-            
-            try
-            {
-                targetSheet.insertRule(scopedRule, targetSheet.cssRules.length);
-            }
-            catch (e)
-            {
-                console.warn('Could not scope rule:', ruleText, e);
-            }
-        });
-    }
-    catch (e)
-    {
-        console.warn('Could not scope external CSS:', e);
-    }
-}
-
-// Dynamically load JS file with isolated scope
-function loadJS(src)
-{
-    // Remove previous external JS first
-    const oldScript = document.querySelector(`.external-script`);
-    if (oldScript)
-    {
-        oldScript.remove();
-    }
-
-    const script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    script.className = 'external-script';
-    
-    // Wrap the script execution in a scope to prevent global pollution
-    script.onload = function()
-    {
-        console.log(`External script loaded: ${src}`);
-    };
-    
-    script.onerror = function()
-    {
-        console.error(`Failed to load external script: ${src}`);
-    };
-    
-    document.body.appendChild(script);
-    currentExternalJs = src;
-}
-
-// Dynamically unload external CSS and JS files
-function unloadExternalAssets() 
-{
-    // Remove previous external CSS
-    const oldLink = document.querySelector(`.external-style`);
-    if (oldLink) 
-    {
-        oldLink.remove();
-        currentExternalCss = null;
-    }
-    
-    // Remove previous external JS
-    const oldScript = document.querySelector(`.external-script`);
-    if (oldScript)
-    {
-        oldScript.remove();
-        currentExternalJs = null;
-    }
-}
-
-// Dynamically load CSS file specifically for the sidebar widget
-function loadSidebarCSS(href) 
-{
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    link.className = 'external-sidebar-style';
-    document.head.appendChild(link);
-}
-
-// Dynamically load JS file specifically for the sidebar widget
-function loadSidebarJS(src)
-{
-    const script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    script.className = 'external-sidebar-script';
-    script.onerror = function()
-    {
-        console.error(`Failed to load external sidebar script: ${src}`);
-    };
-    document.body.appendChild(script);
-}
-
-// Unload sidebar assets (called before loading new content, just in case)
-function unloadSidebarAssets() 
-{
-    document.querySelectorAll('.external-sidebar-style').forEach(link => link.remove());
-    document.querySelectorAll('.external-sidebar-script').forEach(script => script.remove());
-}
-
-// --- Page Loading and Content Functions ---
-
-// Page navigation function (Kept as global for external files to use)
-function showpage(pageID)
-{
-    // If the external auth script calls showpage('home'), we reload current user state
-    if (pageID === 'home') {
-        loadUsersFromStorage(); // Refresh current user state from local storage after successful auth
-        updateNavi();
-    }
-    
-    const sidebarItems = document.querySelectorAll('.sidebar-item');
-    sidebarItems.forEach(item => item.classList.remove('active'));
-    
-    const activeSidebarItem = document.querySelector(`.sidebar-item[onclick*="'${pageID}'"]`);
-    if (activeSidebarItem)
-    {
-        activeSidebarItem.classList.add('active');
-    }
 
     closeDropdown();
     loadPageContent(pageID);
@@ -463,6 +241,12 @@ function loadPageContent(pageID)
         case 'signup':
             pageTitle.textContent = 'Sign Up to Your Account';
             loadSignupContent();
+            break;
+
+        case 'community':
+            pageTitle.textContent = 'Explore Communities';
+            createPostBtn.style.display = 'none';
+            loadCommunityContent();
             break;
 
         default:
