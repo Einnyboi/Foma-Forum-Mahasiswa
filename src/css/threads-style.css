@@ -32,18 +32,18 @@ body {
 }
 
 /* --- [BAGIAN 3] LAYOUT UTAMA --- */
-.container {
+.threads-container {
     max-width: 900px; /* Lebar maksimal diperkecil agar nyaman dibaca */
     margin: 0 auto;
     padding: 0 1rem;
 }
 
-.main-dashboard {
+.threads-main-dashboard {
     display: block; /* Mengubah layout menjadi 1 kolom */
 }
 
 /* --- [BAGIAN 4] KONTEN UTAMA --- */
-.main-content {
+.threads-main-content {
     background: var(--white-color);
     border-radius: 20px;
     padding: 2.5rem;
@@ -51,7 +51,7 @@ body {
     border: 1px solid var(--border-color);
 }
 
-.content-header {
+.threads-content-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
