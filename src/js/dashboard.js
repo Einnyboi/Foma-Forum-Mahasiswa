@@ -195,6 +195,64 @@ function showpage(pageID)
     loadPageContent(pageID);
 }
 
+function updateCreatePostVisibility()
+{
+    const createPostBtn = document.getElementById('createPostBtn');
+    const createPostSection = document.getElementById('createPostSection');
+    
+    // Check if the current user is an admin
+    const isAdmin = currentUser && currentUser.role === 'admin';
+
+    if (currentUser && !isAdmin) // Only show for logged-in users who are NOT admin
+    {
+        if (createPostBtn) createPostBtn.style.display = 'inline-flex';
+    }
+    else
+    {
+        if (createPostBtn) createPostBtn.style.display = 'none';
+        if (createPostSection) createPostSection.style.display = 'none';
+    }
+}
+
+function loadCategoryContent(category)
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+
+    const allPosts = [...posts];
+    const filteredPosts = allPosts.filter(post => post.category === category);
+    
+    if (filteredPosts.length === 0)
+    {
+        mainContentArea.innerHTML =
+        `
+            <div class="placeholder-section">
+                <h3>No ${category} discussions yet</h3>
+                <p>Be the first to start a ${category} discussion!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const postsHtml = filteredPosts.map(post =>
+    `
+        <div class="thread-item" onclick="openThread('${post.id}')">
+            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
+            <div class="thread-title">${post.title}</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
+                </div>
+                <div class="thread-stats">
+                    <span>${post.replies} replies</span>
+                    <span>${post.views} views</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    mainContentArea.innerHTML = postsHtml;
+}
+
 function scopeExternalCSS(href)
 {
     // Find the newly loaded stylesheet
