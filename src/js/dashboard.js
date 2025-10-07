@@ -195,6 +195,93 @@ function showpage(pageID)
     loadPageContent(pageID);
 }
 
+function scopeExternalCSS(href)
+{
+    // Find the newly loaded stylesheet
+    const sheets = document.styleSheets;
+    let targetSheet = null;
+    
+    for (let i = sheets.length - 1; i >= 0; i--)
+    {
+        try
+        {
+            if (sheets[i].href && sheets[i].href.includes(href))
+            {
+                targetSheet = sheets[i];
+                break;
+            }
+        }
+        catch (e)
+        {
+            // Cross-origin stylesheets can't be accessed
+            continue;
+        }
+    }
+    
+    if (!targetSheet) return;
+    
+    try
+    {
+        const rules = Array.from(targetSheet.cssRules || targetSheet.rules || []);
+        
+        // Remove all rules
+        while (targetSheet.cssRules.length > 0)
+        {
+            targetSheet.deleteRule(0);
+        }
+        
+        // Re-add rules with scoping
+        rules.forEach(rule =>
+        {
+            let ruleText = rule.cssText;
+            
+            // Skip @import, @font-face, @keyframes, and other @ rules
+            if (ruleText.startsWith('@'))
+            {
+                targetSheet.insertRule(ruleText, targetSheet.cssRules.length);
+                return;
+            }
+            
+            // Extract selector and styles
+            const match = ruleText.match(/^([^{]+)\{(.+)\}$/);
+            if (!match) return;
+            
+            let selector = match[1].trim();
+            const styles = match[2];
+            
+            // Don't scope selectors that already target specific elements
+            // or are too broad (html, body, *)
+            if (selector === '*' || selector === 'body' || selector === 'html')
+            {
+                // Skip these to prevent overriding dashboard styles
+                return;
+            }
+            
+            // Scope the selector to main content area
+            const scopedSelectors = selector.split(',').map(s =>
+            {
+                s = s.trim();
+                return `#mainContentArea ${s}`;
+            }).join(', ');
+            
+            const scopedRule = `${scopedSelectors} { ${styles} }`;
+            
+            try
+            {
+                targetSheet.insertRule(scopedRule, targetSheet.cssRules.length);
+            }
+            catch (e)
+            {
+                console.warn('Could not scope rule:', ruleText, e);
+            }
+        });
+    }
+    catch (e)
+    {
+        console.warn('Could not scope external CSS:', e);
+    }
+}
+
 function unloadExternalAssets() 
 {
     // Remove previous external CSS
@@ -392,7 +479,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.thread-list-container', '../src/css/threads-style.css', '../src/js/script.js')
+    loadExternalContent('threads.html', '.main-content', '../src/css/threads-style.css', '../src/js/script.js')
         .then(success =>
         {
             if (success)
