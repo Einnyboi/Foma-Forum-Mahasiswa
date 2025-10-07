@@ -3,15 +3,16 @@ let currentUser = null;
 let registeredUsers = [];
 let posts = [];
 // Data 
-    const allContent = [
-        { id: 1, type: 'thread', title: 'Internship vacancies in tech companies', category: 'Career Info', author: 'Ahmad Rahman', description: 'Some of the latest internship vacancies for IT students, suitable for beginners.' },
-        { id: 2, type: 'thread', title: 'Recommended hangout spots in Jakarta', category: 'Hobbies & Entertainment', author: 'Sarah Kim', description: 'A list of cafes with fast Wi-Fi and a comfortable atmosphere for work or just relaxing.' },
-        { id: 3, type: 'thread', title: 'Effective study tips for semester exams', category: 'Academics', author: 'David Chen', description: 'Study methods proven to increase grades and reduce stress.' },
-        { id: 4, type: 'thread', title: 'How to make a simple robot from recycled materials', category: 'Hobbies & Entertainment', author: 'Tech Mentor', description: 'A step-by-step guide for a DIY robotics project.' },
-        { id: 5, type: 'thread', title: 'Scholarships abroad in 2025', category: 'Career Info', author: 'Code Guru', description: 'Complete information about fully-funded scholarships in various countries.' },
-        { id: 6, type: 'thread', title: 'Q&A forum about final projects', category: 'Academics', author: 'Student Helper', description: 'A discussion space to help students complete their theses.' },
-        { id: 7, type: 'thread', title: 'JavaScript vs Python: Which should beginners learn first?', category: 'Programming', author: 'Tech Mentor', description: 'A deep dive into the pros and cons of each language for newcomers.' }
-    ];
+const allContent =
+[
+    { id: 1, type: 'thread', title: 'Internship vacancies in tech companies', category: 'Career Info', author: 'Ahmad Rahman', description: 'Some of the latest internship vacancies for IT students, suitable for beginners.' },
+    { id: 2, type: 'thread', title: 'Recommended hangout spots in Jakarta', category: 'Hobbies & Entertainment', author: 'Sarah Kim', description: 'A list of cafes with fast Wi-Fi and a comfortable atmosphere for work or just relaxing.' },
+    { id: 3, type: 'thread', title: 'Effective study tips for semester exams', category: 'Academics', author: 'David Chen', description: 'Study methods proven to increase grades and reduce stress.' },
+    { id: 4, type: 'thread', title: 'How to make a simple robot from recycled materials', category: 'Hobbies & Entertainment', author: 'Tech Mentor', description: 'A step-by-step guide for a DIY robotics project.' },
+    { id: 5, type: 'thread', title: 'Scholarships abroad in 2025', category: 'Career Info', author: 'Code Guru', description: 'Complete information about fully-funded scholarships in various countries.' },
+    { id: 6, type: 'thread', title: 'Q&A forum about final projects', category: 'Academics', author: 'Student Helper', description: 'A discussion space to help students complete their theses.' },
+    { id: 7, type: 'thread', title: 'JavaScript vs Python: Which should beginners learn first?', category: 'Programming', author: 'Tech Mentor', description: 'A deep dive into the pros and cons of each language for newcomers.' }
+];
 
 // Initialize and load data on page load
 document.addEventListener('DOMContentLoaded', function()
@@ -25,6 +26,17 @@ function initializeApp()
 {
     loadUsersFromStorage();
     loadPostsFromStorage();
+
+    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
+    if (!currentUser && registeredUsers.length > 0) {
+        // Set the current user to the first registered user, but only if they are not the admin
+        const defaultUser = registeredUsers.find(u => u.role === 'user');
+        if (defaultUser) {
+            currentUser = defaultUser; 
+            saveToStorage(); 
+        }
+    }
+
 
     // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
     if (!currentUser && registeredUsers.length > 0) {
@@ -42,17 +54,33 @@ function loadUsersFromStorage()
 {
     try
     {
-        const storedUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
-        registeredUsers = storedUsers;
+        let storedUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
         
-        if (registeredUsers.length === 0)
+        // Ensure all users have a 'role' property (migration/safety check)
+        registeredUsers = storedUsers.map(user => ({
+            ...user,
+            role: user.role || (user.email === 'admin@foma.com' ? 'admin' : 'user')
+        }));
+        
+        if (registeredUsers.length === 0 || !registeredUsers.some(u => u.role === 'admin'))
         {
+            // Standard Test User
             registeredUsers.push(
             {
-                name: "Test",
+                name: "Test User",
                 email: "test@gmail.com",
                 password: "12345678",
-                registrationDate: new Date().toLocaleDateString('id-ID')
+                registrationDate: new Date().toLocaleDateString('id-ID'),
+                role: "user" 
+            });
+            // Admin User for testing (Use admin@foma.com/adminpassword to test)
+            registeredUsers.push( 
+            {
+                name: "Admin",
+                email: "admin@gmail.com", 
+                password: "71757678188",
+                registrationDate: new Date().toLocaleDateString('id-ID'),
+                role: "admin" 
             });
         }
         
@@ -65,12 +93,23 @@ function loadUsersFromStorage()
     catch (error)
     {
         console.log('LocalStorage not available, using memory storage only');
+        // Fallback for Standard Test User in memory if storage fails
         registeredUsers.push(
         {
-            name: "Test",
+            name: "Test User",
             email: "test@gmail.com",
             password: "12345678",
-            registrationDate: new Date().toLocaleDateString('id-ID')
+            registrationDate: new Date().toLocaleDateString('id-ID'),
+            role: "user"
+        });
+        // Fallback for Admin User in memory if storage fails
+        registeredUsers.push( 
+        {
+            name: "Admin",
+            email: "admin@gmail.com", 
+            password: "71757678188",
+            registrationDate: new Date().toLocaleDateString('id-ID'),
+            role: "admin"
         });
     }
 }
@@ -121,9 +160,22 @@ function setupEventListeners()
         postForm.addEventListener('submit', handlePostSubmit);
     }
 
-    const searchForm = document.getElementById('searchForm');
-    if (searchForm) {
-        searchForm.addEventListener('submit', handleSearch);
+    // New search event listeners
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(event)
+        {
+            if (event.key === 'Enter')
+            {
+                handleSearch(event);
+            }
+        });
+    }
+
+    const searchIcon = document.querySelector('.search-icon');
+    if (searchIcon)
+    {
+        searchIcon.addEventListener('click', handleSearch);
     }
 }
 
@@ -138,18 +190,28 @@ function showpage(pageID)
     {
         activeSidebarItem.classList.add('active');
     }
-    // Setiap kali pindah halaman, sembunyikan iframe pencarian
-    const searchFrame = document.getElementById('searchFrame');
-    if (searchFrame) searchFrame.style.display = 'none';
 
-    // tampilkan kembali konten utama
-    const mainContentArea = document.getElementById('mainContentArea');
-    const sectionHeader = document.getElementById('sectionHeader');
-    if (mainContentArea) mainContentArea.style.display = 'block';
-    if (sectionHeader) sectionHeader.style.display = 'flex'; 
-   
     closeDropdown();
     loadPageContent(pageID);
+}
+
+function unloadExternalAssets() 
+{
+    // Remove previous external CSS
+    const oldLink = document.querySelector(`.external-style`);
+    if (oldLink) 
+    {
+        oldLink.remove();
+        currentExternalCss = null;
+    }
+    
+    // Remove previous external JS
+    const oldScript = document.querySelector(`.external-script`);
+    if (oldScript)
+    {
+        oldScript.remove();
+        currentExternalJs = null;
+    }
 }
 
 // Load different page content dynamically
@@ -159,43 +221,44 @@ function loadPageContent(pageID)
     const createPostBtn = document.getElementById('createPostBtn');
     const createPostSection = document.getElementById('createPostSection');
     
-    createPostSection.style.display = 'none';
-    
+    // Always unload external assets before loading new content
+    unloadExternalAssets(); 
+
+    // Hide create post by default for new pages
+    if (createPostSection) createPostSection.style.display = 'none';
+    if (createPostBtn) createPostBtn.style.display = 'none';
+
     switch(pageID)
     {
         case 'home':
             pageTitle.textContent = 'Latest Discussions';
-            updateCreatePostVisibility();
-            loadPostsContent();
+            loadPostsContent(); // This calls loadExternalContent for threads.html
             break;
             
-        case 'trending':
-            pageTitle.textContent = 'Trending Topics';
-            createPostBtn.style.display = 'none';
-            loadTrendingContent();
+        case 'community':
+            pageTitle.textContent = 'Communities';
+            loadCommunityContent();
             break;
+
+        case 'profile':
+            pageTitle.textContent = 'User Profile';
+            loadProfileContent();
+            break;            
             
         case 'programming':
-            pageTitle.textContent = 'Programming Discussions';
-            updateCreatePostVisibility();
-            loadCategoryContent('programming');
-            break;
-            
         case 'general':
-            pageTitle.textContent = 'General Discussions';
+            pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
             updateCreatePostVisibility();
-            loadCategoryContent('general');
+            loadCategoryContent(pageID);
             break;
             
         case 'login':
             pageTitle.textContent = 'Login to Your Account';
-            createPostBtn.style.display = 'none';
             loadLoginContent();
             break;
             
         case 'signup':
             pageTitle.textContent = 'Sign Up to Your Account';
-            createPostBtn.style.display = 'none';
             loadSignupContent();
             break;
 
@@ -212,11 +275,20 @@ function loadPageContent(pageID)
     }
 }
 
-// Generic function to load external HTML content
-function loadExternalContent(filePath, selector = '.auth-container')
+function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 {
     const mainContentArea = document.getElementById('mainContentArea');
     
+    // 1. Determine base name and default paths
+    const fileName = filePath.split('/').pop();
+    const baseName = fileName.replace('.html', '');
+
+    const finalCssPath = cssPath || `../src/css/${baseName}.css`; 
+    const finalJsPath = jsPath || `../src/js/${baseName}.js`; 
+    
+    // Ensure all previous external assets are unloaded
+    unloadExternalAssets(); 
+
     return fetch(filePath)
         .then(response =>
         {
@@ -234,19 +306,129 @@ function loadExternalContent(filePath, selector = '.auth-container')
             
             if (content)
             {
+                // 2. Insert the HTML content first
                 mainContentArea.innerHTML = content.innerHTML;
+                
+                // 3. Load the specific CSS (scoped to main content)
+                if (finalCssPath) loadCSS(finalCssPath);
+
+                // 4. Load the specific JavaScript (after DOM insertion)
+                if (finalJsPath) loadJS(finalJsPath);
+                
+                // 5. Re-attach general event listeners after DOM insertion
+                setupEventListeners(); 
+                
                 return true;
             }
             else
             {
-                throw new Error('Content selector not found');
+                throw new Error(`Content selector (${selector}) not found in ${fileName}`);
             }
         })
         .catch(error =>
         {
             console.error(`Error loading ${filePath}:`, error);
-            mainContentArea.innerHTML = `<div class="placeholder-section"><h3>Unable to load content</h3><p>Please try <a href="${filePath}">clicking here</a> to open the page.</p></div>`;
+            mainContentArea.innerHTML = 
+                `<div class="placeholder-section error-section">
+                    <h3>Unable to load this content right now</h3>
+                </div>`;
             return false;
+        });
+}
+
+// Load threads.html
+function loadPostsContent()
+{
+    loadExternalContent('threads.html', '.thread-list-container', '../src/css/threads-style.css', '../src/js/script.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Threads content and script.js loaded. Thread logic is now handled by script.js.');
+            }
+        }
+    );
+}
+
+function loadProfileContent()
+{
+    loadExternalContent('userprofile.html', '.container', '../src/css/userprofile.css', '../src/js/userprofile.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Profile content and userprofile.js loaded. Profile logic is now handled by userprofile.js.');
+            }
+        }
+    );
+}
+
+function loadStudentEventsWidget()
+{
+    loadExternalSidebarContent('Index(Student).html', 'eventsListContainer', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Event content and Script(Student).js loaded. Event logic is now handled by Script(Student).js.');
+            }
+        }
+    );
+}
+
+// Load login.html and login.js
+function loadLoginContent()
+{
+    loadExternalContent('Index(Login).html', '.login-container', '../src/css/Style(Login).css', '../src/js/Script(Login).js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Login content and login.js loaded. Login logic is now handled by login.js.');
+            }
+        }
+    );
+}
+
+// Load Signup.html and signup.js
+function loadSignupContent()
+{
+    loadExternalContent('signup.html', '.auth-container', '../src/css/signup.css', '../src/js/signup.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
+            }
+        }
+    );
+}
+
+function loadSearchPage(searchTerm)
+{
+    const createPostBtn = document.getElementById('createPostBtn');
+    if (createPostBtn) createPostBtn.style.display = 'none';
+
+    // Load the external HTML, CSS, and JS using the friend's search files
+    loadExternalContent('searchPage.html', '.search-container', '../src/css/searchstyle.css', '../src/js/search.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                // Update the page header
+                const pageTitle = document.getElementById('pageTitle');
+                if (pageTitle) pageTitle.textContent = `Search Results for: "${searchTerm}"`;
+                
+                // IMPORTANT: Call a function in the newly loaded search.js script to render results
+                if (window.renderSearchResults)
+                {
+                    window.renderSearchResults(searchTerm, posts, allContent);
+                }
+                else
+                {
+                    console.warn('search.js did not expose a global renderSearchResults function. Search results will not be displayed automatically.');
+                }
+            }
         });
 }
 
@@ -267,243 +449,21 @@ function loadCommunityContent() {
         })
         .then(html => {
             mainContentArea.innerHTML = html;
-            initializeCommunityPage(); 
+            // Assuming initializeCommunityPage is a function defined elsewhere or in the dashboard.js file
+            if (typeof initializeCommunityPage === 'function') {
+                initializeCommunityPage(); 
+            } else {
+                console.warn('initializeCommunityPage function not found.');
+            }
         })
         .catch(error => {
             console.error('Error loading community page:', error);
-            mainContentArea.innerHTML = '<h2>Error: Could not load community content.</h2>';
+            mainContentArea.innerHTML = 
+                `<div class="placeholder-section error-section">
+                    <h3>Unable to load this content right now</h3>
+                </div>`;
+            return false;
         });
-}
-
-// Load login.html
-function loadLoginContent()
-{
-    loadExternalContent('login.html', '.auth-container')
-        .then(success =>
-        {
-            if (success)
-            {
-                // Re-attach event listener after loading
-                setTimeout(() =>
-                {
-                    const loginForm = document.getElementById('loginForm');
-                    if (loginForm)
-                    {
-                        loginForm.addEventListener('submit', handleLogin);
-                    }
-                }, 100);
-            }
-        }
-    );
-}
-
-// Load Signup.html
-function loadSignupContent()
-{
-    loadExternalContent('signup.html', '.auth-container')
-        .then(success =>
-        {
-            if (success)
-                {
-                // Re-attach event listener after loading
-                setTimeout(() =>
-                {
-                    const signupForm = document.getElementById('signupForm');
-                    if (signupForm)
-                    {
-                        signupForm.addEventListener('submit', handleSignup);
-                    }
-                }, 100);
-            }
-        }
-    );
-}
-
-// Load Posts.html
-function loadPostsContent()
-{
-    const mainContentArea = document.getElementById('mainContentArea');
-    
-    const samplePosts =
-    [
-        {
-            id: 'sample1',
-            category: 'programming',
-            title: 'How to optimize database queries in Node.js?',
-            author: 'Ahmad Rahman',
-            timestamp: '2 hours ago',
-            replies: 12,
-            views: 45
-        },
-        {
-            id: 'sample2', 
-            category: 'general',
-            title: 'Study group for calculus - anyone interested?',
-            author: 'Sarah Kim',
-            timestamp: '4 hours ago',
-            replies: 8,
-            views: 23
-        },
-        {
-            id: 'sample3',
-            category: 'programming',
-            title: 'Best practices for React component structure?',
-            author: 'David Chen',
-            timestamp: '6 hours ago',
-            replies: 15,
-            views: 67
-        }
-    ];
-
-    const allPosts = [...posts, ...samplePosts];
-    
-    const postsHtml = allPosts.map(post => 
-    `
-        <div class="thread-item" onclick="openThread('${post.id}')">
-            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
-            <div class="thread-title">${post.title}</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
-                </div>
-                <div class="thread-stats">
-                    <span>${post.replies} replies</span>
-                    <span>${post.views} views</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    mainContentArea.innerHTML = postsHtml || '<div class="placeholder-section"><h3>No posts found</h3><p>Be the first to start a discussion!</p></div>';
-}
-
-// Load Trending.html
-function loadTrendingContent()
-{
-    const mainContentArea = document.getElementById('mainContentArea');
-    
-    const trendingHtml =
-    `
-        <div class="placeholder-section">
-            <h3>🔥 Trending This Week</h3>
-            <p>Most popular discussions based on views and replies</p>
-        </div>
-        
-        <div class="thread-item" onclick="openThread('trend1')">
-            <div class="category-highlight">Programming</div>
-            <div class="thread-title">JavaScript vs Python: Which should beginners learn first?</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">Tech Mentor</span> • 1 day ago</div>
-                </div>
-                <div class="thread-stats">
-                    <span>89 replies</span>
-                    <span>1.2k views</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="thread-item" onclick="openThread('trend2')">
-            <div class="category-highlight">General</div>
-            <div class="thread-title">Tips for effective online learning during university</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">Student Helper</span> • 2 days ago</div>
-                </div>
-                <div class="thread-stats">
-                    <span>67 replies</span>
-                    <span>890 views</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="thread-item" onclick="openThread('trend3')">
-            <div class="category-highlight">Programming</div>
-            <div class="thread-title">Free resources for learning web development</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">Code Guru</span> • 3 days ago</div>
-                </div>
-                <div class="thread-stats">
-                    <span>45 replies</span>
-                    <span>678 views</span>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    mainContentArea.innerHTML = trendingHtml;
-}
-
-// Load Category.html (specific content based on category)
-function loadCategoryContent(category)
-{
-    const mainContentArea = document.getElementById('mainContentArea');
-    
-    const samplePosts =
-    [
-        {
-            id: 'sample1',
-            category: 'programming',
-            title: 'How to optimize database queries in Node.js?',
-            author: 'Ahmad Rahman',
-            timestamp: '2 hours ago',
-            replies: 12,
-            views: 45
-        },
-        {
-            id: 'sample2', 
-            category: 'general',
-            title: 'Study group for calculus - anyone interested?',
-            author: 'Sarah Kim',
-            timestamp: '4 hours ago',
-            replies: 8,
-            views: 23
-        },
-        {
-            id: 'sample3',
-            category: 'programming',
-            title: 'Best practices for React component structure?',
-            author: 'David Chen',
-            timestamp: '6 hours ago',
-            replies: 15,
-            views: 67
-        }
-    ];
-
-    const allPosts = [...posts, ...samplePosts];
-    const filteredPosts = allPosts.filter(post => post.category === category);
-    
-    if (filteredPosts.length === 0)
-    {
-        mainContentArea.innerHTML =
-        `
-            <div class="placeholder-section">
-                <h3>No ${category} discussions yet</h3>
-                <p>Be the first to start a ${category} discussion!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    const postsHtml = filteredPosts.map(post =>
-    `
-        <div class="thread-item" onclick="openThread('${post.id}')">
-            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
-            <div class="thread-title">${post.title}</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
-                </div>
-                <div class="thread-stats">
-                    <span>${post.replies} replies</span>
-                    <span>${post.views} views</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    mainContentArea.innerHTML = postsHtml;
 }
 
 // Dropdown profile
@@ -551,49 +511,12 @@ function updateNavi()
         
         if (userInit) userInit.textContent = currentUser.name.charAt(0).toUpperCase();
         if (userName) userName.textContent = currentUser.name.split(' ')[0];
-        
-        updateCreatePostVisibility();
     }
     else
     {
         if (loginLink) loginLink.style.display = 'inline-flex';
         if (signupLink) signupLink.style.display = 'inline-flex';
         if (profileBtn) profileBtn.style.display = 'none';
-        updateCreatePostVisibility();
-    }
-}
-
-// Update create post button visibility
-function updateCreatePostVisibility()
-{
-    const createPostBtn = document.getElementById('createPostBtn');
-    const createPostSection = document.getElementById('createPostSection');
-    
-    if (currentUser)
-    {
-        if (createPostBtn) createPostBtn.style.display = 'inline-flex';
-    }
-    else
-    {
-        if (createPostBtn) createPostBtn.style.display = 'none';
-        if (createPostSection) createPostSection.style.display = 'none';
-    }
-}
-
-// Toggle create post form
-function toggleCreatePost()
-{
-    const createSection = document.getElementById('createPostSection');
-    if (createSection)
-    {
-        if (createSection.style.display === 'none' || !createSection.style.display)
-        {
-            createSection.style.display = 'block';
-        }
-        else
-        {
-            createSection.style.display = 'none';
-        }
     }
 }
 
@@ -614,46 +537,6 @@ function toggleCategories()
     }
 }
 
-// Handle post form submission
-function handlePostSubmit(e)
-{
-    e.preventDefault();
-
-    if (!currentUser)
-    {
-        alert('You must be logged in to create a post!');
-        return;
-    }
-
-    const title = document.getElementById('postTitle').value.trim();
-    const content = document.getElementById('postContent').value.trim();
-    const category = document.getElementById('postCategory').value;
-
-    if (title && content)
-    {
-        const newPost =
-        {
-            id: Date.now(),
-            title: title,
-            content: content,
-            category: category,
-            author: currentUser.name,
-            authorEmail: currentUser.email,
-            date: new Date().toLocaleDateString('id-ID'),
-            timestamp: 'just now',
-            replies: 0,
-            views: 0
-        };
-
-        posts.push(newPost);
-        saveToStorage();
-        document.getElementById('postForm').reset();
-        toggleCreatePost();
-        loadPostsContent();
-        alert('Post berhasil dibuat!');
-    }
-}
-
 // Handle search functionality
 function handleSearch(e)
 {
@@ -662,9 +545,11 @@ function handleSearch(e)
     const searchInput = document.getElementById('searchInput');
     const searchTerm = searchInput.value.trim();
     
-    if (searchTerm) {
-        loadSearchInIframe(searchTerm);
+    if (searchTerm)
+    {
+        loadSearchPage(searchTerm); 
     }
+    return false;
 }
 
 // Logout function
@@ -687,6 +572,14 @@ function login(email, password)
         currentUser = user;
         saveToStorage();
         updateNavi();
+        
+        // **UPDATED: Redirect Admin immediately to their separate HTML file**
+        if (currentUser.role === 'admin') {
+            // Note: The path below assumes Index(Admin).html is at the same level as dashboard.html
+            window.location.href = 'Index(Admin).html'; 
+            return true;
+        }
+
         return true;
     }
     return false;
@@ -717,48 +610,6 @@ function clearError()
     const successElements = document.querySelectorAll('.success');
     errorElements.forEach(element => element.textContent = '');
     successElements.forEach(element => element.textContent = '');
-}
-
-// Open thread function (placeholder)
-function openThread(threadId)
-{
-    alert(`Opening thread ${threadId} - This would navigate to the full thread view`);
-}
-
-// Handle login form submission
-function handleLogin(e)
-{
-    e.preventDefault();
-    clearError();
-
-    const email = document.getElementById('loginEmail')?.value.trim();
-    const password = document.getElementById('loginPass')?.value;
-
-    if (!email || !password)
-    {
-        if (!email)
-        {
-            const emailError = document.getElementById('loginEmailError');
-            if (emailError) emailError.textContent = 'Email harus diisi!';
-        }
-        if (!password)
-        {
-            const passError = document.getElementById('loginPassError');
-            if (passError) passError.textContent = 'Password harus diisi!';
-        }
-        return;
-    }
-
-    if (login(email, password))
-    {
-        alert(`Selamat datang kembali, ${currentUser.name}!`);
-        showpage('home');
-    }
-    else
-    {
-        const emailError = document.getElementById('loginEmailError');
-        if (emailError) emailError.textContent = 'Email atau password tidak valid!';
-    }
 }
 
 // Handle signup form submission
@@ -835,7 +686,8 @@ function handleSignup(e)
             email: email,
             password: pass,
             name: name,
-            registrationDate: new Date().toLocaleDateString('id-ID')
+            registrationDate: new Date().toLocaleDateString('id-ID'),
+            role: "user" // New registered users are standard users
         };
         
         registeredUsers.push(newUser);
@@ -867,69 +719,44 @@ function testLogin()
 {
     if (registeredUsers.length > 0)
     {
-        currentUser = registeredUsers[0];
-        saveToStorage();
-        updateNavi();
-        showpage('home');
-        alert(`Welcome back, ${currentUser.name}!`);
+        // Try to get a standard user first
+        let userToLogin = registeredUsers.find(u => u.role === 'user'); 
+        if (!userToLogin)
+        {
+            // Fallback to admin if no user (e.g., if you only have the test admin)
+            userToLogin = registeredUsers.find(u => u.role === 'admin'); 
+        }
+        
+        if (userToLogin) {
+            currentUser = userToLogin;
+            saveToStorage();
+            updateNavi();
+            
+            // **Redirect if testing admin login**
+            if (currentUser.role === 'admin')
+            {
+                window.location.href = 'Index(Admin).html';
+            }
+            else
+            {
+                showpage('home');
+            }
+            alert(`Welcome back, ${currentUser.name}!`);
+        }
+        else
+        {
+            alert('No test users available');
+        }
     }
     else
     {
         alert('No test users available');
     }
 }
-// fungsi loadSearchResults
-function loadSearchInIframe(searchTerm) {
-    const mainContentArea = document.getElementById('mainContentArea');
-    const sectionHeader = document.getElementById('sectionHeader');
-    const searchFrame = document.getElementById('searchFrame');
-
-    // Sembunyikan konten utama dashboard
-    if (mainContentArea) mainContentArea.style.display = 'none';
-    if (sectionHeader) sectionHeader.style.display = 'none';
-
-    //  Tampilkan iframe dan atur sumbernya
-    if (searchFrame) {
-        searchFrame.src = `searchPage.html?query=${encodeURIComponent(searchTerm)}`;
-        searchFrame.style.display = 'block';
-    }
-}
-// Fungsi untuk menampilkan hasil
-function loadSearchResults(searchTerm) {
-    const mainContentArea = document.getElementById('mainContentArea');
-    const pageTitle = document.getElementById('pageTitle');
-    const createPostBtn = document.getElementById('createPostBtn');
-
-    if (pageTitle) pageTitle.textContent = `Search Results for: "${searchTerm}"`;
-    if (createPostBtn) createPostBtn.style.display = 'none';
-
-    // Filter data untuk menemukan yang cocok
-    const filteredResults = allContent.filter(item =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    let resultsHtml = '';
-    if (filteredResults.length === 0) {
-        resultsHtml = `<div class="placeholder-section"><h3>No Results Found</h3><p>Sorry, no results matched your search.</p></div>`;
-    } else {
-        resultsHtml = filteredResults.map(item => `
-            <div class="thread-item">
-                <div class="category-highlight">${item.category}</div>
-                <div class="thread-title">${item.title}</div>
-                <div class="thread-description" >${item.description}</div>
-                <div class="thread-header">
-                    <div class="thread-meta" >by <span class="thread-author">${item.author}</span></div>
-                </div>
-            </div>
-        `).join('');
-    }
-    mainContentArea.innerHTML = resultsHtml;
-}
 
 // Console helpers for development
 console.log('Available functions: testLogin(), showpage(pageID), logout()');
 if (registeredUsers.length > 0)
 {
-    console.log('Test user available - call testLogin() to test login functionality');
+    console.log('Test user available - call testLogin() to test login functionality. Use email: admin@foma.com, password: adminpassword to test admin login.');
 }

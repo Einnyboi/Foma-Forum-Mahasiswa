@@ -39,7 +39,7 @@
                 <!-- Dropdown Menu -->
                 <div class="profile-dropdown" id="dropdown">
                     <!-- Profile Page Link -->
-                    <a href="userprofile.html" class="dropdown-item" id="profileLink">
+                    <a href="#" class="dropdown-item" id="profileLink" onclick="showpage('profile')"">
                         <span>
                             <img src="https://img.icons8.com/?size=100&id=2QXdHDYztybb&format=png&color=000000" alt="Profile">
                         </span>
@@ -71,12 +71,12 @@
                     <span>Home</span>
                 </a>
 
-                <!-- Link to Trending Page -->
-                <a href="#" class="sidebar-item" onclick="showpage('trending')">
+                <!-- Link to Community Page -->
+                <a href="#" class="sidebar-item" onclick="showpage('community')">
                     <span class="icon">
-                        <img src="https://img.icons8.com/?size=100&id=qP2C3yLXaZnV&format=png&color=000000" alt="Trending">
+                        <img src="https://img.icons8.com/?size=100&id=o3zCJnjkUG3q&format=png&color=000000" alt="Community">
                     </span>
-                    <span>Trending</span>
+                    <span>Community</span>
                 </a>
 
                 <!-- Link to Category Page -->
@@ -90,14 +90,6 @@
                     <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer; padding-left: 1.3rem;" onclick="showpage('programming')">Programming</div>
                     <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer; padding-left: 1.3rem;" onclick="showpage('general')">General</div>
                 </div>
-
-                <!-- Community tab -->
-                <a href="#" class="sidebar-item" onclick="showpage('community')">
-                    <span class="icon">
-                        <img src="https://img.icons8.com/?size=100&id=82774&format=png&color=000000" alt="Category">
-                    </span>
-                    <span>Community</span>
-                </a>
 
                 <!-- Popular Topics Widget -->
                 <div class="widget topics-widget">
@@ -120,33 +112,8 @@
                 <!-- Dynamic Section Header -->
                 <div class="section-header" id="sectionHeader">
                     <h2 id="pageTitle">Latest Discussions</h2>
-                    <button class="btn btn-primary" onclick="toggleCreatePost()" id="createPostBtn" style="display: none;">
-                        Create Post
-                        <img src="https://img.icons8.com/?size=100&id=85479&format=png&color=000000" alt="Create">
-                    </button>
                 </div>
                 
-                <!-- Dynamic Create Post Section -->
-                <div id="createPostSection" class="create-post" style="display: none;">
-                    <h3>Create New Post</h3>
-                    <form id="postForm">
-                        <div class="form-group">
-                            <input type="text" id="postTitle" placeholder="What's your discussion topic?" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="postContent" placeholder="Share your thoughts..." required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <select id="postCategory">
-                                <option value="general">General</option>
-                                <option value="programming">Programming</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Post Discussion</button>
-                        <button type="button" class="btn btn-outline" onclick="toggleCreatePost()">Cancel</button>
-                    </form>
-                </div>
-
                 <!-- Dynamic Main Content Area -->
                 <div id="mainContentArea">
                     <!-- Content will be loaded here by JavaScript -->
@@ -162,18 +129,11 @@
                         <img src="https://img.icons8.com/?size=100&id=26057&format=png&color=000000" alt="Upcoming">
                         Upcoming Events
                     </h3>
-                    <!-- Events List Examples -->
-                    <div class="event-item">
-                        <div class="event-date">Oct 5, 2025</div>
-                        <div class="event-title">Coding Bootcamp Workshop</div>
-                    </div>
-                    <div class="event-item">
-                        <div class="event-date">Oct 12, 2025</div>
-                        <div class="event-title">Mathematics Competition</div>
-                    </div>
-                    <div class="event-item">
-                        <div class="event-date">Oct 18, 2025</div>
-                        <div class="event-title">Career Fair 2025</div>
+                    <div id="eventsListContainer">
+                        <div class="event-item">
+                            <div class="event-date">Loading...</div>
+                            <div class="event-title">Fetching Events List...</div>
+                        </div>
                     </div>
                 </div>
             </div>
