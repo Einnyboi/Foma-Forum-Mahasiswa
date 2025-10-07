@@ -195,6 +195,151 @@ function showpage(pageID)
     loadPageContent(pageID);
 }
 
+function updateCreatePostVisibility()
+{
+    const createPostBtn = document.getElementById('createPostBtn');
+    const createPostSection = document.getElementById('createPostSection');
+    
+    // Check if the current user is an admin
+    const isAdmin = currentUser && currentUser.role === 'admin';
+
+    if (currentUser && !isAdmin) // Only show for logged-in users who are NOT admin
+    {
+        if (createPostBtn) createPostBtn.style.display = 'inline-flex';
+    }
+    else
+    {
+        if (createPostBtn) createPostBtn.style.display = 'none';
+        if (createPostSection) createPostSection.style.display = 'none';
+    }
+}
+
+function loadCategoryContent(category)
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+
+    const allPosts = [...posts];
+    const filteredPosts = allPosts.filter(post => post.category === category);
+    
+    if (filteredPosts.length === 0)
+    {
+        mainContentArea.innerHTML =
+        `
+            <div class="placeholder-section">
+                <h3>No ${category} discussions yet</h3>
+                <p>Be the first to start a ${category} discussion!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const postsHtml = filteredPosts.map(post =>
+    `
+        <div class="thread-item" onclick="openThread('${post.id}')">
+            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
+            <div class="thread-title">${post.title}</div>
+            <div class="thread-header">
+                <div>
+                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
+                </div>
+                <div class="thread-stats">
+                    <span>${post.replies} replies</span>
+                    <span>${post.views} views</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    mainContentArea.innerHTML = postsHtml;
+}
+
+function scopeExternalCSS(href)
+{
+    // Find the newly loaded stylesheet
+    const sheets = document.styleSheets;
+    let targetSheet = null;
+    
+    for (let i = sheets.length - 1; i >= 0; i--)
+    {
+        try
+        {
+            if (sheets[i].href && sheets[i].href.includes(href))
+            {
+                targetSheet = sheets[i];
+                break;
+            }
+        }
+        catch (e)
+        {
+            // Cross-origin stylesheets can't be accessed
+            continue;
+        }
+    }
+    
+    if (!targetSheet) return;
+    
+    try
+    {
+        const rules = Array.from(targetSheet.cssRules || targetSheet.rules || []);
+        
+        // Remove all rules
+        while (targetSheet.cssRules.length > 0)
+        {
+            targetSheet.deleteRule(0);
+        }
+        
+        // Re-add rules with scoping
+        rules.forEach(rule =>
+        {
+            let ruleText = rule.cssText;
+            
+            // Skip @import, @font-face, @keyframes, and other @ rules
+            if (ruleText.startsWith('@'))
+            {
+                targetSheet.insertRule(ruleText, targetSheet.cssRules.length);
+                return;
+            }
+            
+            // Extract selector and styles
+            const match = ruleText.match(/^([^{]+)\{(.+)\}$/);
+            if (!match) return;
+            
+            let selector = match[1].trim();
+            const styles = match[2];
+            
+            // Don't scope selectors that already target specific elements
+            // or are too broad (html, body, *)
+            if (selector === '*' || selector === 'body' || selector === 'html')
+            {
+                // Skip these to prevent overriding dashboard styles
+                return;
+            }
+            
+            // Scope the selector to main content area
+            const scopedSelectors = selector.split(',').map(s =>
+            {
+                s = s.trim();
+                return `#mainContentArea ${s}`;
+            }).join(', ');
+            
+            const scopedRule = `${scopedSelectors} { ${styles} }`;
+            
+            try
+            {
+                targetSheet.insertRule(scopedRule, targetSheet.cssRules.length);
+            }
+            catch (e)
+            {
+                console.warn('Could not scope rule:', ruleText, e);
+            }
+        });
+    }
+    catch (e)
+    {
+        console.warn('Could not scope external CSS:', e);
+    }
+}
+
 function unloadExternalAssets() 
 {
     // Remove previous external CSS
@@ -212,6 +357,59 @@ function unloadExternalAssets()
         oldScript.remove();
         currentExternalJs = null;
     }
+}
+
+function loadCSS(href) 
+{
+    // Remove previous external CSS first
+    const oldLink = document.querySelector(`.external-style`);
+    if (oldLink) 
+    {
+        oldLink.remove();
+    }
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.className = 'external-style';
+    
+    // Add scoping by wrapping all CSS rules to only affect #mainContentArea
+    link.onload = function()
+    {
+        scopeExternalCSS(href);
+    };
+    
+    document.head.appendChild(link);
+    currentExternalCss = href;
+}
+
+function loadJS(src)
+{
+    // Remove previous external JS first
+    const oldScript = document.querySelector(`.external-script`);
+    if (oldScript)
+    {
+        oldScript.remove();
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.type = 'text/javascript';
+    script.className = 'external-script';
+    
+    // Wrap the script execution in a scope to prevent global pollution
+    script.onload = function()
+    {
+        console.log(`External script loaded: ${src}`);
+    };
+    
+    script.onerror = function()
+    {
+        console.error(`Failed to load external script: ${src}`);
+    };
+    
+    document.body.appendChild(script);
+    currentExternalJs = src;
 }
 
 // Load different page content dynamically
@@ -339,25 +537,12 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.thread-list-container', '../src/css/threads-style.css', '../src/js/script.js')
+    loadExternalContent('threads.html', '.main-content', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
             {
                 console.log('Threads content and script.js loaded. Thread logic is now handled by script.js.');
-            }
-        }
-    );
-}
-
-function loadProfileContent()
-{
-    loadExternalContent('userprofile.html', '.container', '../src/css/userprofile.css', '../src/js/userprofile.js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Profile content and userprofile.js loaded. Profile logic is now handled by userprofile.js.');
             }
         }
     );
