@@ -537,7 +537,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.main-dashboard', '../src/css/threads-style.css', '../src/js/Script(threads).js')
+    loadExternalContent('threads.html', '.threads-container', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
@@ -595,7 +595,7 @@ function loadSearchPage(searchTerm)
     if (createPostBtn) createPostBtn.style.display = 'none';
 
     // Load the external HTML, CSS, and JS using the friend's search files
-    loadExternalContent('searchPage.html', '.search-container', '../src/css/searchstyle.css', '../src/js/search.js')
+    loadExternalContent('searchPage.html', '.container', '../src/css/searchstyle.css', '../src/js/search.js')
         .then(success =>
         {
             if (success)
