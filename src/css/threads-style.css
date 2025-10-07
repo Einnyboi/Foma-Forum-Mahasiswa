@@ -1,19 +1,14 @@
-/* --- [BAGIAN 1] DASAR DESAIN & VARIABEL GLOBAL (GABUNGAN) --- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap');
-
+/* --- [BAGIAN 1] DASAR DESAIN & VARIABEL GLOBAL --- */
 :root {
-  /* Warna diambil dari desain baru */
   --bg-body: #b8c5c4;
-  --bg-container: #ecebf3;
-  --bg-card: #c7d6d5;
-  --text-main: #0c120c;
+  --white-color: #ecebf3;
+  --primary-color: #c7d6d5;
+  --secondary-color: #0c120c;
   --text-secondary: #6D7275;
-  --accent: #c20114;
+  --error-red: #c20114;
   --border-color: rgba(199, 214, 213, 0.8);
   --border-light: rgba(12, 18, 12, 0.1);
   --shadow-color: rgba(12, 18, 12, 0.08);
-
-  /* Font diambil dari desain baru */
   --font-primary: 'Poppins', sans-serif;
   --font-secondary: 'Lato', sans-serif;
 }
@@ -27,181 +22,35 @@
 body {
     font-family: var(--font-primary);
     background-color: var(--bg-body);
-    color: var(--text-main);
+    color: var(--secondary-color);
     line-height: 1.6;
-    padding-top: 100px; /* Jarak untuk fixed navigation bar */
+    padding-top: 2rem; /* Mengurangi padding atas karena navbar hilang */
 }
 
 .hidden {
     display: none !important;
 }
 
-
-/* --- [BAGIAN 2] NAVIGATION BAR & HEADER (DARI DESAIN BARU) --- */
-.navigation {
-    background: var(--bg-container);
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 20px var(--shadow-color);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    z-index: 1000;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.navi-title {
-    display: flex;
-    align-items: center;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--text-main);
-    cursor: pointer;
-    font-family: var(--font-primary);
-}
-
-.foma-icon {
-    margin-right: 0.5rem;
-}
-
-.foma-icon img {
-    width: 35px;
-    height: 35px;
-}
-
-.search {
-    display: flex;
-    align-items: center;
-    background: var(--bg-card);
-    border-radius: 50px;
-    padding: 0.8rem 1.5rem;
-    margin: 0 2rem;
-    flex: 1;
-    max-width: 500px;
-    border: 2px solid transparent;
-}
-
-.search:focus-within {
-    border-color: var(--text-main);
-}
-
-.search input {
-    background: none;
-    border: none;
-    outline: none;
-    flex: 1;
-    padding: 0.5rem;
-    font-size: 1rem;
-    color: var(--text-main);
-    font-family: var(--font-secondary);
-}
-
-.search-icon img {
-    width: 20px;
-    height: 20px;
-    opacity: 0.7;
-}
-
-.navi-link {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-
-/* --- [BAGIAN 3] LAYOUT UTAMA & SIDEBAR (DARI DESAIN BARU) --- */
+/* --- [BAGIAN 3] LAYOUT UTAMA --- */
 .container {
-    max-width: 1400px;
+    max-width: 900px; /* Lebar maksimal diperkecil agar nyaman dibaca */
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0 1rem;
 }
 
 .main-dashboard {
-    display: grid;
-    grid-template-columns: 280px 1fr 320px;
-    gap: 2rem;
-    margin-top: 1rem;
+    display: block; /* Mengubah layout menjadi 1 kolom */
 }
 
-.left-sidebar, .right-sidebar {
-    position: sticky;
-    top: 120px;
-    height: fit-content;
-}
-
-.left-sidebar {
-    background: var(--bg-container);
-    border-radius: 20px;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-}
-
-.sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.8rem;
-    border-radius: 50px;
-    cursor: pointer;
-    color: var(--text-main);
-    text-decoration: none;
-    font-weight: 500;
-    font-family: var(--font-secondary);
-}
-.sidebar-item:hover {
-    background: var(--bg-card);
-    transform: translateX(5px);
-}
-.sidebar-item.active {
-    background: var(--accent);
-    color: var(--bg-container);
-}
-
-/* Sidebar Kanan */
-.right-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-.sidebar-card { /* Menggunakan gaya .widget untuk konsistensi */
-    background: var(--bg-container);
-    border-radius: 20px;
-    padding: 2rem;
-    border: 1px solid var(--border-color);
-}
-.sidebar-card h4 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-}
-.sidebar-card p, .sidebar-event-list li {
-    font-family: var(--font-secondary);
-    color: var(--text-secondary);
-}
-
-.sidebar-event-list { list-style: none; padding: 0; margin: 0; }
-.sidebar-event-list li { margin-bottom: 1rem; }
-.sidebar-event-list a { text-decoration: none; color: var(--text-main); font-weight: 600; }
-.sidebar-event-list small { display: block; color: var(--text-secondary); }
-
-
-/* --- [BAGIAN 4] KONTEN UTAMA (GABUNGAN) --- */
+/* --- [BAGIAN 4] KONTEN UTAMA --- */
 .main-content {
-    background: var(--bg-container);
+    background: var(--white-color);
     border-radius: 20px;
     padding: 2.5rem;
-    min-height: 700px;
+    min-height: 100vh;
     border: 1px solid var(--border-color);
 }
 
-/* Header di dalam konten (dari CSS asli) */
 .content-header {
     display: flex;
     justify-content: space-between;
@@ -215,9 +64,9 @@ body {
     font-weight: 600;
 }
 
-/* Kartu Komunitas (dari CSS asli) */
+/* Kartu Komunitas */
 .community-card {
-    background: white; /* Kartu komunitas lebih baik putih agar banner menonjol */
+    background: white;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 15px;
@@ -229,22 +78,22 @@ body {
     box-shadow: 0 4px 10px var(--shadow-color);
 }
 .card-banner {
-    height: 80px;
+    height: 120px; /* Sedikit lebih tinggi untuk tampilan yang lebih baik */
     background-size: cover;
     background-position: center;
 }
 .card-content { padding: 15px; }
-.card-content h3 { margin: 0 0 8px 0; color: var(--accent); }
+.card-content h3 { margin: 0 0 8px 0; color: var(--error-red); }
 .card-content p { margin: 0; color: var(--text-secondary); font-size: 0.9em; }
 
-/* Banner Halaman Komunitas (dari CSS asli) */
+/* Banner Halaman Komunitas */
 #community-banner {
     position: relative;
     margin-bottom: 20px;
 }
 #community-banner-image {
     height: 220px;
-    background-color: var(--bg-card);
+    background-color: var(--primary-color);
     background-size: cover;
     background-position: center;
     border-radius: 8px;
@@ -253,175 +102,66 @@ body {
     position: relative;
     bottom: 40px;
     margin: -40px 20px 0 20px;
-    background-color: var(--bg-container);
+    background-color: var(--white-color);
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 25px;
 }
 
-/* === [BAGIAN DIPERBARUI] GAYA BARU UNTUK KARTU THREAD === */
-
-/* Kontainer Utama Kartu Thread */
+/* Kartu Thread */
 .thread-card {
-    background-color: #FFFFFF; /* Latar belakang putih bersih */
-    border: 1px solid #EAEAEA; /* Border yang sangat tipis */
-    border-radius: 16px;       /* Sudut yang lebih bulat */
-    padding: 24px;             /* Ruang di dalam kartu lebih lega */
+    background-color: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); /* Shadow yang lembut */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .thread-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
+.thread-card h3 { font-size: 1.4rem; margin: 0 0 8px 0; color: #111827; }
+.thread-meta { font-size: 0.875rem; color: #6B7280; margin-bottom: 16px; }
+.thread-description { color: #374151; line-height: 1.6; margin-bottom: 20px; }
+.thread-image-container { margin: 16px 0; }
+.thread-image-container img { max-width: 100%; height: auto; border-radius: 12px; display: block; }
 
-/* Judul Thread */
-.thread-card h3 {
-    font-weight: 600; /* Membuat judul lebih tebal dan menonjol */
-    font-size: 1.4rem;
-    margin: 0 0 8px 0;
-    color: #111827; /* Warna hitam yang tidak terlalu pekat */
-}
-
-/* Info Meta (Diposting oleh...) */
-.thread-meta {
-    font-size: 0.875rem; /* Ukuran font lebih kecil */
-    color: #6B7280;      /* Warna abu-abu untuk info sekunder */
-    margin-bottom: 16px;
-}
-
-/* Deskripsi Thread */
-.thread-description {
-    color: #374151; /* Warna teks utama untuk deskripsi */
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-/* GAYA UNTUK GAMBAR DI DALAM POST */
-.thread-image-container {
-    margin-top: 16px;
-    margin-bottom: 16px;
-}
-.thread-image-container img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px; /* Sudut yang lebih bulat agar sesuai desain */
-    display: block;
-}
-
-/* Tombol Aksi (Suka, Balas, dll.) */
+/* Tombol Aksi */
 .card-actions {
-    border-top: 1px solid #F3F4F6; /* Garis pemisah yang sangat tipis */
+    border-top: 1px solid #F3F4F6;
     padding-top: 16px;
     margin-top: 16px;
     display: flex;
-    justify-content: flex-start; /* Mulai dari kiri */
-    gap: 24px; /* Jarak antar tombol */
+    justify-content: flex-start;
+    gap: 24px;
 }
-
 .action-item {
-    background-color: transparent !important; /* Hapus latar belakang */
-    color: #6B7280;                 /* Warna abu-abu untuk ikon dan teks */
+    color: #6B7280;
     font-weight: 500;
-    padding: 0; /* Hapus padding agar lebih rapi */
     display: flex;
     align-items: center;
-    gap: 6px; /* Jarak antara ikon dan teks */
-    cursor: pointer; /* Menambahkan cursor pointer */
+    gap: 6px;
+    cursor: pointer;
 }
+.action-item:hover { color: var(--error-red); }
 
-.action-item:hover {
-    color: var(--accent); /* Warna berubah saat disentuh mouse */
-}
+/* Balasan */
+.replies-wrapper { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+.replies-wrapper.visible { max-height: 500px; }
+.replies-section { margin-top: 16px; }
+.replies-section h4 { font-weight: 600; margin-bottom: 12px; }
+.replies-container { max-height: 300px; overflow-y: auto; padding-right: 10px; }
+.reply { padding: 0 0 12px 0; margin-bottom: 12px; border-bottom: 1px solid #F3F4F6; }
+.reply:last-child { border-bottom: none; }
+.reply strong { display: block; font-weight: 600; color: #111827; }
+.reply p { margin: 2px 0 0 0; color: #4B5563; }
+.reply-image-container { margin-top: 8px; }
+.reply-image-container img { max-width: 250px; height: auto; border-radius: 8px; display: block; }
 
-/* BAGIAN BALASAN DENGAN ANIMASI */
-
-/* Pembungkus untuk mengontrol animasi */
-.replies-wrapper {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-in-out;
-}
-
-/* State ketika wrapper terlihat */
-.replies-wrapper.visible {
-    max-height: 500px; /* Atur ketinggian maksimum yang cukup besar */
-}
-
-
-.replies-section {
-    margin-top: 16px;
-}
-.replies-section h4 {
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-/* --- [PERUBAHAN] MEMBUAT AREA BALASAN DAPAT DI-SCROLL --- */
-.replies-container {
-    max-height: 300px; /* Atur ketinggian maksimum untuk area komentar */
-    overflow-y: auto;  /* Tambahkan scrollbar vertikal jika konten melebihi max-height */
-    padding-right: 10px; /* Beri sedikit ruang agar scrollbar tidak menempel konten */
-}
-
-/* (Opsional) Gaya untuk scrollbar agar lebih modern */
-.replies-container::-webkit-scrollbar {
-  width: 8px;
-}
-.replies-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-.replies-container::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
-.replies-container::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
-}
-
-.reply {
-    border: none;
-    padding: 0 0 12px 0;
-    margin-bottom: 12px;
-    border-bottom: 1px solid #F3F4F6;
-}
-.reply:last-child {
-    border-bottom: none;
-}
-
-.reply strong {
-    display: block;
-    font-weight: 600;
-    color: #111827;
-}
-
-.reply p {
-    margin: 2px 0 0 0;
-    color: #4B5563;
-}
-
-/* GAYA UNTUK GAMBAR DI DALAM BALASAN */
-.reply-image-container {
-    margin-top: 8px;
-}
-.reply-image-container img {
-    max-width: 250px; /* Batasi lebar gambar di balasan agar tidak terlalu besar */
-    height: auto;
-    border-radius: 8px;
-    display: block;
-}
-
-
-/* Form untuk Balasan Baru */
-.reply-form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-top: 20px;
-}
-
+/* Form Balasan */
+.reply-form { display: flex; gap: 10px; align-items: center; margin-top: 20px; }
 .reply-form input.reply-text-input {
     border: 1px solid #D1D5DB;
     border-radius: 20px;
@@ -430,44 +170,21 @@ body {
     padding: 8px 16px;
     font-size: 0.9rem;
 }
-
-.reply-form input.reply-text-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    background-color: #FFFFFF;
-}
-
-/* GAYA UNTUK TOMBOL BARU DI FORM BALASAN */
-/* Tombol generik di form balasan */
+.reply-form input.reply-text-input:focus { outline: none; border-color: var(--error-red); background-color: #FFFFFF; }
 .reply-form button {
     border: none;
-    border-radius: 50%; /* Membuat tombol menjadi lingkaran */
+    border-radius: 50%;
     width: 36px;
     height: 36px;
-    font-weight: 500;
     cursor: pointer;
-    flex-shrink: 0; /* Mencegah tombol menyusut */
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
 }
-
-/* Tombol Kirim */
-.reply-form button.submit-reply-btn {
-    background-color: var(--accent);
-    color: white;
-}
-
-/* Tombol Lampirkan File */
-.reply-form button.attach-reply-image-btn {
-    background-color: #E5E7EB; /* Warna abu-abu */
-    color: #4B5563;
-}
-.reply-form button.attach-reply-image-btn:hover {
-    background-color: #D1D5DB;
-}
-
+.reply-form button.submit-reply-btn { background-color: var(--error-red); color: white; }
+.reply-form button.attach-reply-image-btn { background-color: #E5E7EB; color: #4B5563; }
+.reply-form button.attach-reply-image-btn:hover { background-color: #D1D5DB; }
 
 /* --- [BAGIAN 5] TOMBOL, LABEL & MODAL --- */
 .btn {
@@ -482,20 +199,8 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
-.btn-primary {
-    background: var(--accent);
-    color: var(--bg-container);
-}
-.btn-primary:hover {
-    background: #a00110;
-    transform: translateY(-2px);
-}
-.btn-secondary {
-    background: var(--text-secondary);
-    color: var(--bg-container);
-}
-
-/* Label (dari CSS asli) */
+.btn-primary { background: var(--error-red); color: var(--white-color); }
+.btn-primary:hover { background: #a00110; transform: translateY(-2px); }
 .post-label {
     display: inline-block;
     padding: 4px 12px;
@@ -504,17 +209,17 @@ body {
     font-weight: bold;
     margin-left: 10px;
 }
-.label-penting { background-color: var(--accent); color: white; }
+.label-penting { background-color: var(--error-red); color: white; }
 .label-event { background-color: #3b82f6; color: white; }
 
-/* Modal (dari CSS asli) */
+/* Modal */
 .modal {
     position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.6); display: flex;
     align-items: center; justify-content: center;
 }
 .modal-content {
-    background: var(--bg-container); padding: 30px; border-radius: 16px;
+    background: var(--white-color); padding: 30px; border-radius: 16px;
     width: 90%; max-width: 500px; position: relative;
 }
 .close-button {
@@ -524,33 +229,8 @@ body {
 .modal-content form input,
 .modal-content form select,
 .modal-content form textarea {
-    width: 100%; padding: 1rem; border: 2px solid var(--bg-card); border-radius: 12px;
+    width: 100%; padding: 1rem; border: 2px solid var(--primary-color); border-radius: 12px;
     font-size: 1rem; background: white; font-family: var(--font-secondary); margin-bottom: 1rem;
 }
 .modal-content form textarea { min-height: 140px; }
 .modal-content form button[type="submit"] { width: 100%; }
-
-
-/* --- [BAGIAN 6] RESPONSIVE DESIGN (DARI DESAIN BARU) --- */
-@media (max-width: 1024px) {
-    .main-dashboard {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "left-sidebar"
-            "main-content"
-            "right-sidebar";
-        gap: 1.5rem;
-    }
-    .left-sidebar, .right-sidebar {
-        position: static;
-    }
-}
-
-@media (max-width: 768px) {
-    body { padding-top: 80px; }
-    .navigation { padding: 1rem; height: auto; }
-    .search { margin: 0; }
-    .container { padding: 1rem; }
-    .main-content { padding: 1.5rem; }
-    .content-header, .section-header { flex-direction: column; gap: 1rem; align-items: stretch; }
-}

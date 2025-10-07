@@ -44,7 +44,7 @@
 
 /* Custom Button for Danger Action */
 .btn-danger {
-    background-color: #c20114; /* Red color for warning */
+    background-color: var(--error-red); /* Red color for warning */
     color: #ffffff;
     display: inline-block;
     padding: 0.8rem 1.5rem;

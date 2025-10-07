@@ -3,61 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum Komunitas Interaktif</title>
+    <title>Foma Threads</title>
     <link rel="stylesheet" href="../src/css/threads-style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-    <nav class="navigation">
-        <div class="navi-title">
-            <div class="foma-icon">
-                <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
-            </div>
-            Foma
-        </div>
-    
-        <div class="search">
-            <input type="text" placeholder="Searching for something?" id="searchInput">
-            <div class="search-icon">
-                <img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=000000" alt="Search">
-            </div>
-        </div>
-
-        <div class="navi-link" id="links">
-        </div>
-    </nav>
-
     <div class="container">
         <div class="main-dashboard">
             
-            <aside class="left-sidebar">
-                <a href="#" id="nav-home" class="sidebar-item active">
-                    <span class="icon"><i class="fa-solid fa-house"></i></span>
-                    <span>Beranda</span>
-                </a>
-                <a href="#" id="nav-category" class="sidebar-item">
-                    <span class="icon"><i class="fa-solid fa-shapes"></i></span>
-                    <span>Komunitas</span>
-                </a>
-                
-                <div id="category-list" class="hidden" style="margin-left: 1rem;">
-                    </div>
-
-                <div class="widget topics-widget">
-                    <h3>
-                        <img src="https://img.icons8.com/?size=100&id=lhrKPeMFIFdF&format=png&color=000000" alt="Popular">
-                        Popular Topics
-                    </h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        <span class="category-highlight">#JavaScript</span>
-                        <span class="category-highlight">#Python</span>
-                        <span class="category-highlight">#StudyGroup</span>
-                        <span class="category-highlight">#Career</span>
-                    </div>
-                </div>
-            </aside>
-
             <main class="main-content">
                 <div id="community-list-page">
                     <div class="content-header">
@@ -93,20 +47,9 @@
                 </div>
             </main>
 
-            <aside class="right-sidebar">
-                 <div class="sidebar-card">
-                    <h4>Tentang Forum</h4>
-                    <p>Ini adalah tempat untuk berdiskusi berbagai macam topik dalam komunitas.</p>
-                </div>
-                <div class="sidebar-card">
-                    <h4>Events Terbaru</h4>
-                    <ul id="event-list-sidebar" class="sidebar-event-list"></ul>
-                </div>
-            </aside>
-
         </div>
     </div>
 
-    <script src="../src/js/script.js"></script>
+    <script src="../src/js/Script(threads).js"></script>
 </body>
-</html>
+</html>    
