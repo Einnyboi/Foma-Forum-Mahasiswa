@@ -24,7 +24,6 @@ body {
     background-color: var(--bg-body);
     color: var(--secondary-color);
     line-height: 1.6;
-    padding-top: 2rem; /* Mengurangi padding atas karena navbar hilang */
 }
 
 .hidden {
