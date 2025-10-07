@@ -36,13 +36,16 @@ function initializeCommunityPage() {
         return;
     }
 
-    // --- 3. FUNGSI UNTUK MENAMPILKAN KOMUNITAS ---
+    // Replace the existing renderCommunities function with this one
     function renderCommunities(communityArray) {
+        const communityGrid = document.getElementById('communityGrid');
         communityGrid.innerHTML = '';
+
         if (communityArray.length === 0) {
-            communityGrid.innerHTML = '<p>Komunitas tidak ditemukan.</p>';
+            communityGrid.innerHTML = '<p>Community not found.</p>';
             return;
         }
+
         communityArray.forEach(community => {
             const cardHTML = `
                 <div class="community-card">
@@ -50,8 +53,11 @@ function initializeCommunityPage() {
                     <div class="card-content">
                         <h2>${community.name}</h2>
                         <span class="category-tag">${community.category}</span>
-                        <p>${community.description}</p>
-                        <div class="card-footer">
+                    </div>
+                    
+                    <div class="card-popup-info">
+                        <p class="popup-description">${community.description}</p>
+                        <div class="popup-footer">
                             <span>${community.members} Members</span>
                             <a href="#" class="btn btn-primary">+ Join</a>
                         </div>

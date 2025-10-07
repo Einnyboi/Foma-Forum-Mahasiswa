@@ -1,64 +1,10 @@
-/* --- Community Page Styles --- */
-.community-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Ini kuncinya untuk grid responsif */
-    gap: 1.5rem;
-}
-
-.community-card {
-    background-color: white; /* Atau warna lain yang sedikit beda dari body */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    overflow: hidden; /* Agar gambar tidak keluar dari border-radius */
-    display: flex;
-    flex-direction: column;
-}
-
-.community-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover; /* Agar gambar proporsional */
-}
-
-.community-card .card-content {
-    padding: 1rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.community-card .category-tag {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 0.2rem 0.5rem;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-    align-self: flex-start;
-}
-
-.community-card .card-footer {
-    margin-top: auto; /* Mendorong footer ke bagian bawah kartu */
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* --- Community Page Header Styles (Tambahan) --- */
+/* --- Community Page Header Styles --- */
 .community-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    flex-wrap: wrap; /* Agar responsif di layar kecil */
-    gap: 1rem;
-}
-
-.community-header .header-actions {
-    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -67,4 +13,95 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-family: var(--secondary-font);
+}
+
+
+/* --- A MORE RESPONSIVE 2-COLUMN GRID --- */
+.community-grid {
+    display: grid;
+    /* This will automatically fit 2 columns in the space, or 1 if it's too narrow */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+
+/* --- THE NEW, SIMPLIFIED CARD --- */
+.community-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: visible; /* Important for the pop-up to show outside the card */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* This is the anchor for the absolute pop-up */
+    transition: transform 0.2s ease;
+}
+.community-card:hover {
+    transform: scale(1.03); /* Slightly enlarge the card on hover */
+    z-index: 10; /* Make sure it appears above other cards */
+}
+
+.community-card img {
+    width: 100%;
+    height: 120px; /* Made the image a bit smaller */
+    object-fit: cover;
+    border-radius: 8px 8px 0 0; /* Match card's top corners */
+}
+
+.community-card .card-content {
+    padding: 1rem;
+}
+
+.community-card h2 {
+    font-size: 1.1rem; /* Slightly smaller title for the compact view */
+    margin-bottom: 0.5rem;
+}
+
+.community-card .category-tag {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.7rem;
+}
+
+
+/* --- THE HOVER POP-UP STYLES ✨ --- */
+.card-popup-info {
+    position: absolute;
+    top: 20px;
+    left: 100%; /* Position it to the right of the card */
+    margin-left: 15px; /* Add some space between the card and the pop-up */
+    
+    width: 280px; /* Fixed width for the pop-up */
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    
+    /* Hide it by default */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px); /* Start slightly to the left */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+/* Show the pop-up when the parent card is hovered */
+.community-card:hover .card-popup-info {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.card-popup-info .popup-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.card-popup-info .popup-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
 }
