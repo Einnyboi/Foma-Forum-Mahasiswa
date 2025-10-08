@@ -558,7 +558,7 @@ function loadPostsContent()
 
 function loadStudentEventsWidget()
 {
-    loadExternalSidebarContent('Index(Student).html', 'eventsListContainer', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js')
+    loadExternalSidebarContent('Student.html', 'eventsListContainer', '.container', '../src/css/Student.css', '../src/js/Student.js')
         .then(success =>
         {
             if (success)
@@ -572,7 +572,7 @@ function loadStudentEventsWidget()
 // Load login.html and login.js
 function loadLoginContent()
 {
-    loadExternalContent('Index(Login).html', '.login-container', '../src/css/Style(Login).css', '../src/js/Script(Login).js')
+    loadExternalContent('Login.html', '.auth-container', '../src/css/Login.css', '../src/js/Login.js')
         .then(success =>
         {
             if (success)
