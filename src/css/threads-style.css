@@ -24,7 +24,6 @@ body {
     background-color: var(--bg-body);
     color: var(--secondary-color);
     line-height: 1.6;
-    padding-top: 2rem; /* Mengurangi padding atas karena navbar hilang */
 }
 
 .hidden {
@@ -45,10 +44,7 @@ body {
 /* --- [BAGIAN 4] KONTEN UTAMA --- */
 .threads-main-content {
     background: var(--white-color);
-    border-radius: 20px;
-    padding: 2.5rem;
     min-height: 100vh;
-    border: 1px solid var(--border-color);
 }
 
 .threads-content-header {
@@ -56,7 +52,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    padding-bottom: 1.5rem;
+    padding-bottom: 15px;
     border-bottom: 2px solid var(--border-color);
 }
 .content-header h2 {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Foma</title>
+    <link rel="stylesheet" href="../src/css/Login.css"> <!-- reuse same CSS -->
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <a href="dashboard.html" class="logo">
+                <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
+                Foma
+            </a>
+            <a href="../src/html/dashboard.html" class="back-to-dashboard">↩ Back</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Log in to your account</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="FullName">Full Name</label>
+                <input type="text" id="FullName" required>
+                <span class="error" id="fullNameError"></span>
+            </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" name="email" required>
+                <span class="error" id="loginEmailError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPass">Password</label>
+                <input type="password" id="loginPass" name="password" required>
+                <span class="error" id="loginPassError"></span>
+            </div>
+            
+            <!-- Remember Me -->
+            <div class="form-group checkbox">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember me</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="loginBtn">Log In</button>
+        </form>
+        
+        <div class="auth-footer">
+            Don’t have an account? <a href="../src/html/signup.html">Sign up</a>
+        </div>
+    </div>
+
+    <script src="../src/js/Login.js"></script>
+</body>
+</html>

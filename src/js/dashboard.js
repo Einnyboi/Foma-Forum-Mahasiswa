@@ -545,7 +545,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.main-content', '../src/css/threads-style.css', '../src/js/threads.js')
+    loadExternalContent('threads.html', '.threads-container', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
@@ -595,6 +595,34 @@ function loadSignupContent()
             }
         }
     );
+}
+
+function loadSearchPage(searchTerm)
+{
+    const createPostBtn = document.getElementById('createPostBtn');
+    if (createPostBtn) createPostBtn.style.display = 'none';
+
+    // Load the external HTML, CSS, and JS using the friend's search files
+    loadExternalContent('searchPage.html', '.container', '../src/css/searchstyle.css', '../src/js/search.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                // Update the page header
+                const pageTitle = document.getElementById('pageTitle');
+                if (pageTitle) pageTitle.textContent = `Search Results for: "${searchTerm}"`;
+                
+                // IMPORTANT: Call a function in the newly loaded search.js script to render results
+                if (window.renderSearchResults)
+                {
+                    window.renderSearchResults(searchTerm, posts, allContent);
+                }
+                else
+                {
+                    console.warn('search.js did not expose a global renderSearchResults function. Search results will not be displayed automatically.');
+                }
+            }
+        });
 }
 
 // Load Community.html
