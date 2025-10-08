@@ -83,7 +83,6 @@ body {
 }
 .search-results-list{
     padding:20px;
-    border: 1px solid var(--secondary-color);
     background-color: var(--primary-color);
     margin-bottom: 20px;
     border-radius: 18px;

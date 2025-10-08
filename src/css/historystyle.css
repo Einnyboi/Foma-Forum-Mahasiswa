@@ -50,7 +50,6 @@ a:hover {
 
 .post-item{
     padding:20px;
-    border: 1px solid var(--secondary-color);
     background-color: var(--primary-color);
     margin-bottom: 20px;
     border-radius: 18px;   
@@ -69,7 +68,7 @@ a:hover {
     padding:20px;
 }
 .history-content-wrapper{
-   display: flex;
+    display: flex;
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.2rem;
@@ -82,4 +81,3 @@ a:hover {
     font-weight: 500;
     font-family: 'Lato', sans-serif;
 }
-
