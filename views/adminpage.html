@@ -45,11 +45,16 @@
                 <a href="#" class="sidebar-item" data-page="content">
                     <span class="icon"><i class="fa-solid fa-file-alt"></i></span>
                     <span>Kelola Konten</span>
+                </a> 
+                <a href="#" class="sidebar-item" data-page="approvals">
+                    <span class="icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span>Persetujuan Event</span>
                 </a>
                 <a href="#" class="sidebar-item" data-page="settings">
                     <span class="icon"><i class="fa-solid fa-cog"></i></span>
                     <span>Pengaturan</span>
                 </a>
+               
                 <a href="#" class="sidebar-item" id="logout-btn">
                      <span class="icon"><i class="fa-solid fa-sign-out-alt"></i></span>
                     <span>Logout</span>
@@ -154,6 +159,26 @@
                         </table>
                     </div>
                 </div>
+
+                <div id="approvals-content" class="page-content" style="display: none;">
+                    <div class="content-card">
+                        <h3>Persetujuan Proposal Event</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Judul Event</th>
+                                    <th>Detail</th>
+                                    <th>Pengaju</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                        <tbody id="approvals-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+<div id="settings-content" class="page-content" style="display: none;">
                 
                 <div id="settings-content" class="page-content" style="display: none;">
                     <div class="content-card">
@@ -197,5 +222,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../src/js/admin-script.js"></script>
     <script src="../src/js/admin-content-manajer.js"></script> 
+    <script src="../src/js/admin-approval.js"></script> 
 </body>
 </html>
