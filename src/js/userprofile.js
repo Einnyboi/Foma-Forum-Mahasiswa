@@ -2,21 +2,20 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentUser = null;
     let registeredUsers = [];
 
-    // fungsi untuk load account profile
+    // --- MAIN INITIALIZATION ---
     function initializeProfilePage() {
         loadDataFromStorage();
         if (!currentUser) {
-            // If no one is logged in, redirect to the main page to log in.
             alert('You must be logged in to view this page.');
             window.location.href = 'dashboard.html';
             return;
         }
         updateNavi();
         displayUserInfo();
-        setupEventListeners();
+        setupEventListeners(); // Setup all click handlers
     }
 
-    // load data usernya
+    // --- DATA HANDLING ---
     function loadDataFromStorage() {
         try {
             const storedUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
@@ -30,28 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Could not load data from localStorage:', error);
         }
     }
-    // fungsi untuk  load history
-    function loadHistoryContent() {
-        // Sembunyikan setiap bagian profil satu per satu berdasarkan kelasnya
-        document.querySelector('.section-header').style.display = 'none';
-        document.querySelector('.profile-details-card').style.display = 'none';
-        document.querySelector('.account-actions-card').style.display = 'none';
 
-        // Cari dan tampilkan iframe
-        const frame = document.getElementById('historyFrame');
-        frame.src = 'history.html'; 
-        frame.style.display = 'block';
-    }
-
-    // Tambahkan event listener untuk tautan history
-    const historyLink = document.getElementById('historyLink');
-    if (historyLink) {
-        historyLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            loadHistoryContent();
-        });
-    }
-    // 
     function saveUsersToStorage() {
         try {
             localStorage.setItem('fomaUsers', JSON.stringify(registeredUsers));
@@ -60,7 +38,77 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- UI Updates ---
+    // --- EVENT HANDLING ---
+    function setupEventListeners() {
+        // Handle clicking the "Delete Account" button
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', handleDeleteAccount);
+        }
+
+        // Handle clicking the "Post History" link
+        const historyLink = document.getElementById('historyLink');
+        if (historyLink) {
+            historyLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                loadHistoryContent();
+            });
+        }
+
+        // Handle clicking the "Profile Settings" link to go back
+        const profileLink = document.getElementById('profileSettingsLink');
+        if (profileLink) {
+            profileLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                loadProfileContent();
+            });
+        }
+    }
+
+    // --- CONTENT SWITCHING LOGIC ---
+
+    // Function to show the HISTORY view
+    function loadHistoryContent() {
+        // Hide profile elements
+        document.querySelector('.section-header').style.display = 'none';
+        document.querySelector('.profile-details-card').style.display = 'none';
+        document.querySelector('.account-actions-card').style.display = 'none';
+
+        // Show history iframe
+        const frame = document.getElementById('historyFrame');
+        if (frame.src === '') { // Only load it once
+            frame.src = 'history.html';
+        }
+        frame.style.display = 'block';
+
+        // Update sidebar highlighting
+        updateSidebarActiveState('historyLink');
+    }
+
+    // Function to show the PROFILE view
+    function loadProfileContent() {
+        // Show profile elements
+        document.querySelector('.section-header').style.display = 'block';
+        document.querySelector('.profile-details-card').style.display = 'block';
+        document.querySelector('.account-actions-card').style.display = 'block';
+
+        // Hide history iframe
+        document.getElementById('historyFrame').style.display = 'none';
+
+        // Update sidebar highlighting
+        updateSidebarActiveState('profileSettingsLink');
+    }
+
+
+    // --- UI UPDATE FUNCTIONS ---
+
+    // Helper function to manage which sidebar link is highlighted
+    function updateSidebarActiveState(activeId) {
+        document.getElementById('profileSettingsLink').classList.remove('active');
+        document.getElementById('historyLink').classList.remove('active');
+        document.getElementById(activeId).classList.add('active');
+    }
+
     function displayUserInfo() {
         if (currentUser) {
             document.getElementById('profileName').textContent = currentUser.name;
@@ -84,54 +132,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (userInit) userInit.textContent = currentUser.name.charAt(0).toUpperCase();
             if (userName) userName.textContent = currentUser.name.split(' ')[0];
         } else {
-            // This case should be handled by the redirect, but as a fallback:
             if (loginLink) loginLink.style.display = 'inline-flex';
             if (signupLink) signupLink.style.display = 'inline-flex';
             if (profileBtn) profileBtn.style.display = 'none';
         }
     }
-
-    // --- Event Handling ---
-    function setupEventListeners() {
-        const deleteBtn = document.getElementById('deleteAccountBtn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', handleDeleteAccount);
-        }
-        const backLink = document.getElementById('backToProfileLink');
-        if (backLink) {
-            backLink.addEventListener('click', function(event) {
-                event.preventDefault(); // Mencegah link pindah halaman
-                
-                // Lakukan kebalikannya: tampilkan profil, sembunyikan riwayat
-                document.getElementById('profile-info').style.display = 'block';
-                document.getElementById('historyContent').style.display = 'none';
-            });
-        }
-    }
-
+    
     function handleDeleteAccount() {
         if (!currentUser) return;
-
         const isConfirmed = confirm('Are you sure you want to delete your account? This action cannot be undone.');
         
         if (isConfirmed) {
-            // Filter out the current user from the registered users list
             registeredUsers = registeredUsers.filter(user => user.email !== currentUser.email);
-            
-            // Save the updated user list
             saveUsersToStorage();
-            
-            // Log the user out by clearing currentUser from localStorage
             localStorage.removeItem('currentUser');
-            
             alert('Your account has been successfully deleted.');
-            
-            // Redirect to the homepage
             window.location.href = 'dashboard.html';
         }
     }
 
-    // --- Navigation Functions (for header to work) ---
+    // --- GLOBAL NAVIGATION FUNCTIONS (for header to work) ---
     window.logout = function() {
         localStorage.removeItem('currentUser');
         currentUser = null;
@@ -153,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    // --- Start the application ---
+
+    // --- START THE APPLICATION ---
     initializeProfilePage();
 });
