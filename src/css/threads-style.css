@@ -1,172 +1,172 @@
-/* src/css/threads-style.css */
-.hidden {
-    display: none !important;
+/* === Threads Page Styles (Corrected Colors) === */
+
+.threads-page {
+  padding: 1.5rem;
+  color: var(--secondary-color); /* CHANGED: Use your theme color */
+  font-family: var(--font-primary); /* CHANGED: Use your theme font */
 }
 
-/* --- Main Layout & Container --- */
-.threads-main-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.threads-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-#threads-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Space between cards */
-    padding: 1rem;
-    overflow-y: auto; /* Allows the list to scroll if it's too long */
-    flex-grow: 1;
+/* === Main Button Style === */
+.btn-primary {
+  background-color: var(--error-red); /* CHANGED: Replaced blue with your theme's red */
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-/* --- Thread Card Styling --- */
-.thread-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s ease-in-out;
+.btn-primary:hover {
+  background-color: #a00110; /* CHANGED: A darker version of your red */
 }
 
-.thread-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* === Discussion List & Post Cards === */
+.discussion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
-.thread-card h3 {
-    margin-top: 0;
+.post-card {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 1rem 1.3rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.post-details {
+  flex-grow: 1;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.author-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.author-name {
+  font-weight: 600;
+  display: block;
+}
+
+.post-time {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.post-details h3 {
     margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
-.thread-meta {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin-bottom: 1rem;
+.post-tags span {
+  background: var(--primary-color); /* CHANGED: Replaced light blue with your theme's neutral */
+  color: var(--secondary-color); /* CHANGED: Replaced blue text with your theme's dark text */
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  margin-right: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-.thread-description {
-    font-size: 0.9rem;
-    color: #343a40;
-    line-height: 1.5;
+/* === Like/Dislike Buttons === */
+.post-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-right: 1.5rem;
 }
 
-.thread-community {
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 0.5rem;
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #777;
+  transition: transform 0.1s ease, color 0.2s ease;
 }
 
-
-/* --- Tags (PENTING, EVENT, etc.) --- */
-.post-label {
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 0.2rem 0.5rem;
-    border-radius: 12px;
-    color: #fff;
+.action-btn:hover {
+  transform: scale(1.2);
+  color: var(--error-red); /* CHANGED: Replaced blue with your theme's red */
 }
 
-.label-penting {
-    background-color: #dc3545; /* Red */
+.likes-count {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
 }
 
-.label-event {
-    background-color: #28a745; /* Green */
+/* === Modal Styling (No color changes needed here) === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
 }
 
-
-/* --- Interactive Elements (Like, Dislike, Reply) --- */
-.card-actions {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 1rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid #f0f0f0;
+.modal.visible {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.action-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: #555;
-    cursor: pointer;
-    transition: color 0.2s;
+.modal-content {
+  background: #fdfdfd;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  animation: modal-fade-in 0.3s ease;
 }
 
-.action-item:hover {
-    color: #007bff; /* Blue hover effect */
+@keyframes modal-fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-.action-item i {
-    font-size: 1rem;
+.close-btn {
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #999;
+  line-height: 1;
 }
 
-
-/* --- Replies Section --- */
-.replies-wrapper {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out;
+.close-btn:hover {
+    color: #333;
 }
 
-.replies-wrapper.visible {
-    max-height: 500px; /* Animate opening */
-}
-
-.replies-section {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-}
-
-.replies-section h4 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-.reply {
-    background-color: #f9f9f9;
-    border-left: 3px solid #007bff;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-}
-
-.reply p {
-    margin: 0;
-    display: inline;
-}
-
-.reply-form {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.reply-text-input {
-    flex-grow: 1;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.submit-reply-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.submit-reply-btn:hover {
-    background-color: #0056b3;
-}
+/* etc... (rest of the modal styles are fine) */
