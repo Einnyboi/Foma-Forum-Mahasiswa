@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum Mahasiswa</title>
     <link rel="stylesheet" href="../src/css/dashboard.css">
-    <link
 </head>
 
 <body>
@@ -80,14 +79,6 @@
                     <span>Community</span>
                 </a>
 
-                <!-- Link to Event Page -->
-                <a href="#" class="sidebar-item" onclick="showpage('event')">
-                    <span class="icon">
-                        <img src="https://img.icons8.com/?size=100&id=26057&format=png&color=000000" alt="Events">
-                    </span>
-                    <span>Events</span>
-                </a>
-
                 <!-- Link to Category Page -->
                 <a href="#" class="sidebar-item" onclick="toggleCategories()">
                     <span class="icon">
@@ -99,27 +90,7 @@
                     <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer; padding-left: 1.3rem;" onclick="showpage('programming')">Programming</div>
                     <div class="sidebar-item" style="padding: 0.5rem; cursor: pointer; padding-left: 1.3rem;" onclick="showpage('general')">General</div>
                 </div>
-            </div>
 
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Dynamic Section Header -->
-                <div class="section-header" id="sectionHeader">
-                    <h2 id="pageTitle">Latest Discussions</h2>
-
-                    <button id="backToListBtn" class="btn" style="display: none;">&larr; Back</button>
-                    <button id="createPostBtn" class="btn btn-primary" style="display: none;">+ Create Post</button>
-                </div>
-                
-                <!-- Dynamic Main Content Area -->
-                <div id="mainContentArea">
-                    <!-- Content will be loaded here by JavaScript -->
-                </div>
-                <iframe id="searchFrame" style="display: none; width: 100%; height: 80vh; border: none;"></iframe>
-            </div>
-
-            <!-- Right Sidebar -->
-            <div class="right-sidebar">
                 <!-- Popular Topics Widget -->
                 <div class="widget topics-widget">
                     <h3>
@@ -132,6 +103,37 @@
                         <span class="category-highlight">#Python</span>
                         <span class="category-highlight">#StudyGroup</span>
                         <span class="category-highlight">#Career</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Dynamic Section Header -->
+                <div class="section-header" id="sectionHeader">
+                    <h2 id="pageTitle">Latest Discussions</h2>
+                </div>
+                
+                <!-- Dynamic Main Content Area -->
+                <div id="mainContentArea">
+                    <!-- Content will be loaded here by JavaScript -->
+                </div>
+                <iframe id="searchFrame" style="display: none; width: 100%; height: 80vh; border: none;"></iframe>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="right-sidebar">
+                <!-- Events -->
+                <div class="widget events-widget">
+                    <h3>
+                        <img src="https://img.icons8.com/?size=100&id=26057&format=png&color=000000" alt="Upcoming">
+                        Upcoming Events
+                    </h3>
+                    <div id="eventsListContainer">
+                        <div class="event-item">
+                            <div class="event-date">Loading...</div>
+                            <div class="event-title">Fetching Events List...</div>
+                        </div>
                     </div>
                 </div>
             </div>
