@@ -92,6 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            if (pageName === 'approvals') {
+            if (typeof displayEventProposals === 'function') {
+                displayEventProposals();
+            }
+        }
+
             contentPages.forEach(page => {
                 page.style.display = 'none';
             });

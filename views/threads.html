@@ -1,55 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foma Threads</title>
-    <link rel="stylesheet" href="../src/css/threads-style.css"> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
-
-    <div class="threads-container">
-        <div class="threads-main-dashboard">
-            
-            <main class="threads-main-content">
-                <div id="community-list-page">
-                    <div class="threads-content-header">
-                        <h2>Jelajahi Komunitas</h2>
-                        <button id="create-community-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Komunitas</button>
-                    </div>
-                    <div id="community-cards-container">
-                        </div>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Foma Threads</title>
+        <link rel="stylesheet" href="../src/css/threads-style.css"> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    </head>
+    <body>
+        <div class="threads-container">
+            <!-- Header section with title and Create Post button -->
+            <div class="threads-header">
+                <div class="header-text">
+                    <h2>Latest Discussions</h2>
+                    <p>Start a new discussion or join an existing one.</p>
                 </div>
-    
-                <div id="thread-view-container" class="hidden">
-                    <div id="community-banner">
-                        <div id="community-banner-image">
-                            <div class="banner-menu-container">
-                                <i class="fa-solid fa-ellipsis-vertical" id="banner-menu-trigger"></i>
-                                <div id="banner-dropdown-menu" class="dropdown-menu hidden">
-                                    <ul>
-                                        <li id="change-banner-action">Ganti Banner</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="file" id="change-banner-input" accept="image/*" class="hidden">
-                        
-                        <div id="community-header" class="threads-content-header community-header-card">
-                            <div id="community-info">
-                                </div>
-                            <button id="start-post-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Post</button>
-                        </div>
-                    </div>
-                    <div id="threads-list">
-                        </div>
+                <div class="header-actions">
+                    <button id="create-post-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Post</button>
                 </div>
-            </main>
+            </div>
 
+            <!-- Container where the list of threads will be rendered by JavaScript -->
+            <div id="threads-list-container">
+                <!-- JavaScript will populate this area -->
+            </div>
         </div>
-    </div>
+        <script src="../src/js/threads.js"></script>
+    </body>
+    </html>
 
-    <script src="../src/js/Script(threads).js"></script>
-</body>
-</html>    
