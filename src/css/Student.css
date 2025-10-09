@@ -1,14 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
+
+.main-container 
+{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+}
+
 /* General page setup */
 body {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background-color: #cfdedc;
-  color: #333;
+  font-family: 'Poppins', sans-serif;
+  background-color: #c7d6d5;
+  color: #0c120c;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
 }
 
 /* Navbar styling */
 .navbar {
-  background-color: #ebebef;
+  background-color: #ecebf3;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +39,7 @@ body {
 .logo h2 {
   font-weight: 700;
   font-size: 1.5rem;
-  color: #1a1a1a;
+  color: #0c120c;
 }
 
 .icon {
@@ -36,7 +50,7 @@ body {
 .back-btn {
   border: 1.5px solid #a7b5b2;
   background: transparent;
-  color: #111;
+  color: #0c120c;
   border-radius: 25px;
   font-size: 1rem;
   padding: 8px 20px;
@@ -45,7 +59,7 @@ body {
 }
 
 .back-btn:hover {
-  background-color: #f3f3f3;
+  background-color: #ecebf3;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -53,24 +67,22 @@ body {
 .main-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
+  align-items: flex-start;
+  padding: 2rem;
+  flex: 1;
 }
 
 /* Form card */
 .form-card {
-  background-color: #f3f3f6;
+  background-color: #ecebf3;
   width: 100%;
-  max-width: 480px;
-  border-radius: 15px;
-  padding: 40px 50px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  max-width: 950px;
   text-align: center;
 }
 
 .form-title {
   margin-bottom: 5px;
-  color: #1b1b1b;
+  color: #0c120c;
 }
 
 .subtitle {
@@ -90,19 +102,19 @@ body {
 .form-group label {
   font-weight: 600;
   margin-bottom: 6px;
-  color: #333;
+  color: #0c120c;
 }
 
 input,
 select,
 textarea {
-  border: 1px solid #b3c2bf;
+  border: 1px solid var(--main-color);
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 0.95rem;
   outline: none;
   transition: border 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
+  background-color: #ecebf3;
 }
 
 input:focus,
@@ -115,8 +127,8 @@ textarea:focus {
 /* Submit button */
 .submit-btn {
   width: 100%;
-  background-color: #c60010;
-  color: white;
+  background-color: #c20114;
+  color: #ecebf3;
   border: none;
   border-radius: 30px;
   padding: 14px;
@@ -142,15 +154,31 @@ textarea:focus {
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
+@media (max-width: 1024px)
+{
   .form-card {
-    padding: 30px 25px;
+    max-width: 750px;
   }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 1rem;
+  }
+
+  .form-card {
+    max-width: 100%;
+    padding: 2rem;
+  }
+  
   .navbar {
     flex-direction: column;
     gap: 10px;
   }
 }
 
-
-
+@media (max-width: 600px) {
+  .form-card {
+    padding: 1.5rem;
+  }
+}

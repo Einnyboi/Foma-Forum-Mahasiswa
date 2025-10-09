@@ -44,10 +44,17 @@
         </form>
         
         <div class="auth-footer">
-            Already have an account? <a href="dashboard.html">Log in here</a>
+            Already have an account? <a href="#" onclick="showpage('login')">Log in here</a>
         </div>
     </div>
 
     <script src="../src/js/signup.js"></script>
+    <script src="../src/js/dashboard.js"></script>
+    <script>
+    function goBack()
+    {
+      window.history.back();
+    }
+    </script>
 </body>
 </html>
