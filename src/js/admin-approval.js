@@ -25,7 +25,6 @@ function displayEventProposals() {
         const row = document.createElement('tr');
         const isPending = event.status === 'Pending';
         
-        // Menampilkan detail event
         const details = `
             Tanggal: ${event.date} <br>
             Waktu: ${event.time} <br>
@@ -37,7 +36,7 @@ function displayEventProposals() {
             <td>${event.title}</td>
             <td style="font-size: 0.9em;">${details}</td>
             <td>${event.submitter}</td>
-            <td>${event.status}</td>
+            <td><span class="status-${event.status.toLowerCase()}">${event.status}</span></td>
             <td>
                 <button class="btn-primary approve-btn" data-id="${event.id}" style="background-color: #10b981; margin-bottom: 5px;" ${!isPending ? 'disabled' : ''}>Diterima</button>
                 <button class="btn-primary reject-btn" data-id="${event.id}" ${!isPending ? 'disabled' : ''}>Ditolak</button>
@@ -54,7 +53,10 @@ function updateEventStatus(eventId, newStatus, reason = '') {
 
     if (eventIndex !== -1) {
         events[eventIndex].status = newStatus;
-        events[eventIndex].reason = reason; // Simpan alasan penolakan
+        // [MODIFIKASI] Pastikan reason tersimpan
+        if (newStatus === 'Rejected') {
+            events[eventIndex].reason = reason;
+        }
         saveEventProposals(events);
         displayEventProposals(); // Refresh tabel
     }
@@ -65,15 +67,22 @@ document.addEventListener('click', function(e) {
     // Tombol Diterima
     if (e.target.classList.contains('approve-btn')) {
         const eventId = e.target.dataset.id;
-        updateEventStatus(eventId, 'Approved');
+        if (confirm('Are you sure you want to approve this event?')) {
+            updateEventStatus(eventId, 'Approved');
+        }
     }
 
     // Tombol Ditolak
     if (e.target.classList.contains('reject-btn')) {
         const eventId = e.target.dataset.id;
+        // Menggunakan prompt untuk menanyakan alasan penolakan
         const reason = prompt("Silakan masukkan alasan penolakan untuk event ini:");
-        if (reason) { // Hanya proses jika admin mengisi alasan
+        
+        // Hanya proses jika admin mengisi alasan (tidak null atau string kosong)
+        if (reason) { 
             updateEventStatus(eventId, 'Rejected', reason);
+        } else if (reason === "") {
+            alert("Reason for rejection cannot be empty.");
         }
     }
-});
+}); 
