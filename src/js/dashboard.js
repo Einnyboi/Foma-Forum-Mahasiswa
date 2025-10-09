@@ -944,7 +944,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.threads-page', '../src/css/threads-style.css', '../src/js/threads.js')
+    loadExternalContent('threads.html', '.threadsPage', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
