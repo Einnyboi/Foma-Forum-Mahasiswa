@@ -423,7 +423,7 @@ function loadJS(src)
 // Load different page content dynamically
 function loadPageContent(pageID)
 {
-    const pageTitle = document.getElementById('pageTitle');
+    const pageTitle = document.getElementById('pageTitle'); // Might be null!
     const createPostBtn = document.getElementById('createPostBtn');
     const createPostSection = document.getElementById('createPostSection');
     
@@ -437,44 +437,68 @@ function loadPageContent(pageID)
     switch(pageID)
     {
         case 'home':
-            pageTitle.textContent = 'Latest Discussions';
-            loadPostsContent(); // This calls loadExternalContent for threads.html
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
+            loadPostsContent(); 
             break;
             
         case 'community':
-            pageTitle.textContent = 'Communities';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Communities';
+            }
             loadCommunityContent();
             break;
-
+            
         case 'profile':
-            pageTitle.textContent = 'User Profile';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'User Profile';
+            }
             loadProfileContent();
             break;            
             
         case 'programming':
         case 'general':
-            pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
+            if (pageTitle)
+            {
+                pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
+            }
             updateCreatePostVisibility();
             loadCategoryContent(pageID);
             break;
             
         case 'login':
-            pageTitle.textContent = 'Login to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Login to Your Account';
+            }
             loadLoginContent();
             break;
             
         case 'signup':
-            pageTitle.textContent = 'Sign Up to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Sign Up to Your Account';
+            }
             loadSignupContent();
             break;   
 
         case 'event':
-            pageTitle.textContent = 'Ongoing and Upcomming Events';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Ongoing and Upcomming Events';
+            }
             loadEventContent();
             break;
 
         default:
-            pageTitle.textContent = 'Latest Discussions';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
             updateCreatePostVisibility();
             loadPostsContent();
     }
@@ -598,7 +622,7 @@ function loadSignupContent()
 
 function loadEventContent()
 {
-    loadExternalContent('Student.html', '.container', '../src/css/Student.css', '../src/js/Student.js')
+    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
         .then(success =>
         {
             if (success)
