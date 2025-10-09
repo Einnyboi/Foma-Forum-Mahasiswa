@@ -4,29 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Foma</title>
-    <link rel="stylesheet" href="../src/css/Login.css"> <!-- reuse same CSS -->
-
-    <header class="navbar">
-    <div class="logo">
-      <span class="icon">🔊</span>
-      <h2>Foma</h2>
-    </div>
-    <button class="back-btn" onclick="goBack()">↩ Back</button>
-  </header>
+    <link rel="stylesheet" href="../src/css/Login.css">
 </head>
 
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <a href="dashboard.html" class="logo">
-                <img src="https://img.icons8.com/?size=100&id=56021&format=png&color=000000" alt="Icon">
-                Foma
-            </a>
-            <a href="../src/html/dashboard.html" class="back-to-dashboard">↩ Back</a>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="auth-container">
         <div class="auth-header">
@@ -57,16 +38,17 @@
         </form>
         
         <div class="auth-footer">
-            Don’t have an account? <a href="../src/html/signup.html">Sign up</a>
+            Don’t have an account? <a href="#" onclick="showpage('signup')">Sign up</a>
         </div>
     </div>
 
     <script src="../src/js/Login.js"></script>
-     <script>
-    function goBack() {
+    <script src="../src/js/dashboard.js"></script>
+    <script>
+    function goBack()
+    {
       window.history.back();
     }
-  </script>
-  
+    </script>
 </body>
 </html>

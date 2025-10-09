@@ -1,4 +1,4 @@
-@import url('./style.css');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
 
 *
 {
@@ -7,16 +7,25 @@
     box-sizing: border-box;
 }
 
+.main-container 
+{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 80px);
+  width: 950px;
+  padding: 2rem;
+}
+
 body
 {
-    font-family: var(--main-font);
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    font-family: 'Poppins', sans-serif;
+    background-color: #c7d6d5;
+    color: #0c120c;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     font-weight: 400;
     padding-top: 80px;
 }
@@ -27,30 +36,30 @@ body
     top: 0;
     left: 0;
     right: 0;
-    background: var(--white-color);
+    background: #ecebf3;
     padding: 1.5rem 2rem;
     box-shadow: 0 2px 20px rgba(12, 18, 12, 0.08);
     z-index: 1000;
     border-bottom: 1px solid rgba(199, 214, 213, 0.2);
-    text-align: center;
 }
 
 .header h1
 {
     font-size: var(--h4-size);
-    color: var(--secondary-color);
+    color: #0c120c;
 }
 
 /* Auth Form Container */
 .auth-container
 {
-    background: var(--white-color);
-    padding: 2.5rem;
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 100%;
-    margin: 2rem 0;
+    max-width: 950px;
+    background: #ecebf3;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(12, 18, 12, 0.1);
+    margin: 2rem auto;
+    border: 1px solid rgba(199, 214, 213, 0.3);
 }
 
 .auth-header
@@ -63,7 +72,7 @@ body
 {
     font-size: var(--h3-size);
     font-weight: 700;
-    color: var(--secondary-color);
+    color: #0c120c;
 }
 
 .auth-header p
@@ -83,7 +92,7 @@ body
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: var(--secondary-color);
+    color: #0c120c;
     font-size: 1rem;
 }
 
@@ -91,36 +100,42 @@ body
 {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--primary-color);
+    border: 1px solid #c7d6d5;
     border-radius: 8px;
-    font-family: var(--secondary-font);
+    transition: all 0.3s ease;
+    font-family: 'Lato', sans-serif;
     font-size: 1rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus
 {
-    border-color: var(--secondary-color);
+    border-color: #0c120c;
     box-shadow: 0 0 0 2px rgba(12, 18, 12, 0.1);
     outline: none;
 }
 
-.signupBtn
+.btn
 {
-    display: block;
-    padding: 0.8rem 1.5rem;
+    padding: 1rem 2rem;
     border: none;
-    border-radius: 8px;
-    font-family: var(--main-font);
-    font-weight: 600;
-    text-align: center;
+    border-radius: 50px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 1rem;
     transition: all 0.3s ease;
-    background: var(--error-red);
-    color: var(--white-color);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.signupBtn
+{   
+    background: #c20114;
+    color: #ecebf3;
     width: 100%;
     box-shadow: 0 4px 15px rgba(194, 1, 20, 0.2);
-    margin-bottom: 2rem;
 }
 
 .signupBtn:hover
@@ -140,20 +155,20 @@ body
 
 .error
 {
-    color: var(--error-red);
+    color: #c20114;
     font-size: 0.9rem;
     margin-top: 0.5rem;
     display: block;
-    font-family: var(--secondary-font);
+    font-family: 'Lato', sans-serif;
 }
 
 .success
 {
-    color: var(--secondary-color);
+    color: #0c120c;
     font-size: 0.9rem;
     margin-top: 0.5rem;
     display: block;
-    font-family: var(--secondary-font);
+    font-family: 'Lato', sans-serif;
 }
 
 .auth-footer
@@ -165,7 +180,7 @@ body
 
 .auth-footer a
 {
-    color: var(--secondary-color);
+    color: #0c120c;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s ease;
@@ -173,10 +188,33 @@ body
 
 .auth-footer a:hover
 {
-    color: var(--error-red);
+    color: #c20114;
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px)
+{
+    .auth-container
+    {
+        max-width: 750px;
+    }
+}
+
+@media (max-width: 768px)
+{
+    .main-container
+    {
+        padding: 1rem;
+    }
+
+    .auth-container
+    {
+        max-width: 100%;
+        padding: 2rem;
+        margin: 1rem auto;
+    }
+}
+
 @media (max-width: 600px)
 {
     body
@@ -193,6 +231,6 @@ body
     {
         width: 95%;
         padding: 1.5rem;
-        margin: 1rem 0;
+        margin: 1rem auto;
     }
 }
