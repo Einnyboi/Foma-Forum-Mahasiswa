@@ -1172,9 +1172,9 @@ function login(email, password)
         updateNavi();
         
         // **UPDATED: Redirect Admin immediately to their separate HTML file**
-        if (currentUser.role === 'admin') {
-            // Note: The path below assumes Index(Admin).html is at the same level as dashboard.html
-            window.location.href = 'Index(Admin).html'; 
+        if (currentUser.role === 'admin')
+        {
+            window.location.href = 'adminpage.html'; 
             return true;
         }
 

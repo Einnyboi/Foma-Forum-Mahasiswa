@@ -20,8 +20,19 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     }
 
     if (valid) {
-        alert("Login successful!");
-        window.location.href = "dashboard.html"; // redirect after login
+        if (login(email, password))
+        {
+            alert("Login successful!");
+
+            if (currentUser && currentUser.role !== 'admin')
+            {
+                window.location.href = "dashboard.html"; 
+            }
+        }
+        else
+        {
+            alert("Invalid email or password.");
+        }
     }
 });
 
@@ -90,6 +101,27 @@ function loadUsersFromStorage()
     }
 }
 
+function saveToStorage()
+{
+    try
+    {
+        localStorage.setItem('fomaUsers', JSON.stringify(registeredUsers));
+        localStorage.setItem('fomaPosts', JSON.stringify(posts));
+        if (currentUser)
+        {
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+        else
+        {
+            localStorage.removeItem('currentUser');
+        }
+    } 
+    catch (error)
+    {
+        console.log('Could not save to localStorage');
+    }
+}
+
 function login(email, password)
 {
     const user = findUserByEmail(email);
@@ -100,9 +132,10 @@ function login(email, password)
         updateNavi();
         
         // **UPDATED: Redirect Admin immediately to their separate HTML file**
-        if (currentUser.role === 'admin') {
+        if (currentUser.role === 'admin')
+        {
             // Note: The path below assumes Index(Admin).html is at the same level as dashboard.html
-            window.location.href = 'Index(Admin).html'; 
+            window.location.href = 'adminpage.html'; 
             return true;
         }
 
