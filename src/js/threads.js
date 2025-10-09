@@ -1,3 +1,4 @@
+
 function initializeThreadsPage() {
     // --- 1. SAMPLE DATA ---
     // In a real app, this would come from a database/API
@@ -47,11 +48,6 @@ function initializeThreadsPage() {
     const addCommentBtn = document.getElementById("addCommentBtn");
     const newCommentInput = document.getElementById("newCommentInput"); 
 
-
-    const currentUser = {
-        name: "YourNameHere", // replace dynamically later when auth is ready
-        profilePic: "assets/images/default-user.png" // fallback picture
-    };
     if (!discussionList) {
         console.error("Discussion list element not found!");
         return;
@@ -154,92 +150,131 @@ function initializeThreadsPage() {
     // Close modals if background is clicked
     const createPostForm = document.getElementById('createPostForm');
 
-    createPostForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+        createPostForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-        const title = document.getElementById('postTitle').value.trim();
-        const content = document.getElementById('postContent').value.trim();
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
 
-        if (!title || !content) return alert('Please fill in all fields!');
+            if (!title || !content) return alert('Please fill in all fields!');
 
-        // Create a new post object
-        const newPost = {
-            id: posts.length + 1,
-            author: 'You', // You can later replace this with logged-in user info
-            avatar: 'https://i.pravatar.cc/150?u=' + Math.random(),
-            title,
-            content,
-            tags: ['General'],
-            likes: 0,
-            comments: []
-        };
+            // Create a new post object
+            const newPost = {
+                id: posts.length + 1,
+                author: 'You', // You can later replace this with logged-in user info
+                avatar: 'https://i.pravatar.cc/150?u=' + Math.random(),
+                title,
+                content,
+                tags: ['General'],
+                likes: 0,
+                comments: []
+            };
 
-        // Add the post to the array and re-render
-        posts.unshift(newPost);
-        renderPosts(posts);
+            // Add the post to the array and re-render
+            posts.unshift(newPost);
+            renderPosts(posts);
 
-        // Close modal and clear form
-        createModal.classList.remove('visible');
-        createPostForm.reset();
-    });
+            // Close modal and clear form
+            createModal.classList.remove('visible');
+            createPostForm.reset();
+        });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === createModal) createModal.classList.remove('visible');
-        if (e.target === viewModal) viewModal.classList.remove('visible');
-    });
-    
-    // Event delegation for dynamically created post cards
-    discussionList.addEventListener('click', (e) => {
-        const card = e.target.closest('.post-card');
+        window.addEventListener('click', (e) => {
+            if (e.target === createModal) createModal.classList.remove('visible');
+            if (e.target === viewModal) viewModal.classList.remove('visible');
+        });
+        
+        // Event delegation for dynamically created post cards
+        discussionList.addEventListener("click", (e) => {
+        const card = e.target.closest(".post-card");
         if (!card) return;
 
-        // Handle like/dislike clicks
-        if (e.target.matches('.like-btn') || e.target.matches('.dislike-btn')) {
-            e.stopPropagation(); // Prevent modal from opening
-            const postId = parseInt(card.dataset.postId);
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
+        const postId = parseInt(card.dataset.postId);
+        const post = posts.find((p) => p.id === postId);
+        if (!post) return;
 
-            const likeCountElem = card.querySelector('.likes-count');
+        const likeBtn = card.querySelector(".like-btn");
+        const dislikeBtn = card.querySelector(".dislike-btn");
+        const likeCountElem = card.querySelector(".likes-count");
 
-            if (e.target.matches('.like-btn')) {
-                // Increment like count
-                post.likes++;
-                e.target.classList.toggle('active');
-            } else if (e.target.matches('.dislike-btn')) {
-                // Prevent negative likes
-                post.likes = Math.max(0, post.likes - 1);
+        // Prevent event from triggering the modal
+        if (e.target.matches(".like-btn") || e.target.matches(".dislike-btn")) {
+            e.stopPropagation();
+
+            // Initialize reaction state if not present
+            if (!post.reaction) post.reaction = null; // 'like' | 'dislike' | null
+
+            // --- Handle Like ---
+            if (e.target.matches(".like-btn")) {
+                if (post.reaction === "like") {
+                    // Undo like
+                    post.reaction = null;
+                    post.likes--;
+                    likeBtn.classList.remove("active");
+                } else {
+                    // If previously disliked, undo that first
+                    if (post.reaction === "dislike") dislikeBtn.classList.remove("active");
+
+                    post.reaction = "like";
+                    post.likes++;
+                    likeBtn.classList.add("active");
+                    dislikeBtn.classList.remove("active");
+                }
             }
 
-            // Update displayed count
+            // --- Handle Dislike ---
+            else if (e.target.matches(".dislike-btn")) {
+                if (post.reaction === "dislike") {
+                    // Undo dislike
+                    post.reaction = null;
+                    dislikeBtn.classList.remove("active");
+                } else {
+                    // If previously liked, undo that first
+                    if (post.reaction === "like") {
+                        post.likes--;
+                        likeBtn.classList.remove("active");
+                    }
+
+                    post.reaction = "dislike";
+                    dislikeBtn.classList.add("active");
+                    likeBtn.classList.remove("active");
+                }
+            }
+
             likeCountElem.textContent = post.likes;
             return;
         }
 
-
-        // Handle card click to open view modal
-        const postId = parseInt(card.dataset.postId);
+        // Handle opening modal
         openViewPostModal(postId);
     });
 
+
+    // REPLACE the old addCommentBtn listener with this one in threads.js
     addCommentBtn.addEventListener("click", () => {
+        // 1. Check if a user is actually logged in
+        // 'currentUser' is the global variable from your dashboard.js
+        if (!currentUser) {
+            alert("You must be logged in to comment!");
+            return; // Stop the function if no user is logged in
+        }
+
         const text = newCommentInput.value.trim();
         if (!text) return;
 
-        // Create comment card
+        // 2. Create the comment using the REAL user's name
         const comment = document.createElement("div");
         comment.classList.add("comment");
         comment.innerHTML = `
-            <div class="comment-user">
-            <img src="${currentUser.profilePic}" alt="${currentUser.name}">
-            <div>
-                <h6>${currentUser.name}</h6>
-                <p>${text}</p>
-            </div>
-            </div>
+            <p class="comment-author">${currentUser.name}</p>
+            <p>${text}</p>
+            
         `;
         commentSection.appendChild(comment);
         newCommentInput.value = "";
+
+        // OPTIONAL: You should also save this new comment to your 'posts' array
+        // and then save to localStorage so it doesn't disappear on refresh.
     });
     // --- 5. INITIALIZATION ---
     renderPosts(posts);

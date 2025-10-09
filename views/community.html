@@ -3,10 +3,50 @@
         <p>Find or create your own community!</p>
     </div>
     <div class="header-actions">
-        <input type="text" id="searchInput" placeholder="Cari komunitas...">
+        <input type="text" id="communitySearchInput" placeholder="Cari komunitas...">
         <button id="createCommunityBtn" class="btn btn-primary">+ Create one</button>
     </div>
 </div>
 
 <div class="community-grid" id="communityGrid">
     </div>
+
+
+<div class="modal-overlay" id="communityDetailModal">
+    <div class="modal-container">
+        <button class="modal-close-btn" id="closeCommunityModalBtn">&times;</button>
+        <div class="modal-content-area">
+            <img src="" alt="Community Banner" class="modal-image" id="modalImage">
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <span class="modal-tag" id="modalTag"></span>
+            <p class="modal-description" id="modalDescription"></p>
+            <div class="modal-footer">
+                <span id="modalMembers"></span>
+                <a href="#" class="btn btn-primary">+ Join Community</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="createCommunityModal">
+    <div class="modal-container">
+        <button class="modal-close-btn" id="cancelCreateBtn">&times;</button>
+        <div class="modal-content-area">
+            <h2 class="modal-title">Create a New Community</h2>
+            <form id="createCommunityForm">
+                <div class="form-group">
+                    <label for="communityNameInput">Community Name</label>
+                    <input type="text" id="communityNameInput" required>
+                </div>
+                <div class="form-group">
+                    <label for="communityDescInput">Description</label>
+                    <textarea id="communityDescInput" rows="4" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

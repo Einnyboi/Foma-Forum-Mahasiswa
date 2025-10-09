@@ -2,6 +2,7 @@ function initializeCommunityPage() {
     // --- 1. DATA KOMUNITAS ---
     let communities = [
         {
+            id: 1,
             name: 'Pecinta Front-End',
             category: 'Teknologi',
             description: 'Grup untuk diskusi seputar HTML, CSS, JavaScript, dan framework modern seperti React atau Vue.',
@@ -9,6 +10,7 @@ function initializeCommunityPage() {
             image: 'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
         },
         {
+            id: 2,
             name: 'Klub Debat Bahasa Inggris',
             category: 'Akademik',
             description: 'Asah kemampuan berpikir kritis dan public speaking dalam bahasa Inggris bersama kami.',
@@ -16,6 +18,7 @@ function initializeCommunityPage() {
             image: 'https://images.pexels.com/photos/1325735/pexels-photo-1325735.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
         },
         {
+            id: 3,
             name: 'Fotografi Lensa Kampus',
             category: 'Hobi',
             description: 'Tempat berkumpul para pegiat fotografi, dari pemula hingga mahir. Adakan hunting foto bareng!',
@@ -24,31 +27,38 @@ function initializeCommunityPage() {
         }
     ];
 
-    // --- 2. REFERENSI ELEMEN HTML ---
-    // Note: These elements only exist AFTER community.html is loaded.
+    // --- 2. REFERENSI ELEMEN ---
     const communityGrid = document.getElementById('communityGrid');
-    const searchInput = document.getElementById('searchInput');
+    const searchInput = document.getElementById('communitySearchInput');
     const createCommunityBtn = document.getElementById('createCommunityBtn');
 
-    // Check if elements exist before adding listeners
-    if (!communityGrid || !searchInput || !createCommunityBtn) {
-        console.error("Community elements not found! Make sure community.html is loaded correctly.");
-        return;
-    }
+    // View modal elements
+    const viewModal = document.getElementById('communityDetailModal');
+    const closeViewModalBtn = document.getElementById('closeCommunityModalBtn');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTag = document.getElementById('modalTag');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalMembers = document.getElementById('modalMembers');
 
-    // Replace the existing renderCommunities function with this one
+    // Create modal elements
+    const createModal = document.getElementById('createCommunityModal');
+    const createCommunityForm = document.getElementById('createCommunityForm');
+    const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+    const cancelFormBtn = document.getElementById('cancelFormBtn');
+
+    // --- 3. RENDER COMMUNITY CARDS ---
     function renderCommunities(communityArray) {
-        const communityGrid = document.getElementById('communityGrid');
         communityGrid.innerHTML = '';
 
         if (communityArray.length === 0) {
-            communityGrid.innerHTML = '<p>Community not found.</p>';
+            communityGrid.innerHTML = '<p>No community found.</p>';
             return;
         }
 
         communityArray.forEach(community => {
             const cardHTML = `
-                <div class="community-card">
+                <div class="community-card" data-id="${community.id}">
                     <img src="${community.image}" alt="Logo ${community.name}">
                     <div class="card-content">
                         <h2>${community.name}</h2>
@@ -64,36 +74,96 @@ function initializeCommunityPage() {
                     </div>
                 </div>
             `;
-            communityGrid.innerHTML += cardHTML;
+            communityGrid.insertAdjacentHTML('beforeend', cardHTML);
         });
     }
 
-    // --- 4. FUNGSI PENCARIAN (SEARCH) ---
+    // --- 4. OPEN & CLOSE VIEW MODAL ---
+    function openCommunityModal(communityId) {
+        const community = communities.find(c => c.id === communityId);
+        if (!community) return;
+
+        modalImage.src = community.image;
+        modalTitle.textContent = community.name;
+        modalTag.textContent = community.category;
+        modalDescription.textContent = community.description;
+        modalMembers.textContent = `${community.members} Members`;
+
+        viewModal.classList.add('visible');
+    }
+
+    function closeCommunityModal() {
+        viewModal.classList.remove('visible');
+    }
+
+    // --- 5. CREATE MODAL FUNCTIONS ---
+    function openCreateModal() {
+        createModal.classList.add('visible');
+    }
+
+    function closeCreateModal() {
+        createCommunityForm.reset();
+        createModal.classList.remove('visible');
+    }
+
+    // --- 6. EVENT LISTENERS ---
+
+    // Search communities
     searchInput.addEventListener('keyup', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        const filteredCommunities = communities.filter(community => {
-            return community.name.toLowerCase().includes(searchTerm);
-        });
-        renderCommunities(filteredCommunities);
+        const filtered = communities.filter(c => c.name.toLowerCase().includes(searchTerm));
+        renderCommunities(filtered);
     });
 
-    // --- 5. FUNGSI BUAT KOMUNITAS BARU ---
-    createCommunityBtn.addEventListener('click', () => {
-        const newName = prompt("Masukkan nama komunitas baru:");
-        if (!newName) return;
-        const newDescription = prompt("Masukkan deskripsi singkat untuk " + newName + ":");
-        if (!newDescription) return;
+    // Click on a community card → open detail modal
+    communityGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.community-card');
+        if (card) {
+            const id = parseInt(card.dataset.id);
+            openCommunityModal(id);
+        }
+    });
+
+    // Close view modal
+    closeViewModalBtn.addEventListener('click', closeCommunityModal);
+    viewModal.addEventListener('click', (e) => {
+        if (e.target === viewModal) closeCommunityModal();
+    });
+
+    // Open and close create modal
+    createCommunityBtn.addEventListener('click', openCreateModal);
+    cancelCreateBtn.addEventListener('click', closeCreateModal);
+    cancelFormBtn.addEventListener('click', closeCreateModal);
+    createModal.addEventListener('click', (e) => {
+        if (e.target === createModal) closeCreateModal();
+    });
+
+    // Submit create form
+    createCommunityForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const newName = document.getElementById('communityNameInput').value.trim();
+        const newDescription = document.getElementById('communityDescInput').value.trim();
+
+        if (!newName || !newDescription) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
         const newCommunity = {
+            id: Date.now(),
             name: newName,
-            category: 'Baru',
+            category: 'New',
             description: newDescription,
             members: 1,
             image: 'https://images.pexels.com/photos/1591060/pexels-photo-1591060.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
         };
+
         communities.unshift(newCommunity);
         renderCommunities(communities);
+        closeCreateModal();
     });
 
-    // --- INISIASI ---
+    // --- INITIALIZE ---
     renderCommunities(communities);
 }
