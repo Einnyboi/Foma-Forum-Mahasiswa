@@ -434,7 +434,7 @@ function loadJS(src, callback)
 // Load different page content dynamically
 function loadPageContent(pageID)
 {
-    const pageTitle = document.getElementById('pageTitle');
+    const pageTitle = document.getElementById('pageTitle'); // Might be null!
     const createPostBtn = document.getElementById('createPostBtn');
     const createPostSection = document.getElementById('createPostSection');
     
@@ -448,38 +448,70 @@ function loadPageContent(pageID)
     switch(pageID)
     {
         case 'home':
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
+            loadPostsContent(); 
             pageTitle.textContent = 'Latest Discussions';
             initializeThreadsFeature();
             break;
             
         case 'community':
-            pageTitle.textContent = 'Communities';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Communities';
+            }
             loadCommunityContent();
             break;
-
+            
         case 'profile':
-            pageTitle.textContent = 'User Profile';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'User Profile';
+            }
             loadProfileContent();
             break;            
             
+        case 'programming':
+        case 'general':
+            if (pageTitle)
+            {
+                pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
+            }
+            updateCreatePostVisibility();
+            loadCategoryContent(pageID);
+            break;
+            
         case 'login':
-            pageTitle.textContent = 'Login to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Login to Your Account';
+            }
             loadLoginContent();
             break;
             
         case 'signup':
-            pageTitle.textContent = 'Sign Up to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Sign Up to Your Account';
+            }
             loadSignupContent();
-            break;
+            break;   
 
-        case 'community':
-            pageTitle.textContent = 'Explore Communities';
-            createPostBtn.style.display = 'none';
-            loadCommunityContent();
+        case 'event':
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Ongoing and Upcomming Events';
+            }
+            loadEventContent();
             break;
 
         default:
-            pageTitle.textContent = 'Latest Discussions';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
             updateCreatePostVisibility();
             initializeThreadsFeature();
     }
@@ -783,7 +815,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 
 function loadStudentEventsWidget()
 {
-    loadExternalSidebarContent('Index(Student).html', 'eventsListContainer', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js')
+    loadExternalSidebarContent('Student.html', 'eventsListContainer', '.container', '../src/css/Student.css', '../src/js/Student.js')
         .then(success =>
         {
             if (success)
@@ -797,7 +829,7 @@ function loadStudentEventsWidget()
 // Load login.html and login.js
 function loadLoginContent()
 {
-    loadExternalContent('Index(Login).html', '.login-container', '../src/css/Style(Login).css', '../src/js/Script(Login).js')
+    loadExternalContent('Login.html', '.auth-container', '../src/css/Login.css', '../src/js/Login.js')
         .then(success =>
         {
             if (success)
@@ -817,6 +849,19 @@ function loadSignupContent()
             if (success)
             {
                 console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
+            }
+        }
+    );
+}
+
+function loadEventContent()
+{
+    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
             }
         }
     );
