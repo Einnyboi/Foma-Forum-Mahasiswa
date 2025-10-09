@@ -23,6 +23,11 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
         alert("Login successful!");
         window.location.href = "dashboard.html"; // redirect after login
     }
+    if (login(email, password)) {
+        alert(`Welcome back, ${currentUser.name}!`);
+        updateNavi();
+        showpage('home');
+    }
 });
 
 // Load users from localStorage or initialize with test data
