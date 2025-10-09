@@ -445,7 +445,7 @@ function loadExternalSidebarContent(targetElementId, htmlPath, contentSelector, 
             targetElement.innerHTML = 
             `
                 <div style="text-align: center; color: var(--error-red); padding: 10px; font-size: 0.9rem;">
-                    Failed to load events. (Check file paths and selector)
+                    Failed to load events.
                 </div>
             `;
             return false;
@@ -603,7 +603,7 @@ function loadPageContent(pageID)
         case 'event':
             if (pageTitle)
             {
-                pageTitle.textContent = 'Ongoing and Upcomming Events';
+                pageTitle.textContent = 'Create Your Own Events';
             }
             loadEventContent();
             break;
