@@ -1,114 +1,178 @@
-// This script runs immediately when loaded by the dashboard.
+function initializeThreadsPage() {
+    // --- 1. SAMPLE DATA ---
+    // In a real app, this would come from a database/API
+    const posts = [
+        {
+            id: 1,
+            author: 'Budi Santoso',
+            avatar: 'https://i.pravatar.cc/150?u=budi',
+            title: 'Tips for Effective Time Management for Students',
+            content: 'I\'ve been struggling to balance my studies, part-time job, and social life. What are your best tips for managing time effectively? I\'m particularly interested in tools or techniques that have worked for you.',
+            tags: ['Academic', 'Productivity'],
+            likes: 42,
+            comments: [
+                { author: 'Citra Lestari', text: 'I highly recommend the Pomodoro Technique! It really helps me stay focused.' },
+                { author: 'Doni Firmansyah', text: 'Using a digital calendar like Google Calendar to block out study time has been a game-changer for me.' }
+            ]
+        },
+        {
+            id: 2,
+            author: 'Ani Yuliani',
+            avatar: 'https://i.pravatar.cc/150?u=ani',
+            title: 'Which programming language to learn for Web Dev in 2025?',
+            content: 'I am new to programming and want to get into web development. There are so many options like JavaScript, Python, etc. What do you guys think is the best language to start with right now?',
+            tags: ['Programming', 'Technology', 'WebDev'],
+            likes: 78,
+            comments: [
+                { author: 'Eko Prasetyo', text: 'You can never go wrong with JavaScript. It\'s the foundation of the web.' }
+            ]
+        }
+    ];
 
-// This script's only job is to render the list of all discussions.
-const mainContentArea = document.querySelector('.main-content');
+    // --- 2. ELEMENT REFERENCES ---
+    const discussionList = document.getElementById('discussionList');
+    const createDiscBtn = document.getElementById('createDiscussionBtn');
+    
+    // Create Modal Elements
+    const createModal = document.getElementById('createPostModal');
+    const closeCreateModalBtn = document.getElementById('closeCreateModalBtn');
+    const cancelCreateBtn = document.getElementById('cancelCreateBtn');
 
-// 1. --- DATA SOURCE ---
-// Access the global variables created by dashboard.js.
-const dashboardPosts = window.posts || [];
-const dashboardAllContent = window.allContent || [];
-let threads = [...dashboardPosts, ...dashboardAllContent];
+    // View Modal Elements
+    const viewModal = document.getElementById('viewPostModal');
+    const closeViewModalBtn = document.getElementById('closeViewModalBtn');
+    const viewPostTitle = document.getElementById('viewPostTitle');
+    const viewPostContent = document.getElementById('viewPostContent');
+    const commentSection = document.getElementById('commentSection');
 
-// --- RENDER FUNCTION ---
-function renderThreads() {
-    if (!mainContentArea) {
-        console.error("Main content area not found!");
+    if (!discussionList) {
+        console.error("Discussion list element not found!");
         return;
     }
 
-    if (!threads || threads.length === 0) {
-        mainContentArea.innerHTML = '<p>No discussions have been posted yet.</p>';
-        return;
+    // --- 3. FUNCTIONS ---
+
+    /**
+     * Renders a list of posts to the page
+     * @param {Array} postsArray The array of post objects to render
+     */
+    function renderPosts(postsArray) {
+        discussionList.innerHTML = ''; // Clear current posts
+        postsArray.forEach(post => {
+            const tagsHTML = post.tags.map(tag => `<span>${tag}</span>`).join('');
+            const postCard = document.createElement('div');
+            postCard.className = 'post-card';
+            postCard.dataset.postId = post.id; // Store post id on the element
+
+            postCard.innerHTML = `
+                <div class="post-actions">
+                    <button class="action-btn like-btn" title="Like">👍</button>
+                    <span class="likes-count">${post.likes}</span>
+                    <button class="action-btn dislike-btn" title="Dislike">👎</button>
+                </div>
+                <div class="post-details">
+                    <div class="post-author">
+                        <img src="${post.avatar}" alt="${post.author}" class="author-avatar">
+                        <div>
+                            <span class="author-name">${post.author}</span>
+                            <span class="post-time">posted 2 hours ago</span>
+                        </div>
+                    </div>
+                    <h3>${post.title}</h3>
+                    <div class="post-tags">
+                        ${tagsHTML}
+                    </div>
+                </div>
+            `;
+            discussionList.appendChild(postCard);
+        });
     }
 
-    const threadsHTML = threads.map(thread => {
-        const tag = thread.category === 'Academics' ? `<span class="post-label label-penting">ACADEMICS</span>` :
-                    thread.category === 'Programming' ? `<span class="post-label label-event">CODE</span>` : '';
+    /**
+     * Opens the modal to view a specific post
+     * @param {number} postId The ID of the post to view
+     */
+    function openViewPostModal(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
         
-        const replies = thread.replies || [];
-        const repliesHTML = replies.map(reply => `
-            <div class="reply"><strong>${reply.author}:</strong> <p>${reply.text}</p></div>
-        `).join('');
+        // Populate modal with post data
+        viewPostTitle.textContent = post.title;
 
-        return `
-        <div class="thread-card" data-thread-id="${thread.id}">
-            <h3>${thread.title} ${tag}</h3>
-            <div class="thread-meta">Posted by: <strong>${thread.author || 'Anonymous'}</strong></div>
-            <p class="thread-description">${thread.description}</p>
-            
-            <div class="card-actions">
-                <div class="action-item like-button">
-                    <i class="fa-solid fa-thumbs-up"></i> 
-                    <span>Like (${thread.likes || 0})</span>
-                </div>
-                <div class="action-item dislike-button">
-                    <i class="fa-solid fa-thumbs-down"></i> 
-                    <span>Dislike (${thread.dislikes || 0})</span>
-                </div>
-                <div class="action-item comment-toggle-button">
-                    <i class="fa-solid fa-comment"></i> 
-                    <span>Replies (${replies.length})</span>
-                </div>
+        const tagsHTML = post.tags.map(tag => `<span>${tag}</span>`).join('');
+        viewPostContent.innerHTML = `
+            <div class="post-author view-post-author">
+                By <strong>${post.author}</strong>
             </div>
-
-            <div class="replies-wrapper">
-                <div class="replies-section">
-                    <h4>Replies</h4>
-                    <div class="replies-container">${repliesHTML || '<p>No replies yet.</p>'}</div>
-                    <form class="reply-form">
-                        <input type="text" class="reply-text-input" placeholder="Write a reply..." required>
-                        <button type="submit" class="submit-reply-btn">Send</button>
-                    </form>
-                </div>
+            <div class="view-post-body">
+                <p>${post.content}</p>
             </div>
-        </div>
+            <div class="post-tags">${tagsHTML}</div>
         `;
-    }).join('');
 
-    mainContentArea.innerHTML = `<div id="threads-list">${threadsHTML}</div>`;
-}
+        // Populate comments
+        commentSection.innerHTML = '';
+        post.comments.forEach(comment => {
+            commentSection.innerHTML += `
+                <div class="comment">
+                    <p class="comment-author">${comment.author}</p>
+                    <p>${comment.text}</p>
+                </div>
+            `;
+        });
+        
+        viewModal.classList.add('visible');
+    }
 
-// --- EVENT LISTENERS for Likes, Dislikes, and Replies ---
-if (mainContentArea) {
-    mainContentArea.addEventListener('click', (e) => {
-        const threadCard = e.target.closest('.thread-card');
-        if (!threadCard) return;
+    // --- 4. EVENT LISTENERS ---
 
-        const threadId = parseInt(threadCard.dataset.threadId);
-        const thread = threads.find(t => t.id === threadId);
-        if (!thread) return;
-
-        if (e.target.closest('.like-button')) {
-            thread.likes = (thread.likes || 0) + 1;
-            renderThreads(); 
-        }
-        if (e.target.closest('.dislike-button')) {
-            thread.dislikes = (thread.dislikes || 0) + 1;
-            renderThreads(); 
-        }
-        if (e.target.closest('.comment-toggle-button')) {
-            threadCard.querySelector('.replies-wrapper').classList.toggle('visible');
-        }
+    // Open "Create Post" modal
+    createDiscBtn.addEventListener('click', () => {
+        createModal.classList.add('visible');
     });
 
-    mainContentArea.addEventListener('submit', (e) => {
-        if (e.target.classList.contains('reply-form')) {
-            e.preventDefault();
-            const threadCard = e.target.closest('.thread-card');
-            const threadId = parseInt(threadCard.dataset.threadId);
-            const thread = threads.find(t => t.id === threadId);
-            const replyInput = e.target.querySelector('.reply-text-input');
-
-            if (thread && replyInput.value) {
-                if (!thread.replies) thread.replies = [];
-                thread.replies.push({ author: 'You', text: replyInput.value });
-                replyInput.value = ''; 
-                renderThreads(); 
-            }
-        }
+    // Close "Create Post" modal
+    closeCreateModalBtn.addEventListener('click', () => {
+        createModal.classList.remove('visible');
     });
+    cancelCreateBtn.addEventListener('click', () => {
+        createModal.classList.remove('visible');
+    });
+    
+    // Close "View Post" modal
+    closeViewModalBtn.addEventListener('click', () => {
+        viewModal.classList.remove('visible');
+    });
+
+    // Close modals if background is clicked
+    window.addEventListener('click', (e) => {
+        if (e.target === createModal) createModal.classList.remove('visible');
+        if (e.target === viewModal) viewModal.classList.remove('visible');
+    });
+    
+    // Event delegation for dynamically created post cards
+    discussionList.addEventListener('click', (e) => {
+        const card = e.target.closest('.post-card');
+        if (!card) return;
+
+        // Handle like/dislike clicks
+        if (e.target.matches('.like-btn') || e.target.matches('.dislike-btn')) {
+            e.stopPropagation(); // Prevent modal from opening
+            alert('Like/Dislike functionality would be handled here!');
+            return;
+        }
+
+        // Handle card click to open view modal
+        const postId = parseInt(card.dataset.postId);
+        openViewPostModal(postId);
+    });
+
+    // --- 5. INITIALIZATION ---
+    renderPosts(posts);
 }
 
-// --- INITIALIZATION ---
-// This will now run as soon as the script is loaded.
-renderThreads();
+// **IMPORTANT**: Call this function after the threads.html has been loaded into your dashboard.
+// For example:
+// loadContent('threads.html', () => {
+//     initializeThreadsPage();
+// });

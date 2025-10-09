@@ -464,7 +464,7 @@ body
     font-family: var(--secondary-font);
 }
 
-/* Right Sidebar (Events/Trending) */
+/* Right Sidebar (Trending) */
 .right-sidebar
 {
     display: flex;
@@ -500,37 +500,6 @@ body
 {
     width: 20px;
     height: 20px;
-}
-
-.event-item
-{
-    padding: 1.5rem;
-    background: var(--primary-color);
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-}
-
-.event-item:hover
-{
-    background: #b8c5c4;
-    transform: translateY(-1px);
-}
-
-.event-date
-{
-    color: var(--error-red);
-    font-weight: 600;
-    font-size: 0.9rem;
-    font-family: var(--main-font);
-}
-
-.event-title
-{
-    color: var(--secondary-color);
-    font-weight: 500;
-    margin-top: 0.5rem;
-    font-family: var(--secondary-font);
 }
 
 /* Form Styles */

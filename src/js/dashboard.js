@@ -3,15 +3,36 @@ let currentUser = null;
 let registeredUsers = [];
 let posts = [];
 // Data 
-const allContent =
-[
-    { id: 1, type: 'thread', title: 'Internship vacancies in tech companies', category: 'Career Info', author: 'Ahmad Rahman', description: 'Some of the latest internship vacancies for IT students, suitable for beginners.' },
-    { id: 2, type: 'thread', title: 'Recommended hangout spots in Jakarta', category: 'Hobbies & Entertainment', author: 'Sarah Kim', description: 'A list of cafes with fast Wi-Fi and a comfortable atmosphere for work or just relaxing.' },
-    { id: 3, type: 'thread', title: 'Effective study tips for semester exams', category: 'Academics', author: 'David Chen', description: 'Study methods proven to increase grades and reduce stress.' },
-    { id: 4, type: 'thread', title: 'How to make a simple robot from recycled materials', category: 'Hobbies & Entertainment', author: 'Tech Mentor', description: 'A step-by-step guide for a DIY robotics project.' },
-    { id: 5, type: 'thread', title: 'Scholarships abroad in 2025', category: 'Career Info', author: 'Code Guru', description: 'Complete information about fully-funded scholarships in various countries.' },
-    { id: 6, type: 'thread', title: 'Q&A forum about final projects', category: 'Academics', author: 'Student Helper', description: 'A discussion space to help students complete their theses.' },
-    { id: 7, type: 'thread', title: 'JavaScript vs Python: Which should beginners learn first?', category: 'Programming', author: 'Tech Mentor', description: 'A deep dive into the pros and cons of each language for newcomers.' }
+// REPLACE your old allContent array with this
+const allContent = [
+    { 
+        id: 1, 
+        type: 'thread', 
+        title: 'Internship vacancies in tech companies', 
+        category: 'Career Info',    
+        author: 'Ahmad Rahman', 
+        description: 'Here is a list of some of the latest internship vacancies for IT students, suitable for beginners. Feel free to add more in the comments if you find any!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        likes: 25,
+        dislikes: 2,
+        comments: []
+    },
+    { 
+        id: 2, 
+        type: 'thread', 
+        title: 'JavaScript vs Python: Which should beginners learn first?', 
+        category: 'Programming', 
+        author: 'Tech Mentor', 
+        description: 'A deep dive into the pros and cons of each language for newcomers. JavaScript is essential for web development, while Python is known for its simplicity and use in data science. What are your thoughts?',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+        likes: 42,
+        dislikes: 5,
+        comments: [
+            { id: 101, author: 'Sarah Kim', text: 'I started with Python and found the transition to other languages easier!' },
+            { id: 102, author: 'David Chen', text: 'Disagree, learning JavaScript first gives you a direct path to building visible projects on the web.' }
+        ]
+    },
+    // ... add more posts in this format if you want
 ];
 
 // Initialize and load data on page load
@@ -26,23 +47,6 @@ function initializeApp()
 {
     loadUsersFromStorage();
     loadPostsFromStorage();
-
-    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
-    if (!currentUser && registeredUsers.length > 0) {
-        // Set the current user to the first registered user, but only if they are not the admin
-        const defaultUser = registeredUsers.find(u => u.role === 'user');
-        if (defaultUser) {
-            currentUser = defaultUser; 
-            saveToStorage(); 
-        }
-    }
-
-
-    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
-    if (!currentUser && registeredUsers.length > 0) {
-        currentUser = registeredUsers[0]; // Set the current user to the first registered user.
-        saveToStorage(); // Save this login state to localStorage.
-    }
 
     updateNavi();
     showpage('home');
@@ -120,12 +124,17 @@ function loadPostsFromStorage()
     try
     {
         const storedPosts = JSON.parse(localStorage.getItem('fomaPosts')) || [];
-        posts = storedPosts;
+        if(storedPosts && storedPosts.length > 0){
+            posts = storedPosts;
+        }else{
+            posts = allContent;
+            saveToStorage();
+        }
     }
     catch (error)
     {
         console.log('Could not load posts from storage');
-        posts = [];
+        posts = allContent;
     }
 }
 
@@ -391,10 +400,10 @@ function loadCSS(href)
     currentExternalCss = href;
 }
 
-function loadJS(src)
+function loadJS(src, callback)
 {
     // Remove previous external JS first
-    const oldScript = document.querySelector(`.external-script`);
+    const oldScript = document.querySelector('.external-script');
     if (oldScript)
     {
         oldScript.remove();
@@ -405,10 +414,12 @@ function loadJS(src)
     script.type = 'text/javascript';
     script.className = 'external-script';
     
-    // Wrap the script execution in a scope to prevent global pollution
     script.onload = function()
     {
         console.log(`External script loaded: ${src}`);
+        if (typeof callback === 'function') {
+            callback(); // ✅ Run callback after script loads
+        }
     };
     
     script.onerror = function()
@@ -423,7 +434,7 @@ function loadJS(src)
 // Load different page content dynamically
 function loadPageContent(pageID)
 {
-    const pageTitle = document.getElementById('pageTitle');
+    const pageTitle = document.getElementById('pageTitle'); // Might be null!
     const createPostBtn = document.getElementById('createPostBtn');
     const createPostSection = document.getElementById('createPostSection');
     
@@ -437,48 +448,334 @@ function loadPageContent(pageID)
     switch(pageID)
     {
         case 'home':
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
+            loadPostsContent(); 
             pageTitle.textContent = 'Latest Discussions';
-            loadPostsContent(); // This calls loadExternalContent for threads.html
+            initializeThreadsFeature();
             break;
             
         case 'community':
-            pageTitle.textContent = 'Communities';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Communities';
+            }
             loadCommunityContent();
             break;
-
+            
         case 'profile':
-            pageTitle.textContent = 'User Profile';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'User Profile';
+            }
             loadProfileContent();
             break;            
             
         case 'programming':
         case 'general':
-            pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
+            if (pageTitle)
+            {
+                pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
+            }
             updateCreatePostVisibility();
             loadCategoryContent(pageID);
             break;
             
         case 'login':
-            pageTitle.textContent = 'Login to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Login to Your Account';
+            }
             loadLoginContent();
             break;
             
         case 'signup':
-            pageTitle.textContent = 'Sign Up to Your Account';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Sign Up to Your Account';
+            }
             loadSignupContent();
-            break;
+            break;   
 
-        case 'community':
-            pageTitle.textContent = 'Explore Communities';
-            createPostBtn.style.display = 'none';
-            loadCommunityContent();
+        case 'event':
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Ongoing and Upcomming Events';
+            }
+            loadEventContent();
             break;
 
         default:
-            pageTitle.textContent = 'Latest Discussions';
+            if (pageTitle)
+            {
+                pageTitle.textContent = 'Latest Discussions';
+            }
             updateCreatePostVisibility();
-            loadPostsContent();
+            initializeThreadsFeature();
     }
+}
+
+let isThreadsListenerActive = false; // Prevents adding multiple listeners
+
+// 1. MAIN ENTRY POINT for the threads feature
+function initializeThreadsFeature()
+{
+    console.log("Initializing threads feature...");
+
+    fetch('../views/threads.html')
+        .then(response => response.text())
+        .then(html =>
+        {
+            const mainContentArea = document.getElementById('mainContentArea');
+            mainContentArea.innerHTML = html;
+
+            // NOW the HTML (including #discussionList) exists!
+            loadJS('../src/js/threads.js');
+            loadCSS('../src/css/threads-style.css')
+
+            // Wait a bit to ensure threads.js is ready
+            setTimeout(() =>
+            {
+                if (typeof initializeThreadsPage === 'function')
+                {
+                    initializeThreadsPage();
+                }
+                else
+                {
+                    console.warn("initializeThreadsPage() not found yet.");
+                }
+            }, 200);
+        })
+        .catch(err => console.error("Error loading threads.html:", err));
+}
+
+// 2. RENDER THE LIST OF ALL THREADS (LAYER 1)
+function renderThreadList()
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    if (!mainContentArea)
+    {
+        console.error("Fatal Error: mainContentArea not found!");
+        return;
+    }
+    console.log("4. Rendering thread list...");
+
+    // Show the main page title, hide the back button
+    document.getElementById('pageTitle').style.display = 'block';
+    document.getElementById('backToListBtn').style.display = 'none';
+
+    let postsHtml = '';
+    posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    posts.forEach(post =>
+    {
+        postsHtml +=
+        `
+            <div class="thread-card" data-post-id="${post.id}">
+                <h3>${post.title}</h3>
+                <div class="thread-meta">
+                    by <strong>${post.author}</strong> • ${getRelativeTime(new Date(post.timestamp))}
+                </div>
+                <p class="thread-description">${post.description.substring(0, 150)}...</p>
+                <div class="card-actions">
+                    <div class="action-item">👍 <span>${post.likes}</span></div>
+                    <div class="action-item">💬 <span>${post.comments?.length ?? 0} Comments</span></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    mainContentArea.innerHTML = postsHtml;
+    console.log("5. Thread list rendered to DOM.");
+    updateCreatePostVisibility();
+}
+
+// 3. RENDER THE DETAILED VIEW OF A SINGLE THREAD (LAYER 2)
+function renderSingleThread(postId)
+{
+    const mainContentArea = document.getElementById('mainContentArea');
+    const post = posts.find(p => p.id == postId);
+    if (!post)
+    {
+        renderThreadList(); // If post not found, go back to the list
+        return;
+    }
+
+    let commentsHtml = '';
+    post.comments.forEach(comment =>
+    {
+        commentsHtml +=
+        `
+            <div class="reply">
+                <strong>${comment.author}</strong>
+                <p>${comment.text}</p>
+            </div>
+        `;
+    });
+
+    const threadDetailHtml =
+    `
+        <div class="section-header">
+            <button id="backToListBtn" class="btn btn-outline">&larr; Back to Discussions</button>
+        </div>
+        <div class="thread-item-full">
+            <div class="category-highlight">${post.category}</div>
+            <h2 class="thread-title-full">${post.title}</h2>
+            <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${getRelativeTime(new Date(post.timestamp))}</div>
+            <p class="thread-description">${post.description}</p>
+            <div class="thread-actions">
+                <button class="btn-action like-btn">👍 Like (${post.likes})</button>
+                <button class="btn-action dislike-btn">👎 Dislike (${post.dislikes})</button>
+            </div>
+        </div>
+        <div class="replies-section">
+            <h4>${post.comments.length} Comments</h4>
+            <div class="replies-container">${commentsHtml}</div>
+            <form id="commentForm" class="reply-form">
+                <input type="text" id="commentInput" class="reply-text-input" placeholder="Write a comment..." required>
+                <button type="submit" class="submit-reply-btn">➔</button>
+            </form>
+        </div>
+    `;
+    mainContentArea.innerHTML = threadDetailHtml;
+}
+
+// 4. FUNCTION TO OPEN THE "CREATE POST" MODAL
+function openCreatePostModal()
+{
+    const existingModal = document.getElementById('createPostModal');
+    if(existingModal) existingModal.remove();
+    
+    const modalHtml =
+    `
+        <div class="modal" id="createPostModal">
+            <div class="modal-content">
+                <span class="close-button" id="closeModalBtn">&times;</span>
+                <form id="postForm">
+                    <h3>Create a New Post</h3>
+                    <div class="form-group">
+                        <label for="postTitle">Title</label>
+                        <input type="text" id="postTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postCategory">Category</label>
+                        <select id="postCategory">
+                            <option value="Programming">Programming</option>
+                            <option value="Career Info">Career Info</option>
+                            <option value="Academics">Academics</option>
+                            <option value="Hobbies & Entertainment">Hobbies & Entertainment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="postDescription">Description</label>
+                        <textarea id="postDescription" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Post</button>
+                </form>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// 5. SETUP ALL EVENT LISTENERS FOR THE FEATURE
+function setupThreadsEventListeners()
+{
+    const mainContent = document.querySelector('.main-content');
+    if (!mainContent)
+    {
+        console.error("Critical error: .main-content container not found.");
+        return;
+    }
+
+    mainContent.addEventListener('click', function(e)
+    {
+        if (e.target.closest('#createPostBtn'))
+        {
+            if (!currentUser)
+            {
+                alert('You must be logged in to create a post!');
+                return;
+            }
+            openCreatePostModal();
+            return; // Stop here
+        }
+        
+        if (e.target.closest('#backToListBtn'))
+        {
+            renderThreadList();
+            return; // Stop here
+        }
+        
+        const card = e.target.closest('.thread-card');
+        // This remains the same
+        if (card)
+        {
+            const postId = card.dataset.postId;
+            // Only navigate if the user didn't click a specific action button inside the card
+            if (!e.target.closest('.like-btn') && !e.target.closest('.dislike-btn'))
+            {
+                renderSingleThread(postId);
+            }
+        }
+    });
+
+    // --- Listeners for the MODAL (outside main content area) ---
+    document.body.addEventListener('click', function(e)
+    {
+        const modal = document.getElementById('createPostModal');
+        if (!modal) return;
+
+        if (e.target.id === 'closeModalBtn' || e.target.classList.contains('modal'))
+        {
+            modal.remove();
+        }
+    });
+    
+    document.body.addEventListener('submit', function(e)
+    {
+        if (e.target.id === 'postForm') {
+            e.preventDefault();
+            const newPost =
+            {
+                id: Date.now(),
+                type: 'thread',
+                title: document.getElementById('postTitle').value,
+                category: document.getElementById('postCategory').value,
+                author: currentUser.name,
+                description: document.getElementById('postDescription').value,
+                timestamp: new Date(),
+                likes: 0,
+                dislikes: 0,
+                comments: []
+            };
+            posts.unshift(newPost); // Add to the beginning of the array
+            saveToStorage();
+            document.getElementById('createPostModal').remove();
+            renderThreadList();
+            alert('Post created successfully!');
+        }
+        
+        if (e.target.id === 'commentForm')
+        {
+            e.preventDefault();
+            if (!currentUser) { alert('You must be logged in to comment!'); return; }
+            const text = document.getElementById('commentInput').value.trim();
+            const postId = document.querySelector('.thread-item-full').dataset.postId;
+            const post = posts.find(p => p.id == postId);
+            if (text && post)
+            {
+                const newComment = { id: Date.now(), author: currentUser.name, text: text };
+                post.comments.push(newComment);
+                saveToStorage();
+                renderSingleThread(postId);
+            }
+        }
+    });
+
+    console.log("✅ Smart event listeners are now active.");
+    isThreadsListenerActive = true;
 }
 
 function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
@@ -545,7 +842,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.threads-container', '../src/css/threads-style.css', '../src/js/threads.js')
+    loadExternalContent('threads.html', '.threadsPage', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
@@ -556,23 +853,10 @@ function loadPostsContent()
     );
 }
 
-function loadStudentEventsWidget()
-{
-    loadExternalSidebarContent('Index(Student).html', 'eventsListContainer', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Event content and Script(Student).js loaded. Event logic is now handled by Script(Student).js.');
-            }
-        }
-    );
-}
-
 // Load login.html and login.js
 function loadLoginContent()
 {
-    loadExternalContent('Index(Login).html', '.login-container', '../src/css/Style(Login).css', '../src/js/Script(Login).js')
+    loadExternalContent('Login.html', '.auth-container', '../src/css/Login.css', '../src/js/Login.js')
         .then(success =>
         {
             if (success)
@@ -592,6 +876,32 @@ function loadSignupContent()
             if (success)
             {
                 console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
+            }
+        }
+    );
+}
+
+function loadEventContent()
+{
+    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
+            }
+        }
+    );
+}
+
+function loadEventContent()
+{
+    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
             }
         }
     );
@@ -626,7 +936,8 @@ function loadSearchPage(searchTerm)
 }
 
 // Load Community.html
-function loadCommunityContent() {
+function loadCommunityContent()
+{
     const mainContentArea = document.getElementById('mainContentArea');
     const communityStylesheet = document.createElement('link');
 
@@ -636,20 +947,26 @@ function loadCommunityContent() {
     document.head.appendChild(communityStylesheet);
 
     fetch('community.html') 
-        .then(response => {
+        .then(response =>
+        {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.text();
         })
-        .then(html => {
+        .then(html =>
+        {
             mainContentArea.innerHTML = html;
             // Assuming initializeCommunityPage is a function defined elsewhere or in the dashboard.js file
-            if (typeof initializeCommunityPage === 'function') {
+            if (typeof initializeCommunityPage === 'function')
+            {
                 initializeCommunityPage(); 
-            } else {
+            }
+            else
+            {
                 console.warn('initializeCommunityPage function not found.');
             }
         })
-        .catch(error => {
+        .catch(error =>
+        {
             console.error('Error loading community page:', error);
             mainContentArea.innerHTML = 
                 `<div class="placeholder-section error-section">

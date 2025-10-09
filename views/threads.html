@@ -1,31 +1,38 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Foma Threads</title>
-        <link rel="stylesheet" href="../src/css/threads-style.css"> 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    </head>
-    <body>
-        <div class="threads-container">
-            <!-- Header section with title and Create Post button -->
-            <div class="threads-header">
-                <div class="header-text">
-                    <h2>Latest Discussions</h2>
-                    <p>Start a new discussion or join an existing one.</p>
-                </div>
-                <div class="header-actions">
-                    <button id="create-post-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Post</button>
-                </div>
-            </div>
+<section id="threadsPage" class="threadsPage">
+  <div class="threads-header">
+    <h2>Community Threads</h2>
+    <button id="createDiscussionBtn" class="btn-primary">+ Create Discussion</button>
+  </div>
 
-            <!-- Container where the list of threads will be rendered by JavaScript -->
-            <div id="threads-list-container">
-                <!-- JavaScript will populate this area -->
-            </div>
+  <div id="discussionList" class="discussion-list"></div>
+
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="modal">
+    <div class="modal-content">
+      <span id="closeCreateModalBtn" class="close-btn">&times;</span>
+      <h3>Create New Discussion</h3>
+      <form id="createPostForm">
+        <label for="postTitle">Title</label>
+        <input type="text" id="postTitle" placeholder="Enter your discussion title" required>
+
+        <label for="postContent">Content</label>
+        <textarea id="postContent" placeholder="Share your thoughts..." required></textarea>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelCreateBtn" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Post</button>
         </div>
-        <script src="../src/js/threads.js"></script>
-    </body>
-    </html>
+      </form>
+    </div>
+  </div>
 
+  <!-- View Post Modal -->
+  <div id="viewPostModal" class="modal">
+    <div class="modal-content">
+      <span id="closeViewModalBtn" class="close-btn">&times;</span>
+      <h3 id="viewPostTitle"></h3>
+      <div id="viewPostContent"></div>
+      <div id="commentSection" class="comment-section"></div>
+    </div>
+  </div>
+</section>
