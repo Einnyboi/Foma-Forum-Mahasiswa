@@ -50,6 +50,7 @@ function initializeApp()
 
     updateNavi();
     showpage('home');
+    loadEventsWidget();
     console.log('Dashboard loaded successfully!');
 }
 
@@ -63,7 +64,7 @@ function loadUsersFromStorage()
         // Ensure all users have a 'role' property (migration/safety check)
         registeredUsers = storedUsers.map(user => ({
             ...user,
-            role: user.role || (user.email === 'admin@foma.com' ? 'admin' : 'user')
+            role: user.role || (user.email === 'admin@gmail.com' ? 'admin' : 'user')
         }));
         
         if (registeredUsers.length === 0 || !registeredUsers.some(u => u.role === 'admin'))
@@ -190,6 +191,11 @@ function setupEventListeners()
 // Page navigation function
 function showpage(pageID)
 {
+    if (pageID === 'home')
+    {
+        loadUsersFromStorage();
+        updateNavi();
+    }
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     sidebarItems.forEach(item => item.classList.remove('active'));
     
@@ -357,6 +363,101 @@ function scopeExternalCSS(href)
     }
 }
 
+function loadSidebarCSS(href) 
+{
+    document.querySelectorAll('.external-sidebar-style').forEach(link => link.remove());
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.className = 'external-sidebar-style';
+    document.head.appendChild(link);
+}
+
+// Dynamically load JS file specifically for the sidebar widget
+function loadSidebarJS(src)
+{
+    document.querySelectorAll('.external-sidebar-script').forEach(script => script.remove());
+    const script = document.createElement('script');
+    script.src = src;
+    script.type = 'text/javascript';
+    script.className = 'external-sidebar-script';
+    script.onerror = function()
+    {
+        console.error(`Failed to load external sidebar script: ${src}`);
+    };
+    document.body.appendChild(script);
+}
+
+function unloadSidebarAssets() 
+{
+    // Remove previous external sidebar CSS
+    document.querySelectorAll('.external-sidebar-style').forEach(link => link.remove());
+    
+    // Remove previous external sidebar JS
+    document.querySelectorAll('.external-sidebar-script').forEach(script => script.remove());
+}
+
+function loadExternalSidebarContent(targetElementId, htmlPath, contentSelector, cssPath = null, jsPath = null)
+{
+    const targetElement = document.getElementById(targetElementId);
+    if (!targetElement) return Promise.resolve(false);
+    
+    // Show loading state
+    targetElement.innerHTML = `<div style="text-align: center; padding: 10px; font-style: italic;">Loading events...</div>`;
+
+    return fetch(htmlPath)
+        .then(response =>
+        {
+            if (!response.ok)
+            {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html =>
+        {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            // Assuming the friend's HTML has a main container we want to inject
+            const content = doc.querySelector(contentSelector);
+            
+            if (content)
+            {
+                // 1. Insert the HTML content (injecting only the content INSIDE the selector)
+                targetElement.innerHTML = content.innerHTML;
+                
+                // 2. Load the specific CSS 
+                if (cssPath) loadSidebarCSS(cssPath);
+
+                // 3. Load the specific JavaScript (after DOM insertion)
+                if (jsPath) loadSidebarJS(jsPath);
+                
+                return true;
+            }
+            else
+            {
+                throw new Error(`Content selector (${contentSelector}) not found in ${htmlPath}. Check the class/ID in your friend's HTML.`);
+            }
+        })
+        .catch(error =>
+        {
+            console.error(`Error loading sidebar content from ${htmlPath}:`, error);
+            targetElement.innerHTML = 
+            `
+                <div style="text-align: center; color: var(--error-red); padding: 10px; font-size: 0.9rem;">
+                    Failed to load events.
+                </div>
+            `;
+            return false;
+        });
+}
+
+function loadEventsWidget()
+{
+    // You may need to adjust the paths based on your actual file structure
+    loadExternalSidebarContent('eventsListContainer', 'Index(Student).html', '.events-list-container', '../src/css/Style(Student).css', '../src/js/Script(Student).js');
+}
+
 function unloadExternalAssets() 
 {
     // Remove previous external CSS
@@ -502,7 +603,7 @@ function loadPageContent(pageID)
         case 'event':
             if (pageTitle)
             {
-                pageTitle.textContent = 'Ongoing and Upcomming Events';
+                pageTitle.textContent = 'Create Your Own Events';
             }
             loadEventContent();
             break;
@@ -735,7 +836,8 @@ function setupThreadsEventListeners()
     
     document.body.addEventListener('submit', function(e)
     {
-        if (e.target.id === 'postForm') {
+        if (e.target.id === 'postForm')
+        {
             e.preventDefault();
             const newPost =
             {
@@ -876,19 +978,6 @@ function loadSignupContent()
             if (success)
             {
                 console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
-            }
-        }
-    );
-}
-
-function loadEventContent()
-{
-    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
             }
         }
     );
@@ -1085,7 +1174,7 @@ function login(email, password)
         // **UPDATED: Redirect Admin immediately to their separate HTML file**
         if (currentUser.role === 'admin') {
             // Note: The path below assumes Index(Admin).html is at the same level as dashboard.html
-            window.location.href = 'Index(Admin).html'; 
+            window.location.href = 'adminpage.html'; 
             return true;
         }
 
@@ -1262,6 +1351,7 @@ function testLogin()
         alert('No test users available');
     }
 }
+
 // fungsi loadSearchResults
 function loadSearchInIframe(searchTerm) {
     const mainContentArea = document.getElementById('mainContentArea');

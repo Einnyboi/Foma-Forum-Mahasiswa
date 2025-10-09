@@ -7,12 +7,13 @@
     box-sizing: border-box;
 }
 
-.main-container {
+.main-container 
+{
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: calc(100vh - 80px);
-  margin-top: 100px; 
+  align-items: flex-start;
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
 }
 
 body
@@ -23,81 +24,21 @@ body
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     font-weight: 400;
     padding-top: 80px;
-}
-
-/* Header */
-.header
-{
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #ecebf3;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 2px 20px rgba(12, 18, 12, 0.08);
-    z-index: 1000;
-    border-bottom: 1px solid rgba(199, 214, 213, 0.3);
-}
-
-.header img
-{
-    width: 35px;
-    height: 35px;
-    padding-right: 1px;
-}
-
-.header-content
-{
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo
-{
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #0c120c;
-    cursor: pointer;
-    text-decoration: none;
-    font-family: 'Poppins', sans-serif;
-}
-
-.back-to-dashboard
-{
-    color: #0c120c;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.8rem 1.8rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    border: 2px solid #c7d6d5;
-    font-family: 'Poppins', sans-serif;
-}
-
-.back-to-dashboard:hover
-{
-    background: #c7d6d5;
-    color: #0c120c;
-    transform: translateY(-1px);
 }
 
 /* Auth container */
 .auth-container
 {
     width: 100%;
-    max-width: 450px;
+    max-width: 950px;
     background: #ecebf3;
     border-radius: 20px;
     padding: 3rem;
     box-shadow: 0 10px 40px rgba(12, 18, 12, 0.1);
-    margin-top: 100px;
+    margin: 2rem auto;
     border: 1px solid rgba(199, 214, 213, 0.3);
 }
 
@@ -271,28 +212,38 @@ body
 }
 
 /* Responsive design */
-@media (max-width: 768px)
+@media (max-width: 1024px)
 {
     .auth-container
     {
-        margin: 1rem;
-        margin-top: 120px;
-        padding: 2rem;
+        max-width: 750px;
     }
+}
 
-    .header
+@media (max-width: 768px)
+{
+    .main-container
     {
         padding: 1rem;
+    }
+
+    .auth-container
+    {
+        max-width: 100%;
+        padding: 2rem;
+        margin: 1rem auto;
     }
 
     .auth-header h2
     {
         font-size: 1.6rem;
     }
-    
-    .back-to-dashboard
+}
+
+@media (max-width: 600px)
+{
+    .auth-container
     {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
+        padding: 1.5rem;
     }
 }

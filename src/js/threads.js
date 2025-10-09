@@ -44,7 +44,14 @@ function initializeThreadsPage() {
     const viewPostTitle = document.getElementById('viewPostTitle');
     const viewPostContent = document.getElementById('viewPostContent');
     const commentSection = document.getElementById('commentSection');
+    const addCommentBtn = document.getElementById("addCommentBtn");
+    const newCommentInput = document.getElementById("newCommentInput"); 
 
+
+    const currentUser = {
+        name: "YourNameHere", // replace dynamically later when auth is ready
+        profilePic: "assets/images/default-user.png" // fallback picture
+    };
     if (!discussionList) {
         console.error("Discussion list element not found!");
         return;
@@ -145,6 +152,37 @@ function initializeThreadsPage() {
     });
 
     // Close modals if background is clicked
+    const createPostForm = document.getElementById('createPostForm');
+
+    createPostForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('postTitle').value.trim();
+        const content = document.getElementById('postContent').value.trim();
+
+        if (!title || !content) return alert('Please fill in all fields!');
+
+        // Create a new post object
+        const newPost = {
+            id: posts.length + 1,
+            author: 'You', // You can later replace this with logged-in user info
+            avatar: 'https://i.pravatar.cc/150?u=' + Math.random(),
+            title,
+            content,
+            tags: ['General'],
+            likes: 0,
+            comments: []
+        };
+
+        // Add the post to the array and re-render
+        posts.unshift(newPost);
+        renderPosts(posts);
+
+        // Close modal and clear form
+        createModal.classList.remove('visible');
+        createPostForm.reset();
+    });
+
     window.addEventListener('click', (e) => {
         if (e.target === createModal) createModal.classList.remove('visible');
         if (e.target === viewModal) viewModal.classList.remove('visible');
@@ -158,15 +196,51 @@ function initializeThreadsPage() {
         // Handle like/dislike clicks
         if (e.target.matches('.like-btn') || e.target.matches('.dislike-btn')) {
             e.stopPropagation(); // Prevent modal from opening
-            alert('Like/Dislike functionality would be handled here!');
+            const postId = parseInt(card.dataset.postId);
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const likeCountElem = card.querySelector('.likes-count');
+
+            if (e.target.matches('.like-btn')) {
+                // Increment like count
+                post.likes++;
+                e.target.classList.toggle('active');
+            } else if (e.target.matches('.dislike-btn')) {
+                // Prevent negative likes
+                post.likes = Math.max(0, post.likes - 1);
+            }
+
+            // Update displayed count
+            likeCountElem.textContent = post.likes;
             return;
         }
+
 
         // Handle card click to open view modal
         const postId = parseInt(card.dataset.postId);
         openViewPostModal(postId);
     });
 
+    addCommentBtn.addEventListener("click", () => {
+        const text = newCommentInput.value.trim();
+        if (!text) return;
+
+        // Create comment card
+        const comment = document.createElement("div");
+        comment.classList.add("comment");
+        comment.innerHTML = `
+            <div class="comment-user">
+            <img src="${currentUser.profilePic}" alt="${currentUser.name}">
+            <div>
+                <h6>${currentUser.name}</h6>
+                <p>${text}</p>
+            </div>
+            </div>
+        `;
+        commentSection.appendChild(comment);
+        newCommentInput.value = "";
+    });
     // --- 5. INITIALIZATION ---
     renderPosts(posts);
 }
