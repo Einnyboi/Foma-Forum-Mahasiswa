@@ -995,19 +995,6 @@ function loadEventContent()
     );
 }
 
-function loadEventContent()
-{
-    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
-            }
-        }
-    );
-}
-
 function loadSearchPage(searchTerm)
 {
     const createPostBtn = document.getElementById('createPostBtn');
