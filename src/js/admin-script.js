@@ -1,3 +1,50 @@
+// DATA DUMMY PENGGUNA
+const dummyUsers = [
+    { id: 1, name: 'Budi Santoso', email: 'budi.s@example.com', role: 'Member' },
+    { id: 2, name: 'Citra Lestari', email: 'citra.l@example.com', role: 'Member' },
+    { id: 3, name: 'Ahmad Dahlan', email: 'ahmad.d@example.com', role: 'Moderator' },
+    { id: 4, name: 'Dewi Ayu', email: 'dewi.a@example.com', role: 'Member' },
+    { id: 5, name: 'Eko Prasetyo', email: 'eko.p@example.com', role: 'Member' },
+    { id: 6, name: 'Admin Utama', email: 'admin@foma.com', role: 'Admin' }
+];
+
+
+// FUNGSI UNTUK MENAMPILKAN PENGGUNA DI TABEL
+
+function displayUsersInAdmin() {
+    // Cari <tbody> dari tabel di dalam #users-content
+    const tableBody = document.querySelector('#users-content table tbody');
+    if (!tableBody) return;
+
+    // Kosongkan tabel terlebih dahulu
+    tableBody.innerHTML = '';
+
+    // Jika tidak ada data, tampilkan pesan
+    if (dummyUsers.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data pengguna.</td></tr>';
+        return;
+    }
+
+    // Buat satu baris tabel (<tr>) untuk setiap data pengguna
+    dummyUsers.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>
+                <button class="btn-primary" style="background-color: #f59e0b; margin-right: 5px;">Edit</button>
+                <button class="btn-primary" style="background-color: #ef4444;">Hapus</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
+// FUNGSI UNTUK GRAFIK (TETAP SAMA)
+
 function createActivityChart() {
     const ctx = document.getElementById('activityChart');
     if (!ctx) return;
@@ -37,7 +84,6 @@ function createActivityChart() {
     });
 }
 
-// [PENAMBAHAN] Fungsi untuk membuat diagram donat
 function createUserDistributionChart() {
     const ctx = document.getElementById('userDistributionChart');
     if (!ctx) return;
@@ -45,14 +91,13 @@ function createUserDistributionChart() {
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Member', 'Moderator', 'Admin'],
+            labels: ['Member', 'Moderator'], 
             datasets: [{
                 label: 'Distribusi Pengguna',
-                data: [1200, 45, 5], // Data contoh
+                data: [1200, 45], 
                 backgroundColor: [
                     'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(255, 99, 132)'
+                    'rgb(255, 205, 86)'
                 ],
                 hoverOffset: 4
             }]
@@ -68,7 +113,7 @@ function createUserDistributionChart() {
     });
 }
 
-
+// EVENT LISTENER UTAMA (DENGAN PENAMBAHAN)
 document.addEventListener('DOMContentLoaded', () => {
     const navItems = document.querySelectorAll('.sidebar-item');
     const pageTitle = document.getElementById('page-title');
@@ -86,9 +131,21 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.add('active');
 
             const pageName = item.dataset.page;
+
+            // [PENAMBAHAN] Panggil fungsi untuk menampilkan pengguna
+            if (pageName === 'users') {
+                displayUsersInAdmin();
+            }
+
             if (pageName === 'content') {
                 if (typeof displayThreadsInAdmin === 'function') {
                     displayThreadsInAdmin();
+                }
+            }
+
+            if (pageName === 'approvals') {
+                if (typeof displayEventProposals === 'function') {
+                    displayEventProposals();
                 }
             }
 
@@ -113,6 +170,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     createActivityChart();
-    // [PENAMBAHAN] Panggil fungsi untuk diagram donat
     createUserDistributionChart();
 });
