@@ -1,75 +1,38 @@
-<div class="threads-container">
+<section id="threadsPage" class="threads-page"> 
+  <div class="threads-header">
+    <h2>Community Threads</h2>
+    <button id="createDiscussionBtn" class="btn-primary">+ Create Discussion</button>
+  </div>
 
-    <div class="threads-header">
-        <div class="header-text">
-            <h2>Latest Discussions</h2>
-            <p>Ask questions, share ideas, and connect with others.</p>
-        </div>
-        <div class="header-actions">
-            <button id="createDiscussionBtn" class="btn btn-primary">+ Create Discussion</button>
-        </div>
-    </div>
+  <div id="discussionList" class="discussion-list"></div>
 
-    <div class="threads-body">
-        <div class="sort-controls">
-            <button id="sortRecent" class="sort-btn active">Recent</button>
-            <button id="sortTrending" class="sort-btn">Trending</button>
-        </div>
-        
-        <div class="discussion-list" id="discussionList">
-            </div>
-    </div>
-
-</div>
-
-
-<div id="createPostModal" class="modal-overlay">
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3>Start a New Discussion</h3>
-            <button class="close-btn" id="closeCreateModalBtn">&times;</button>
+      <span id="closeCreateModalBtn" class="close-btn">&times;</span>
+      <h3>Create New Discussion</h3>
+      <form id="createPostForm">
+        <label for="postTitle">Title</label>
+        <input type="text" id="postTitle" placeholder="Enter your discussion title" required>
+
+        <label for="postContent">Content</label>
+        <textarea id="postContent" placeholder="Share your thoughts..." required></textarea>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelCreateBtn" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Post</button>
         </div>
-        <div class="modal-body">
-            <form id="createPostForm">
-                <div class="form-group">
-                    <label for="postTitle">Title</label>
-                    <input type="text" id="postTitle" placeholder="What's the main topic?" required>
-                </div>
-                <div class="form-group">
-                    <label for="postContent">Content</label>
-                    <textarea id="postContent" rows="8" placeholder="Share more details here..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="postTags">Tags</label>
-                    <input type="text" id="postTags" placeholder="e.g., Academic, Programming, Hobi">
-                    <small>Separate tags with a comma.</small>
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="cancelCreateBtn" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Post Discussion</button>
-                </div>
-            </form>
-        </div>
+      </form>
     </div>
-</div>
+  </div>
 
-
-<div id="viewPostModal" class="modal-overlay">
+  <!-- View Post Modal -->
+  <div id="viewPostModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="viewPostTitle"></h3>
-            <button class="close-btn" id="closeViewModalBtn">&times;</button>
-        </div>
-        <div class="modal-body" id="viewPostContent">
-            </div>
-        <div class="modal-footer">
-             <h4>Comments</h4>
-             <div id="commentSection">
-                </div>
-             <form id="commentForm">
-                <textarea id="newComment" placeholder="Write a comment..." rows="3" required></textarea>
-                <button type="submit" class="btn btn-primary">Add Comment</button>
-            </form>
-        </div>
+      <span id="closeViewModalBtn" class="close-btn">&times;</span>
+      <h3 id="viewPostTitle"></h3>
+      <div id="viewPostContent"></div>
+      <div id="commentSection" class="comment-section"></div>
     </div>
-</div>
+  </div>
+</section>

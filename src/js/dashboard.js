@@ -48,23 +48,6 @@ function initializeApp()
     loadUsersFromStorage();
     loadPostsFromStorage();
 
-    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
-    if (!currentUser && registeredUsers.length > 0) {
-        // Set the current user to the first registered user, but only if they are not the admin
-        const defaultUser = registeredUsers.find(u => u.role === 'user');
-        if (defaultUser) {
-            currentUser = defaultUser; 
-            saveToStorage(); 
-        }
-    }
-
-
-    // DELETE THIS LATER AFTER LOGIN IS INTEGRATED
-    if (!currentUser && registeredUsers.length > 0) {
-        currentUser = registeredUsers[0]; // Set the current user to the first registered user.
-        saveToStorage(); // Save this login state to localStorage.
-    }
-
     updateNavi();
     showpage('home');
     console.log('Dashboard loaded successfully!');
@@ -417,10 +400,10 @@ function loadCSS(href)
     currentExternalCss = href;
 }
 
-function loadJS(src)
+function loadJS(src, callback)
 {
     // Remove previous external JS first
-    const oldScript = document.querySelector(`.external-script`);
+    const oldScript = document.querySelector('.external-script');
     if (oldScript)
     {
         oldScript.remove();
@@ -431,10 +414,12 @@ function loadJS(src)
     script.type = 'text/javascript';
     script.className = 'external-script';
     
-    // Wrap the script execution in a scope to prevent global pollution
     script.onload = function()
     {
         console.log(`External script loaded: ${src}`);
+        if (typeof callback === 'function') {
+            callback(); // ✅ Run callback after script loads
+        }
     };
     
     script.onerror = function()
@@ -464,7 +449,7 @@ function loadPageContent(pageID)
     {
         case 'home':
             pageTitle.textContent = 'Latest Discussions';
-            initializeThreadsFeature; // This calls loadExternalContent for threads.html
+            initializeThreadsFeature();
             break;
             
         case 'community':
@@ -496,7 +481,7 @@ function loadPageContent(pageID)
         default:
             pageTitle.textContent = 'Latest Discussions';
             updateCreatePostVisibility();
-            initializeThreadsFeature;
+            initializeThreadsFeature();
     }
 }
 
@@ -509,13 +494,28 @@ let isThreadsListenerActive = false; // Prevents adding multiple listeners
 
 // 1. MAIN ENTRY POINT for the threads feature
 function initializeThreadsFeature() {
-    loadCSS('../css/threads-style.css'); 
-    loadJS('../js/threads.js')
+    console.log("Initializing threads feature...");
 
-    renderThreadList();
-    if (!isThreadsListenerActive) {
-        setupThreadsEventListeners();
-    }
+    fetch('../views/threads.html')
+        .then(response => response.text())
+        .then(html => {
+            const mainContentArea = document.getElementById('mainContentArea');
+            mainContentArea.innerHTML = html;
+
+            // NOW the HTML (including #discussionList) exists!
+            loadJS('../src/js/threads.js');
+            loadCSS('../src/css/threads-style.css')
+
+            // Wait a bit to ensure threads.js is ready
+            setTimeout(() => {
+                if (typeof initializeThreadsPage === 'function') {
+                    initializeThreadsPage();
+                } else {
+                    console.warn("initializeThreadsPage() not found yet.");
+                }
+            }, 200);
+        })
+        .catch(err => console.error("Error loading threads.html:", err));
 }
 
 // 2. RENDER THE LIST OF ALL THREADS (LAYER 1)
@@ -543,7 +543,7 @@ function renderThreadList() {
                 <p class="thread-description">${post.description.substring(0, 150)}...</p>
                 <div class="card-actions">
                     <div class="action-item">👍 <span>${post.likes}</span></div>
-                    <div class="action-item">💬 <span>${post.comments.length} Comments</span></div>
+                    <div class="action-item">💬 <span>${post.comments?.length ?? 0} Comments</span></div>
                 </div>
             </div>
         `;
@@ -658,26 +658,14 @@ function setupThreadsEventListeners() {
             return; // Stop here
         }
         
-        // This remains the same
         const card = e.target.closest('.thread-card');
+        // This remains the same
         if (card) {
             const postId = card.dataset.postId;
             // Only navigate if the user didn't click a specific action button inside the card
             if (!e.target.closest('.like-btn') && !e.target.closest('.dislike-btn')) {
                 renderSingleThread(postId);
             }
-        }
-        
-        if(e.target.closest('.like-btn')) {
-            post.likes++;
-            saveToStorage();
-            renderSingleThread(postId);
-        }
-        
-        if(e.target.closest('.dislike-btn')) {
-            post.dislikes++;
-            saveToStorage();
-            renderSingleThread(postId);
         }
     });
 
