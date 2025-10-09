@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!searchResultsList) return; // Hentikan jika wadah tidak ditemukan
         searchResultsList.innerHTML = ''; 
 
-        const heading = document.createElement('h6');
+        const heading = document.createElement('h2');
         heading.textContent = results.length > 0 ? 'Search Results:' : 'No Results Found';
         searchResultsList.appendChild(heading);
 
