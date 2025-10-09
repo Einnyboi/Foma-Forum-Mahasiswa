@@ -1,55 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foma Threads</title>
-    <link rel="stylesheet" href="../src/css/threads-style.css"> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
+<div class="threads-container">
 
-    <div class="threads-container">
-        <div class="threads-main-dashboard">
-            
-            <main class="threads-main-content">
-                <div id="community-list-page">
-                    <div class="threads-content-header">
-                        <h2>Jelajahi Komunitas</h2>
-                        <button id="create-community-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Komunitas</button>
-                    </div>
-                    <div id="community-cards-container">
-                        </div>
-                </div>
-    
-                <div id="thread-view-container" class="hidden">
-                    <div id="community-banner">
-                        <div id="community-banner-image">
-                            <div class="banner-menu-container">
-                                <i class="fa-solid fa-ellipsis-vertical" id="banner-menu-trigger"></i>
-                                <div id="banner-dropdown-menu" class="dropdown-menu hidden">
-                                    <ul>
-                                        <li id="change-banner-action">Ganti Banner</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="file" id="change-banner-input" accept="image/*" class="hidden">
-                        
-                        <div id="community-header" class="threads-content-header community-header-card">
-                            <div id="community-info">
-                                </div>
-                            <button id="start-post-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Post</button>
-                        </div>
-                    </div>
-                    <div id="threads-list">
-                        </div>
-                </div>
-            </main>
-
+    <div class="threads-header">
+        <div class="header-text">
+            <h2>Latest Discussions</h2>
+            <p>Ask questions, share ideas, and connect with others.</p>
+        </div>
+        <div class="header-actions">
+            <button id="createDiscussionBtn" class="btn btn-primary">+ Create Discussion</button>
         </div>
     </div>
 
-    <script src="../src/js/Script(threads).js"></script>
-</body>
-</html>    
+    <div class="threads-body">
+        <div class="sort-controls">
+            <button id="sortRecent" class="sort-btn active">Recent</button>
+            <button id="sortTrending" class="sort-btn">Trending</button>
+        </div>
+        
+        <div class="discussion-list" id="discussionList">
+            </div>
+    </div>
+
+</div>
+
+
+<div id="createPostModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Start a New Discussion</h3>
+            <button class="close-btn" id="closeCreateModalBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="createPostForm">
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" placeholder="What's the main topic?" required>
+                </div>
+                <div class="form-group">
+                    <label for="postContent">Content</label>
+                    <textarea id="postContent" rows="8" placeholder="Share more details here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="postTags">Tags</label>
+                    <input type="text" id="postTags" placeholder="e.g., Academic, Programming, Hobi">
+                    <small>Separate tags with a comma.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancelCreateBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post Discussion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="viewPostModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="viewPostTitle"></h3>
+            <button class="close-btn" id="closeViewModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="viewPostContent">
+            </div>
+        <div class="modal-footer">
+             <h4>Comments</h4>
+             <div id="commentSection">
+                </div>
+             <form id="commentForm">
+                <textarea id="newComment" placeholder="Write a comment..." rows="3" required></textarea>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        </div>
+    </div>
+</div>

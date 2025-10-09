@@ -1,338 +1,178 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initializeThreadsPage() {
+    // --- 1. SAMPLE DATA ---
+    // In a real app, this would come from a database/API
+    const posts = [
+        {
+            id: 1,
+            author: 'Budi Santoso',
+            avatar: 'https://i.pravatar.cc/150?u=budi',
+            title: 'Tips for Effective Time Management for Students',
+            content: 'I\'ve been struggling to balance my studies, part-time job, and social life. What are your best tips for managing time effectively? I\'m particularly interested in tools or techniques that have worked for you.',
+            tags: ['Academic', 'Productivity'],
+            likes: 42,
+            comments: [
+                { author: 'Citra Lestari', text: 'I highly recommend the Pomodoro Technique! It really helps me stay focused.' },
+                { author: 'Doni Firmansyah', text: 'Using a digital calendar like Google Calendar to block out study time has been a game-changer for me.' }
+            ]
+        },
+        {
+            id: 2,
+            author: 'Ani Yuliani',
+            avatar: 'https://i.pravatar.cc/150?u=ani',
+            title: 'Which programming language to learn for Web Dev in 2025?',
+            content: 'I am new to programming and want to get into web development. There are so many options like JavaScript, Python, etc. What do you guys think is the best language to start with right now?',
+            tags: ['Programming', 'Technology', 'WebDev'],
+            likes: 78,
+            comments: [
+                { author: 'Eko Prasetyo', text: 'You can never go wrong with JavaScript. It\'s the foundation of the web.' }
+            ]
+        }
+    ];
 
-    const mainContentArea = document.querySelector('.main-content');
+    // --- 2. ELEMENT REFERENCES ---
+    const discussionList = document.getElementById('discussionList');
+    const createDiscBtn = document.getElementById('createDiscussionBtn');
     
-    let currentView = 'community-list';
-    let currentCommunity = null;
+    // Create Modal Elements
+    const createModal = document.getElementById('createPostModal');
+    const closeCreateModalBtn = document.getElementById('closeCreateModalBtn');
+    const cancelCreateBtn = document.getElementById('cancelCreateBtn');
 
-    function getCommunities() {
-        const communities = localStorage.getItem('forumCommunities');
-        const initialCommunities = [
-            { name: 'Olahraga', description: 'Diskusi segala jenis olahraga, dari sepak bola hingga catur.', bannerUrl: 'https://placehold.co/800x200/C20114/FFFFFF?text=Olahraga' },
-            { name: 'Hobi', description: 'Bagikan hobi Anda, mulai dari merakit model kit hingga berkebun.', bannerUrl: 'https://placehold.co/800x200/3B82F6/FFFFFF?text=Hobi' },
-            { name: 'Teknologi', description: 'Semua tentang gadget, software, dan inovasi masa depan.', bannerUrl: 'https://placehold.co/800x200/10B981/FFFFFF?text=Teknologi' }
-        ];
-        return communities ? JSON.parse(communities) : initialCommunities;
+    // View Modal Elements
+    const viewModal = document.getElementById('viewPostModal');
+    const closeViewModalBtn = document.getElementById('closeViewModalBtn');
+    const viewPostTitle = document.getElementById('viewPostTitle');
+    const viewPostContent = document.getElementById('viewPostContent');
+    const commentSection = document.getElementById('commentSection');
+
+    if (!discussionList) {
+        console.error("Discussion list element not found!");
+        return;
     }
-    function saveCommunities(communities) {
-        localStorage.setItem('forumCommunities', JSON.stringify(communities));
-    }
-    function getThreads() {
-        const threads = localStorage.getItem('forumThreads');
-        return threads ? JSON.parse(threads) : [];
-    }
-    function saveThreads(threads) {
-        localStorage.setItem('forumThreads', JSON.stringify(threads));
-    }
-     function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
+
+    // --- 3. FUNCTIONS ---
+
+    /**
+     * Renders a list of posts to the page
+     * @param {Array} postsArray The array of post objects to render
+     */
+    function renderPosts(postsArray) {
+        discussionList.innerHTML = ''; // Clear current posts
+        postsArray.forEach(post => {
+            const tagsHTML = post.tags.map(tag => `<span>${tag}</span>`).join('');
+            const postCard = document.createElement('div');
+            postCard.className = 'post-card';
+            postCard.dataset.postId = post.id; // Store post id on the element
+
+            postCard.innerHTML = `
+                <div class="post-actions">
+                    <button class="action-btn like-btn" title="Like">👍</button>
+                    <span class="likes-count">${post.likes}</span>
+                    <button class="action-btn dislike-btn" title="Dislike">👎</button>
+                </div>
+                <div class="post-details">
+                    <div class="post-author">
+                        <img src="${post.avatar}" alt="${post.author}" class="author-avatar">
+                        <div>
+                            <span class="author-name">${post.author}</span>
+                            <span class="post-time">posted 2 hours ago</span>
+                        </div>
+                    </div>
+                    <h3>${post.title}</h3>
+                    <div class="post-tags">
+                        ${tagsHTML}
+                    </div>
+                </div>
+            `;
+            discussionList.appendChild(postCard);
         });
     }
 
-    function renderPage() {
-        mainContentArea.innerHTML = ''; 
+    /**
+     * Opens the modal to view a specific post
+     * @param {number} postId The ID of the post to view
+     */
+    function openViewPostModal(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        
+        // Populate modal with post data
+        viewPostTitle.textContent = post.title;
 
-        switch (currentView) {
-            case 'community-list':
-                renderCommunityListPage();
-                break;
-            case 'thread-list':
-                renderThreadView();
-                break;
-            default:
-                renderCommunityListPage();
-        }
-    }
-
-    function renderCommunityListPage() {
-        const communities = getCommunities();
-        let communityCardsHTML = communities.map(community => `
-            <div class="community-card" data-community-name="${community.name}">
-                <div class="card-banner" style="background-image: url('${community.bannerUrl}')"></div>
-                <div class="card-content">
-                    <h3>r/${community.name}</h3>
-                    <p>${community.description}</p>
-                </div>
+        const tagsHTML = post.tags.map(tag => `<span>${tag}</span>`).join('');
+        viewPostContent.innerHTML = `
+            <div class="post-author view-post-author">
+                By <strong>${post.author}</strong>
             </div>
-        `).join('');
+            <div class="view-post-body">
+                <p>${post.content}</p>
+            </div>
+            <div class="post-tags">${tagsHTML}</div>
+        `;
 
-        mainContentArea.innerHTML = `
-            <div id="community-list-page">
-                <div class="content-header">
-                    <h2>Jelajahi Komunitas</h2>
-                    <button id="create-community-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Komunitas</button>
+        // Populate comments
+        commentSection.innerHTML = '';
+        post.comments.forEach(comment => {
+            commentSection.innerHTML += `
+                <div class="comment">
+                    <p class="comment-author">${comment.author}</p>
+                    <p>${comment.text}</p>
                 </div>
-                <div id="community-cards-container">${communityCardsHTML}</div>
-            </div>`;
+            `;
+        });
+        
+        viewModal.classList.add('visible');
     }
 
-    function renderThreadView() {
-        const community = getCommunities().find(c => c.name === currentCommunity);
-        if (!community) {
-            currentView = 'community-list';
-            renderPage();
+    // --- 4. EVENT LISTENERS ---
+
+    // Open "Create Post" modal
+    createDiscBtn.addEventListener('click', () => {
+        createModal.classList.add('visible');
+    });
+
+    // Close "Create Post" modal
+    closeCreateModalBtn.addEventListener('click', () => {
+        createModal.classList.remove('visible');
+    });
+    cancelCreateBtn.addEventListener('click', () => {
+        createModal.classList.remove('visible');
+    });
+    
+    // Close "View Post" modal
+    closeViewModalBtn.addEventListener('click', () => {
+        viewModal.classList.remove('visible');
+    });
+
+    // Close modals if background is clicked
+    window.addEventListener('click', (e) => {
+        if (e.target === createModal) createModal.classList.remove('visible');
+        if (e.target === viewModal) viewModal.classList.remove('visible');
+    });
+    
+    // Event delegation for dynamically created post cards
+    discussionList.addEventListener('click', (e) => {
+        const card = e.target.closest('.post-card');
+        if (!card) return;
+
+        // Handle like/dislike clicks
+        if (e.target.matches('.like-btn') || e.target.matches('.dislike-btn')) {
+            e.stopPropagation(); // Prevent modal from opening
+            alert('Like/Dislike functionality would be handled here!');
             return;
         }
 
-        const threads = getThreads().filter(thread => thread.community === currentCommunity).sort((a, b) => b.isImportant - a.isImportant);
-        let threadsHTML = threads.map(thread => {
-             let postLabel = thread.isImportant ? '<span class="post-label label-penting">⭐ PENTING</span>' : 
-                            (thread.type === 'event' ? '<span class="post-label label-event">📅 EVENT</span>' : '');
-             let eventInfoHTML = thread.type === 'event' ? `<div class="event-info">Lokasi: ${thread.eventLocation} | Tanggal: ${thread.eventDate}</div>` : '';
-            
-            let repliesHTML = (thread.replies || []).map(reply => {
-                const replyImageHTML = reply.imageUrl 
-                    ? `<div class="reply-image-container"><img src="${reply.imageUrl}" alt="Gambar balasan"></div>`
-                    : '';
-                return `
-                    <div class="reply">
-                        <strong>${reply.author}:</strong>
-                        <p>${reply.text}</p>
-                        ${replyImageHTML}
-                    </div>`;
-            }).join('');
-            
-            let imageHTML = thread.imageUrl 
-                ? `<div class="thread-image-container"><img src="${thread.imageUrl}" alt="Gambar post"></div>` 
-                : '';
-
-            return `
-            <div class="thread-card">
-                <h3>${thread.title} ${postLabel}</h3>
-                <div class="thread-meta">Diposting oleh: <strong>${thread.author}</strong></div>
-                <p class="thread-description">${thread.description}</p>
-                ${imageHTML}
-                ${eventInfoHTML}
-                <div class="card-actions">
-                    <div class="action-item like-button" data-thread-id="${thread.id}"><i class="fa-solid fa-thumbs-up"></i> <span>Suka (${thread.likes})</span></div>
-                    <div class="action-item dislike-button" data-thread-id="${thread.id}"><i class="fa-solid fa-thumbs-down"></i> <span>Tidak Suka (${thread.dislikes})</span></div>
-                    <div class="action-item comment-toggle-button"><i class="fa-solid fa-comment"></i> <span>Balas (${(thread.replies || []).length})</span></div>
-                </div>
-                <div class="replies-wrapper">
-                    <div class="replies-section">
-                        <h4>Balasan</h4>
-                        <div class="replies-container">${repliesHTML || '<p>Belum ada balasan.</p>'}</div>
-                        <form class="reply-form" data-thread-id="${thread.id}">
-                            <input type="text" class="reply-text-input" placeholder="Tulis balasan..." required>
-                            <input type="file" class="reply-image-input" accept="image/*" style="display: none;">
-                            <button type="button" class="attach-reply-image-btn" title="Lampirkan gambar">
-                                <i class="fa-solid fa-paperclip"></i>
-                            </button>
-                            <button type="submit" class="submit-reply-btn">Kirim</button>
-                        </form>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-
-        mainContentArea.innerHTML = `
-            <div id="thread-view-container">
-                <div id="community-banner">
-                    <div id="community-banner-image" style="background-image: url('${community.bannerUrl}')">
-                        <div class="banner-menu-container">
-                            <i class="fa-solid fa-ellipsis-vertical" id="banner-menu-trigger"></i>
-                            <div id="banner-dropdown-menu" class="dropdown-menu hidden">
-                                <ul><li id="change-banner-action">Ganti Banner</li></ul>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="file" id="change-banner-input" accept="image/*" class="hidden">
-                    <div id="community-header" class="content-header community-header-card">
-                        <div id="community-info"><h2>r/${community.name}</h2><p>${community.description}</p></div>
-                        <button id="start-post-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Buat Post</button>
-                    </div>
-                </div>
-                <div id="threads-list">${threadsHTML || '<p>Belum ada post di komunitas ini.</p>'}</div>
-            </div>`;
-    }
-
-    document.body.addEventListener('click', async (e) => {
-        if (e.target.closest('.community-card')) { 
-            currentCommunity = e.target.closest('.community-card').dataset.communityName; 
-            currentView = 'thread-list'; 
-            renderPage(); 
-        }
-        if (e.target.closest('#create-community-btn')) { renderModal('community'); }
-        if (e.target.closest('#start-post-btn')) { renderModal('post'); }
-        if (e.target.closest('.modal .close-button')) { document.querySelector('.modal')?.remove(); }
-        if (e.target.closest('.like-button')) { handleLikeDislike(e.target.closest('.like-button').dataset.threadId, 'like'); }
-        if (e.target.closest('.dislike-button')) { handleLikeDislike(e.target.closest('.dislike-button').dataset.threadId, 'dislike'); }
-        if (e.target.closest('.comment-toggle-button')) { e.target.closest('.thread-card').querySelector('.replies-wrapper').classList.toggle('visible'); }
-        if (e.target.closest('#banner-menu-trigger')) { document.getElementById('banner-dropdown-menu').classList.toggle('hidden'); }
-        if (e.target.closest('#change-banner-action')) { document.getElementById('change-banner-input').click(); }
-        if (e.target.closest('.attach-reply-image-btn')) {
-            e.target.closest('.reply-form').querySelector('.reply-image-input').click();
-        }
+        // Handle card click to open view modal
+        const postId = parseInt(card.dataset.postId);
+        openViewPostModal(postId);
     });
-    
-    document.body.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (e.target.id === 'add-community-form') { handleAddCommunity(e.target); }
-        if (e.target.id === 'add-thread-form') { await handleAddThread(e.target); }
-        if (e.target.classList.contains('reply-form')) { await handleAddReply(e.target); }
-    });
-    
-    document.body.addEventListener('change', async (e) => {
-        if (e.target.id === 'change-banner-input') {
-            const file = e.target.files[0];
-            if (!file || !currentCommunity) return;
-            const newBannerUrl = await fileToBase64(file);
-            const communities = getCommunities();
-            const targetCommunity = communities.find(c => c.name === currentCommunity);
-            if (targetCommunity) {
-                targetCommunity.bannerUrl = newBannerUrl;
-                saveCommunities(communities);
-                renderPage(); 
-            }
-        }
-    });
-    
-    function handleAddCommunity(form) {
-        const name = form.querySelector('#community-name').value;
-        const desc = form.querySelector('#community-desc').value;
-        const bannerFile = form.querySelector('#community-banner-upload').files[0];
-        const communities = getCommunities();
-        if (communities.some(c => c.name.toLowerCase() === name.toLowerCase())) { alert("Komunitas sudah ada!"); return; }
-        
-        let bannerUrl = `https://placehold.co/800x200/6D7275/FFFFFF?text=${name}`;
-        if(bannerFile) {
-            fileToBase64(bannerFile).then(url => {
-                 communities.push({ name, description: desc, bannerUrl: url });
-                 saveCommunities(communities);
-                 document.querySelector('.modal')?.remove();
-                 renderPage();
-            });
-        } else {
-             communities.push({ name, description: desc, bannerUrl });
-             saveCommunities(communities);
-             document.querySelector('.modal')?.remove();
-             renderPage();
-        }
-    }
-    
-    async function handleAddThread(form) {
-        const threads = getThreads();
-        const postType = form.querySelector('#post-type').value;
-        const imageFile = form.querySelector('#thread-image-upload').files[0];
-        let imageUrl = null;
 
-        if (imageFile) {
-            try {
-                imageUrl = await fileToBase64(imageFile);
-            } catch (error) {
-                console.error("Gagal mengubah gambar:", error);
-                alert("Gagal mengunggah gambar.");
-                return;
-            }
-        }
+    // --- 5. INITIALIZATION ---
+    renderPosts(posts);
+}
 
-        threads.push({
-            id: Date.now(),
-            type: postType,
-            isImportant: postType === 'penting',
-            title: form.querySelector('#thread-title').value,
-            description: form.querySelector('#thread-description').value,
-            author: form.querySelector('#thread-author').value || 'Anonymous',
-            imageUrl: imageUrl,
-            community: currentCommunity,
-            eventDate: form.querySelector('#event-date').value,
-            eventLocation: form.querySelector('#event-location').value,
-            likes: 0, dislikes: 0, replies: []
-        });
-
-        saveThreads(threads);
-        document.querySelector('.modal')?.remove();
-        renderPage();
-    }
-    
-    function handleLikeDislike(threadId, action) {
-        const threads = getThreads();
-        const thread = threads.find(t => t.id == threadId);
-        if(thread) {
-            if(action === 'like') thread.likes++;
-            else thread.dislikes++;
-            saveThreads(threads);
-            renderPage();
-        }
-    }
-
-    async function handleAddReply(form) {
-        const text = form.querySelector('.reply-text-input').value;
-        const threadId = form.dataset.threadId;
-        const imageFile = form.querySelector('.reply-image-input').files[0];
-        let imageUrl = null;
-
-        if (imageFile) {
-            try {
-                imageUrl = await fileToBase64(imageFile);
-            } catch (error) {
-                console.error("Gagal mengubah gambar balasan:", error);
-                alert("Gagal mengunggah gambar balasan.");
-                return;
-            }
-        }
-
-        const threads = getThreads();
-        const thread = threads.find(t => t.id == threadId);
-        if (thread) {
-            if (!thread.replies) thread.replies = [];
-            thread.replies.push({ author: 'Guest', text, imageUrl });
-            saveThreads(threads);
-            renderPage();
-
-            const repliedCard = document.querySelector(`.reply-form[data-thread-id='${threadId}']`);
-            if (repliedCard) {
-                repliedCard.closest('.thread-card').querySelector('.replies-wrapper').classList.add('visible');
-            }
-        }
-    }
-
-    function renderModal(type) {
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        let contentHTML = '';
-
-        if (type === 'community') {
-            contentHTML = `
-            <h2>Buat Komunitas Baru</h2>
-            <form id="add-community-form">
-                <label>Nama Komunitas (tanpa "r/")</label><input type="text" id="community-name" required>
-                <label>Deskripsi</label><textarea id="community-desc" required></textarea>
-                <label>Gambar Banner</label><input type="file" id="community-banner-upload" accept="image/*">
-                <button type="submit">Buat Komunitas</button>
-            </form>`;
-        } else if (type === 'post') {
-            contentHTML = `
-            <h2>Buat Post Baru</h2>
-            <form id="add-thread-form">
-                <select id="post-type"><option value="normal">Normal</option><option value="penting">Penting</option><option value="event">Event</option></select>
-                <div id="event-fields" class="hidden"><input type="date" id="event-date"><input type="text" id="event-location" placeholder="Lokasi"></div>
-                <input type="text" id="thread-title" placeholder="Judul Post" required>
-                <textarea id="thread-description" placeholder="Deskripsi..." required></textarea>
-                <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem;">Gambar (Opsional)</label>
-                <input type="file" id="thread-image-upload" accept="image/*">
-                <input type="text" id="thread-author" placeholder="Nama Anda" required style="margin-top: 1rem;">
-                <button type="submit">Publikasikan</button>
-            </form>`;
-        }
-        modal.innerHTML = `<div class="modal-content"><span class="close-button">&times;</span>${contentHTML}</div>`;
-        document.body.appendChild(modal);
-        
-        const postTypeSelect = modal.querySelector('#post-type');
-        if(postTypeSelect) {
-            postTypeSelect.addEventListener('change', () => {
-                modal.querySelector('#event-fields').classList.toggle('hidden', postTypeSelect.value !== 'event');
-            });
-        }
-    }
-    
-    function initializeApp() {
-        renderPage();
-    }
-
-    initializeApp();
-});
+// **IMPORTANT**: Call this function after the threads.html has been loaded into your dashboard.
+// For example:
+// loadContent('threads.html', () => {
+//     initializeThreadsPage();
+// });
