@@ -836,7 +836,8 @@ function setupThreadsEventListeners()
     
     document.body.addEventListener('submit', function(e)
     {
-        if (e.target.id === 'postForm') {
+        if (e.target.id === 'postForm')
+        {
             e.preventDefault();
             const newPost =
             {
