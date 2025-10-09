@@ -517,20 +517,17 @@ function loadPageContent(pageID)
     }
 }
 
-// =================================================================
-// --- THREADS FEATURE ---
-// Paste this entire block into your dashboard.js
-// =================================================================
-
 let isThreadsListenerActive = false; // Prevents adding multiple listeners
 
 // 1. MAIN ENTRY POINT for the threads feature
-function initializeThreadsFeature() {
+function initializeThreadsFeature()
+{
     console.log("Initializing threads feature...");
 
     fetch('../views/threads.html')
         .then(response => response.text())
-        .then(html => {
+        .then(html =>
+        {
             const mainContentArea = document.getElementById('mainContentArea');
             mainContentArea.innerHTML = html;
 
@@ -539,10 +536,14 @@ function initializeThreadsFeature() {
             loadCSS('../src/css/threads-style.css')
 
             // Wait a bit to ensure threads.js is ready
-            setTimeout(() => {
-                if (typeof initializeThreadsPage === 'function') {
+            setTimeout(() =>
+            {
+                if (typeof initializeThreadsPage === 'function')
+                {
                     initializeThreadsPage();
-                } else {
+                }
+                else
+                {
                     console.warn("initializeThreadsPage() not found yet.");
                 }
             }, 200);
@@ -551,9 +552,11 @@ function initializeThreadsFeature() {
 }
 
 // 2. RENDER THE LIST OF ALL THREADS (LAYER 1)
-function renderThreadList() {
+function renderThreadList()
+{
     const mainContentArea = document.getElementById('mainContentArea');
-    if (!mainContentArea) {
+    if (!mainContentArea)
+    {
         console.error("Fatal Error: mainContentArea not found!");
         return;
     }
@@ -565,8 +568,10 @@ function renderThreadList() {
 
     let postsHtml = '';
     posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    posts.forEach(post => {
-        postsHtml += `
+    posts.forEach(post =>
+    {
+        postsHtml +=
+        `
             <div class="thread-card" data-post-id="${post.id}">
                 <h3>${post.title}</h3>
                 <div class="thread-meta">
@@ -587,17 +592,21 @@ function renderThreadList() {
 }
 
 // 3. RENDER THE DETAILED VIEW OF A SINGLE THREAD (LAYER 2)
-function renderSingleThread(postId) {
+function renderSingleThread(postId)
+{
     const mainContentArea = document.getElementById('mainContentArea');
     const post = posts.find(p => p.id == postId);
-    if (!post) {
+    if (!post)
+    {
         renderThreadList(); // If post not found, go back to the list
         return;
     }
 
     let commentsHtml = '';
-    post.comments.forEach(comment => {
-        commentsHtml += `
+    post.comments.forEach(comment =>
+    {
+        commentsHtml +=
+        `
             <div class="reply">
                 <strong>${comment.author}</strong>
                 <p>${comment.text}</p>
@@ -605,7 +614,8 @@ function renderSingleThread(postId) {
         `;
     });
 
-    const threadDetailHtml = `
+    const threadDetailHtml =
+    `
         <div class="section-header">
             <button id="backToListBtn" class="btn btn-outline">&larr; Back to Discussions</button>
         </div>
@@ -632,11 +642,13 @@ function renderSingleThread(postId) {
 }
 
 // 4. FUNCTION TO OPEN THE "CREATE POST" MODAL
-function openCreatePostModal() {
+function openCreatePostModal()
+{
     const existingModal = document.getElementById('createPostModal');
     if(existingModal) existingModal.remove();
     
-    const modalHtml = `
+    const modalHtml =
+    `
         <div class="modal" id="createPostModal">
             <div class="modal-content">
                 <span class="close-button" id="closeModalBtn">&times;</span>
@@ -668,16 +680,21 @@ function openCreatePostModal() {
 }
 
 // 5. SETUP ALL EVENT LISTENERS FOR THE FEATURE
-function setupThreadsEventListeners() {
+function setupThreadsEventListeners()
+{
     const mainContent = document.querySelector('.main-content');
-    if (!mainContent) {
+    if (!mainContent)
+    {
         console.error("Critical error: .main-content container not found.");
         return;
     }
 
-    mainContent.addEventListener('click', function(e) {
-        if (e.target.closest('#createPostBtn')) {
-            if (!currentUser) {
+    mainContent.addEventListener('click', function(e)
+    {
+        if (e.target.closest('#createPostBtn'))
+        {
+            if (!currentUser)
+            {
                 alert('You must be logged in to create a post!');
                 return;
             }
@@ -685,36 +702,43 @@ function setupThreadsEventListeners() {
             return; // Stop here
         }
         
-        if (e.target.closest('#backToListBtn')) {
+        if (e.target.closest('#backToListBtn'))
+        {
             renderThreadList();
             return; // Stop here
         }
         
         const card = e.target.closest('.thread-card');
         // This remains the same
-        if (card) {
+        if (card)
+        {
             const postId = card.dataset.postId;
             // Only navigate if the user didn't click a specific action button inside the card
-            if (!e.target.closest('.like-btn') && !e.target.closest('.dislike-btn')) {
+            if (!e.target.closest('.like-btn') && !e.target.closest('.dislike-btn'))
+            {
                 renderSingleThread(postId);
             }
         }
     });
 
     // --- Listeners for the MODAL (outside main content area) ---
-    document.body.addEventListener('click', function(e) {
+    document.body.addEventListener('click', function(e)
+    {
         const modal = document.getElementById('createPostModal');
         if (!modal) return;
 
-        if (e.target.id === 'closeModalBtn' || e.target.classList.contains('modal')) {
+        if (e.target.id === 'closeModalBtn' || e.target.classList.contains('modal'))
+        {
             modal.remove();
         }
     });
     
-    document.body.addEventListener('submit', function(e) {
+    document.body.addEventListener('submit', function(e)
+    {
         if (e.target.id === 'postForm') {
             e.preventDefault();
-            const newPost = {
+            const newPost =
+            {
                 id: Date.now(),
                 type: 'thread',
                 title: document.getElementById('postTitle').value,
@@ -733,13 +757,15 @@ function setupThreadsEventListeners() {
             alert('Post created successfully!');
         }
         
-        if (e.target.id === 'commentForm') {
+        if (e.target.id === 'commentForm')
+        {
             e.preventDefault();
             if (!currentUser) { alert('You must be logged in to comment!'); return; }
             const text = document.getElementById('commentInput').value.trim();
             const postId = document.querySelector('.thread-item-full').dataset.postId;
             const post = posts.find(p => p.id == postId);
-            if (text && post) {
+            if (text && post)
+            {
                 const newComment = { id: Date.now(), author: currentUser.name, text: text };
                 post.comments.push(newComment);
                 saveToStorage();
@@ -816,7 +842,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.threads-container', '../src/css/threads-style.css', '../src/js/threads.js')
+    loadExternalContent('threads.html', '.threadsPage', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
@@ -910,7 +936,8 @@ function loadSearchPage(searchTerm)
 }
 
 // Load Community.html
-function loadCommunityContent() {
+function loadCommunityContent()
+{
     const mainContentArea = document.getElementById('mainContentArea');
     const communityStylesheet = document.createElement('link');
 
@@ -920,20 +947,26 @@ function loadCommunityContent() {
     document.head.appendChild(communityStylesheet);
 
     fetch('community.html') 
-        .then(response => {
+        .then(response =>
+        {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.text();
         })
-        .then(html => {
+        .then(html =>
+        {
             mainContentArea.innerHTML = html;
             // Assuming initializeCommunityPage is a function defined elsewhere or in the dashboard.js file
-            if (typeof initializeCommunityPage === 'function') {
+            if (typeof initializeCommunityPage === 'function')
+            {
                 initializeCommunityPage(); 
-            } else {
+            }
+            else
+            {
                 console.warn('initializeCommunityPage function not found.');
             }
         })
-        .catch(error => {
+        .catch(error =>
+        {
             console.error('Error loading community page:', error);
             mainContentArea.innerHTML = 
                 `<div class="placeholder-section error-section">
