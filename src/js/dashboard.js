@@ -237,45 +237,6 @@ function updateCreatePostVisibility()
     }
 }
 
-function loadCategoryContent(category)
-{
-    const mainContentArea = document.getElementById('mainContentArea');
-
-    const allPosts = [...posts];
-    const filteredPosts = allPosts.filter(post => post.category === category);
-    
-    if (filteredPosts.length === 0)
-    {
-        mainContentArea.innerHTML =
-        `
-            <div class="placeholder-section">
-                <h3>No ${category} discussions yet</h3>
-                <p>Be the first to start a ${category} discussion!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    const postsHtml = filteredPosts.map(post =>
-    `
-        <div class="thread-item" onclick="openThread('${post.id}')">
-            <div class="category-highlight">${post.category.charAt(0).toUpperCase() + post.category.slice(1)}</div>
-            <div class="thread-title">${post.title}</div>
-            <div class="thread-header">
-                <div>
-                    <div class="thread-meta">by <span class="thread-author">${post.author}</span> • ${post.timestamp}</div>
-                </div>
-                <div class="thread-stats">
-                    <span>${post.replies} replies</span>
-                    <span>${post.views} views</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    mainContentArea.innerHTML = postsHtml;
-}
-
 function scopeExternalCSS(href)
 {
     // Find the newly loaded stylesheet
@@ -573,16 +534,6 @@ function loadPageContent(pageID)
             }
             loadProfileContent();
             break;            
-            
-        case 'programming':
-        case 'general':
-            if (pageTitle)
-            {
-                pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
-            }
-            updateCreatePostVisibility();
-            loadCategoryContent(pageID);
-            break;
             
         case 'login':
             if (pageTitle)
@@ -1119,23 +1070,6 @@ function updateNavi()
     }
 }
 
-// Toggle categories
-function toggleCategories()
-{
-    const categoryList = document.getElementById('categoryList');
-    if (categoryList)
-    {
-        if (categoryList.style.display === 'none' || !categoryList.style.display)
-        {
-            categoryList.style.display = 'block';
-        }
-        else
-        {
-            categoryList.style.display = 'none';
-        }
-    }
-}
-
 // Handle search functionality
 function handleSearch(e)
 {
@@ -1389,7 +1323,6 @@ function loadSearchResults(searchTerm) {
     } else {
         resultsHtml = filteredResults.map(item => `
             <div class="thread-item">
-                <div class="category-highlight">${item.category}</div>
                 <div class="thread-title">${item.title}</div>
                 <div class="thread-description" >${item.description}</div>
                 <div class="thread-header">
