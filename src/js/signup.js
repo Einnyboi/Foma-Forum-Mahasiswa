@@ -2,90 +2,56 @@
 let currentUser = null;
 let registeredUsers = [];
 
-// Initialize with some test users
-registeredUsers.push(
-{
-    name: "Test",
-    email: "test@gmail.com",
-    password: "12345678",
-    registrationDate: new Date().toLocaleDateString('id-ID')
-});
-
-// Page navigation function
-function showpage(pageID)
-{
-    // If we're trying to navigate to a page that doesn't exist in this context
-    // redirect to dashboard.html
-    if (pageID === 'login' || pageID === 'home' || pageID === 'profile')
-    {
-        window.location.href = 'dashboard.html';
+// --- NAVIGATION FIX ---
+// This function handles the "Log in here" link at the bottom of the signup page.
+function showpage(pageID) {
+    // FIX: Always redirect to the standalone login file
+    if (pageID === 'login') {
+        window.location.href = 'login.html';
         return;
     }
-    
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => page.classList.remove('active'));
-    
-    const targetPage = document.getElementById(pageID);
-    if (targetPage)
-    {
-        targetPage.classList.add('active');
-    }
-}
-
-// Logout function
-function logout()
-{
-    currentUser = null;
-    updateNavi();
-    showpage('home');
-    alert('Anda berhasil logout');
+    // If someone calls this with 'home' or 'profile' from the signup page,
+    // we assume they want to go to the main dashboard.
+    window.location.href = 'dashboard.html';
 }
 
 // Validation functions
-function validateEmail(email)
-{
+function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-function validateName(name)
-{
+function validateName(name) {
+    // Allows only letters and spaces, between 3 and 32 characters
     const re = /^[a-zA-Z\s]{3,32}$/;
     return re.test(name);
 }
 
-// Find user by email
-function findUserByEmail(email)
-{
-    return registeredUsers.find(user => user.email === email);
+// Helper functions
+function findUserByEmail(email) {
+    return registeredUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
 }
 
-// Clear error and success messages
-function clearError()
-{
+function clearError() {
     const errorElements = document.querySelectorAll('.error');
-    const successElements = document.querySelectorAll('.success');
     errorElements.forEach(element => element.textContent = '');
-    successElements.forEach(element => element.textContent = '');
 }
 
-// Update navigation (placeholder for consistency)
-function updateNavi()
-{
-    // This function exists for compatibility but doesn't do much in signup page
-    console.log('Navigation updated');
-}
+// --- INITIALIZATION AND FORM HANDLER ---
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Load existing users from Local Storage (Ensures no hardcoded users and no array merging)
+    try {
+        const existingUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
+        registeredUsers = existingUsers; 
+    } catch (error) {
+        console.error('Error loading users from LocalStorage:', error);
+    }
 
-// Main signup form handler
-document.addEventListener('DOMContentLoaded', function()
-{
     const signupForm = document.getElementById('signupForm');
     
-    if (signupForm)
-    {
-        signupForm.addEventListener('submit', function(e)
-        {
-            e.preventDefault();
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // <-- Prevents default form submission (CRITICAL FOR VALIDATION)
             clearError();
 
             const email = document.getElementById('signupEmail').value.trim();
@@ -93,133 +59,83 @@ document.addEventListener('DOMContentLoaded', function()
             const confpass = document.getElementById('confirmPass').value;
             const name = document.getElementById('fullName').value.trim();
 
-            let isValid = true;
-
-            // Name validation
-            if (!name)
-            {
-                document.getElementById('fullNameError').textContent = 'Nama harus diisi!';
-                isValid = false;
-            }
-            else if (!validateName(name))
-            {
-                document.getElementById('fullNameError').textContent = 'Format nama Anda salah! Nama terdiri atas 3-32 karakter tanpa angka';
-                isValid = false;
+            let isValid = true; // Start with true
+            
+            // --- VALIDATION BLOCKS ---
+            // If any check fails, isValid is set to false.
+            if (!name) { 
+                document.getElementById('fullNameError').textContent = 'Nama harus diisi!'; 
+                isValid = false; 
+            } else if (!validateName(name)) { 
+                document.getElementById('fullNameError').textContent = 'Format nama Anda salah! Nama terdiri atas 3-32 karakter tanpa angka atau simbol.'; 
+                isValid = false; 
             }
 
-            // Email validation
-            if (!email)
-            {
-                document.getElementById('signupEmailError').textContent = 'Email harus diisi!';
-                isValid = false;
-            }
-            else if (!validateEmail(email))
-            {
-                document.getElementById('signupEmailError').textContent = 'Format email Anda tidak valid!';
-                isValid = false;
-            }
-            else if (findUserByEmail(email))
-            {
-                document.getElementById('signupEmailError').textContent = 'Email sudah terdaftar!';
-                isValid = false;
+            if (!email) { 
+                document.getElementById('signupEmailError').textContent = 'Email harus diisi!'; 
+                isValid = false; 
+            } else if (!validateEmail(email)) { 
+                document.getElementById('signupEmailError').textContent = 'Format email Anda tidak valid!'; 
+                isValid = false; 
+            } else if (findUserByEmail(email)) { 
+                document.getElementById('signupEmailError').textContent = 'Email sudah terdaftar!'; 
+                isValid = false; 
             }
 
-            // Password validation
-            if (!pass)
-            {
-                document.getElementById('signupPassError').textContent = 'Password harus diisi!';
-                isValid = false;
-            }
-            else if (pass.length < 8) 
-            {
-                document.getElementById('signupPassError').textContent = 'Password minimal 8 karakter!';
-                isValid = false;
+            if (!pass) { 
+                document.getElementById('signupPassError').textContent = 'Password harus diisi!'; 
+                isValid = false; 
+            } else if (pass.length < 8) { 
+                document.getElementById('signupPassError').textContent = 'Password minimal 8 karakter!'; 
+                isValid = false; 
             }
 
-            // Confirm password validation
-            if (!confpass)
-            {
-                document.getElementById('confirmPassError').textContent = 'Konfirmasi password harus diisi!';
-                isValid = false;
+            // FIX for Password Mismatch: This block guarantees isValid=false if they don't match.
+            if (!confpass) { 
+                document.getElementById('confirmPassError').textContent = 'Konfirmasi password harus diisi!'; 
+                isValid = false; 
+            } else if (pass !== confpass) { 
+                document.getElementById('confirmPassError').textContent = 'Konfirmasi Password tidak sesuai dengan Password!'; 
+                isValid = false; 
             }
-            else if (pass !== confpass)
-            {
-                document.getElementById('confirmPassError').textContent = 'Konfirmasi Password tidak sesuai dengan Password!';
-                isValid = false;
-            }
+            // --- END VALIDATION ---
 
-            // If all validations pass
-            if (isValid)
-            {
-                const newUser =
-                {
+
+            // Only run the submission/redirect code if isValid is true
+            if (isValid) {
+                const newUser = {
                     email: email,
                     password: pass,
                     name: name,
-                    registrationDate: new Date().toLocaleDateString('id-ID')
+                    registrationDate: new Date().toLocaleDateString('id-ID'),
+                    role: 'user'
                 };
                 
-                // Add user to registered users array
                 registeredUsers.push(newUser);
                 
-                // Store in localStorage for persistence across pages
-                try
-                {
-                    const existingUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
-                    existingUsers.push(newUser);
-                    localStorage.setItem('fomaUsers', JSON.stringify(existingUsers));
-                }
-                catch (error)
-                {
-                    console.log('LocalStorage not available, using memory storage only');
+                try {
+                    localStorage.setItem('fomaUsers', JSON.stringify(registeredUsers));
+                } catch (error) {
+                    console.error('Error during saving to LocalStorage:', error);
                 }
                 
-                // Success message
                 alert('Pendaftaran akun berhasil!');
                 
-                // Clear form
                 document.getElementById('signupForm').reset();
                 clearError();
                 
-                // Redirect to login page after short delay
-                setTimeout(() =>
-                {
-                    window.location.href = 'login.html';
+                // FINAL FIX for Redirect: Go directly to the correct file
+                setTimeout(() => {
+                    window.location.href = 'login.html'; 
                 }, 1000);
-            }
+            } 
+            // If isValid is false, the function simply exits here, keeping the errors visible
+            // and preventing the redirect.
         });
-    }
-
-    // Load existing users from localStorage if available
-    try
-    {
-        const existingUsers = JSON.parse(localStorage.getItem('fomaUsers')) || [];
-        registeredUsers = [...registeredUsers, ...existingUsers];
-    }
-    catch (error)
-    {
-        console.log('LocalStorage not available, using default users only');
     }
 });
 
 // Utility function to go back to dashboard
-function goToDashboard() 
-{
+function goToDashboard() {
     window.location.href = 'dashboard.html';
-}
-
-// Console helper for development
-console.log('Signup page loaded successfully!');
-console.log('Available functions: goToDashboard()');
-
-// Export functions for use in other files (if needed)
-if (typeof module !== 'undefined' && module.exports)
-{
-    module.exports =
-    {
-        validateEmail,
-        validateName,
-        findUserByEmail,
-        registeredUsers
-    };
 }
