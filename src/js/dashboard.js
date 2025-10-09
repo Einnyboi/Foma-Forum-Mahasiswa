@@ -453,6 +453,8 @@ function loadPageContent(pageID)
                 pageTitle.textContent = 'Latest Discussions';
             }
             loadPostsContent(); 
+            pageTitle.textContent = 'Latest Discussions';
+            initializeThreadsFeature();
             break;
             
         case 'community':
