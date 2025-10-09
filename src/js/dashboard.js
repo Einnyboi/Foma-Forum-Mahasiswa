@@ -466,12 +466,11 @@ function loadPageContent(pageID)
         case 'signup':
             pageTitle.textContent = 'Sign Up to Your Account';
             loadSignupContent();
-            break;
+            break;   
 
-        case 'community':
-            pageTitle.textContent = 'Explore Communities';
-            createPostBtn.style.display = 'none';
-            loadCommunityContent();
+        case 'event':
+            pageTitle.textContent = 'Ongoing and Upcomming Events';
+            loadEventContent();
             break;
 
         default:
@@ -592,6 +591,19 @@ function loadSignupContent()
             if (success)
             {
                 console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
+            }
+        }
+    );
+}
+
+function loadEventContent()
+{
+    loadExternalContent('Student.html', '.container', '../src/css/Student.css', '../src/js/Student.js')
+        .then(success =>
+        {
+            if (success)
+            {
+                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
             }
         }
     );
