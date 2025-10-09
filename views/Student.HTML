@@ -1,73 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="../src/css/Student.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foma | Suggest an Event</title>
+  <link rel="stylesheet" href="../src/css/Student.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Event suggestion system</h1>
+    
+  <!-- Main form card -->
+  <main class="main-container">
+    <div class="form-card">
+      <h3 class="form-title">Suggest an Event</h3>
+      <p class="subtitle">Fill out the details below</p>
 
-        <!--Event suggestion System-->
-        <section id="student-selection">
-            <h2>Suggest an Event</h2>
-            <form id="event-form">
-                <div class="form-group">
-                    <label for="event-title">Event Title</label>
-                    <input type="text" id="Event-title" required>
-                </div>x
+      <form id="event-form">
+        <div class="form-group">
+          <label for="Event-title">Event Title</label>
+          <input type="text" id="Event-title" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="event-date">Event Date</label>
-                    <input type="text" id="event-title" required>
-                </div>
-                <div class="form-group">
-                    <label for="event-time">Event Time</label>
-                    <input type="time" id="event-time" required>
-                </div>
+        <div class="form-group">
+          <label for="Event-date">Event Date</label>
+          <input type="date" id="Event-date" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="event-location">Location *</label>
-                    <input type="text" id="event-location" required>
-                </div>
+        <div class="form-group">
+          <label for="Event-time">Event Time</label>
+          <input type="time" id="Event-time" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="event-description">Event description (Required)</label>
-                    <textarea id="event-description" rows="4" placeholder="Describe the event..."></textarea>
-                    <input type="text" id="event-title" required>
-                </div>
-                
-                 <div class="form-group">
-                    <label for="event-category">Category</label>
-                    <select id="event-category" required>
-                        <option value="">Choose a Category</option>
-                        <option value="academic">Academic</option>
-                        <option value="social">Social</option>
-                        <option value="sports">Sports</option>
-                        <option value="cultural">Cultural</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
+        <div class="form-group">
+          <label for="Event-location">Location</label>
+          <input type="text" id="Event-location" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="event-image">Event Image (Optional)</label>
-                    <input type="file" id="event-image" accept="image/*">
-                </div>
+        <div class="form-group">
+          <label for="Event-description">Event Description</label>
+          <textarea id="Event-description" rows="3" placeholder="Describe your event..."></textarea>
+        </div>
 
-                <div class="form-group">
-                    <label for="student-name">Student Name (Optional)</label>
-                    <input type="text" id="student-name" placeholder="Anomimous">
-                </div>
+        <div class="form-group">
+          <label for="Event-category">Category</label>
+          <select id="Event-category" required>
+            <option value="">Choose a Category</option>
+            <option value="academic">Academic</option>
+            <option value="social">Social</option>
+            <option value="sports">Sports</option>
+            <option value="cultural">Cultural</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-                <button type="submit">Submit</button>
-            </form>
-        </section>  
+        <div class="form-group">
+          <label for="Event-image">Event Image (Optional)</label>
+          <input type="file" id="Event-image" accept="image/*" />
+        </div>
+
+        <div class="form-group">
+          <label for="Student-name">Your Name (Optional)</label>
+          <input type="text" id="Student-name" placeholder="Anonymous" />
+        </div>
+
+        <div id="success-message" class="success-message" style="display:none;">
+          Event submitted successfully!
+        </div>
+
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
     </div>
+  </main>
 
-    <!--JavaScript-->
-    <script src="../src/js/Student.js"></script>
-    </div>
+  <script src="../src/js/Student.js"></script>
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
 </body>
 </html>
