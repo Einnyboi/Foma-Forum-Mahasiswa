@@ -64,7 +64,7 @@ function loadUsersFromStorage()
         // Ensure all users have a 'role' property (migration/safety check)
         registeredUsers = storedUsers.map(user => ({
             ...user,
-            role: user.role || (user.email === 'admin@foma.com' ? 'admin' : 'user')
+            role: user.role || (user.email === 'admin@gmail.com' ? 'admin' : 'user')
         }));
         
         if (registeredUsers.length === 0 || !registeredUsers.some(u => u.role === 'admin'))
@@ -1363,6 +1363,7 @@ function testLogin()
         alert('No test users available');
     }
 }
+
 // fungsi loadSearchResults
 function loadSearchInIframe(searchTerm) {
     const mainContentArea = document.getElementById('mainContentArea');
