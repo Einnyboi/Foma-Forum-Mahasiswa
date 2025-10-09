@@ -64,7 +64,7 @@ function loadUsersFromStorage()
         // Ensure all users have a 'role' property (migration/safety check)
         registeredUsers = storedUsers.map(user => ({
             ...user,
-            role: user.role || (user.email === 'admin@foma.com' ? 'admin' : 'user')
+            role: user.role || (user.email === 'admin@gmail.com' ? 'admin' : 'user')
         }));
         
         if (registeredUsers.length === 0 || !registeredUsers.some(u => u.role === 'admin'))
@@ -836,7 +836,8 @@ function setupThreadsEventListeners()
     
     document.body.addEventListener('submit', function(e)
     {
-        if (e.target.id === 'postForm') {
+        if (e.target.id === 'postForm')
+        {
             e.preventDefault();
             const newPost =
             {
@@ -943,7 +944,7 @@ function loadExternalContent(filePath, selector, cssPath = null, jsPath = null)
 // Load threads.html
 function loadPostsContent()
 {
-    loadExternalContent('threads.html', '.threads-page', '../src/css/threads-style.css', '../src/js/threads.js')
+    loadExternalContent('threads.html', '.threadsPage', '../src/css/threads-style.css', '../src/js/threads.js')
         .then(success =>
         {
             if (success)
@@ -977,19 +978,6 @@ function loadSignupContent()
             if (success)
             {
                 console.log('Signup content and signup.js loaded. Signup logic is now handled by signup.js.');
-            }
-        }
-    );
-}
-
-function loadEventContent()
-{
-    loadExternalContent('Student.HTML', '.main-container', '../src/css/Student.css', '../src/js/Student.js')
-        .then(success =>
-        {
-            if (success)
-            {
-                console.log('Event content and Student.js loaded. Student logic is now handled by Student.js.');
             }
         }
     );
@@ -1363,6 +1351,7 @@ function testLogin()
         alert('No test users available');
     }
 }
+
 // fungsi loadSearchResults
 function loadSearchInIframe(searchTerm) {
     const mainContentArea = document.getElementById('mainContentArea');
