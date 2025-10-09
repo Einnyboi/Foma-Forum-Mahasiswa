@@ -152,5 +152,40 @@ textarea:focus {
   }
 }
 
+/* Ganti styling .form-card yang lama dengan ini */
+.form-card {
+  background-color: #f3f3f6;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 15px;
+  padding: 40px 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  position: relative; /* [DITAMBAHKAN] Ini penting untuk posisi tombol */
+}
+
+/* Ganti styling .back-btn yang lama dengan ini */
+.back-btn {
+  position: absolute; /* [DIUBAH] Membuat tombol 'melayang' di dalam card */
+  top: 25px;          /* [DIUBAH] Jarak dari atas */
+  left: 25px;         /* [DIUBAH] Jarak dari kiri */
+  margin: 0;          /* [DIUBAH] Hapus margin sebelumnya */
+  border: 1px solid #cfd8dc;
+  background-color: #fff;
+  color: #546e7a;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.back-btn:hover {
+  background-color: #eceff1;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
 
 

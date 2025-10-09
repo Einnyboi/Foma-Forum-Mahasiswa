@@ -14,7 +14,7 @@ function displayEventProposals() {
     const proposals = getEventProposals();
     const tableBody = document.getElementById('approvals-table-body');
 
-    tableBody.innerHTML = ''; // Kosongkan tabel terlebih dahulu
+    tableBody.innerHTML = ''; 
 
     if (proposals.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada proposal event yang masuk.</td></tr>';
@@ -38,8 +38,10 @@ function displayEventProposals() {
             <td>${event.submitter}</td>
             <td><span class="status-${event.status.toLowerCase()}">${event.status}</span></td>
             <td>
-                <button class="btn-primary approve-btn" data-id="${event.id}" style="background-color: #10b981; margin-bottom: 5px;" ${!isPending ? 'disabled' : ''}>Diterima</button>
-                <button class="btn-primary reject-btn" data-id="${event.id}" ${!isPending ? 'disabled' : ''}>Ditolak</button>
+                <div class="action-buttons">
+                    <button class="btn-primary btn-approve approve-btn" data-id="${event.id}" ${!isPending ? 'disabled' : ''}>Diterima</button>
+                    <button class="btn-primary btn-reject reject-btn" data-id="${event.id}" ${!isPending ? 'disabled' : ''}>Ditolak</button>
+                </div>
             </td>
         `;
         tableBody.appendChild(row);
@@ -49,16 +51,19 @@ function displayEventProposals() {
 // Fungsi untuk mengubah status event (diterima/ditolak)
 function updateEventStatus(eventId, newStatus, reason = '') {
     let events = getEventProposals();
+    // [PERUBAIKAN] Di sini kita menggunakan '==' agar tidak terlalu ketat soal tipe data,
+    // karena eventId dari prompt bisa jadi string atau angka.
     const eventIndex = events.findIndex(event => event.id == eventId);
 
     if (eventIndex !== -1) {
         events[eventIndex].status = newStatus;
-        // [MODIFIKASI] Pastikan reason tersimpan
         if (newStatus === 'Rejected') {
             events[eventIndex].reason = reason;
         }
         saveEventProposals(events);
         displayEventProposals(); // Refresh tabel
+    } else {
+        console.error('Event with ID', eventId, 'not found.');
     }
 }
 
@@ -66,7 +71,8 @@ function updateEventStatus(eventId, newStatus, reason = '') {
 document.addEventListener('click', function(e) {
     // Tombol Diterima
     if (e.target.classList.contains('approve-btn')) {
-        const eventId = e.target.dataset.id;
+        // [PERBAIKAN] Mengubah ID dari string kembali ke angka menggunakan parseInt
+        const eventId = parseInt(e.target.dataset.id, 10);
         if (confirm('Are you sure you want to approve this event?')) {
             updateEventStatus(eventId, 'Approved');
         }
@@ -74,15 +80,14 @@ document.addEventListener('click', function(e) {
 
     // Tombol Ditolak
     if (e.target.classList.contains('reject-btn')) {
-        const eventId = e.target.dataset.id;
-        // Menggunakan prompt untuk menanyakan alasan penolakan
+        // [PERBAIKAN] Mengubah ID dari string kembali ke angka menggunakan parseInt
+        const eventId = parseInt(e.target.dataset.id, 10);
         const reason = prompt("Silakan masukkan alasan penolakan untuk event ini:");
         
-        // Hanya proses jika admin mengisi alasan (tidak null atau string kosong)
         if (reason) { 
             updateEventStatus(eventId, 'Rejected', reason);
         } else if (reason === "") {
             alert("Reason for rejection cannot be empty.");
         }
     }
-}); 
+});

@@ -431,90 +431,45 @@ function loadJS(src, callback)
     currentExternalJs = src;
 }
 
-// Load different page content dynamically
 function loadPageContent(pageID)
 {
-    const pageTitle = document.getElementById('pageTitle'); // Might be null!
-    const createPostBtn = document.getElementById('createPostBtn');
-    const createPostSection = document.getElementById('createPostSection');
-    
-    // Always unload external assets before loading new content
+    const pageTitle = document.getElementById('pageTitle');
     unloadExternalAssets(); 
-
-    // Hide create post by default for new pages
-    if (createPostSection) createPostSection.style.display = 'none';
-    if (createPostBtn) createPostBtn.style.display = 'none';
 
     switch(pageID)
     {
         case 'home':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Latest Discussions';
-            }
-            loadPostsContent(); 
-            pageTitle.textContent = 'Latest Discussions';
+            if (pageTitle) pageTitle.textContent = 'Latest Discussions';
             initializeThreadsFeature();
             break;
             
         case 'community':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Communities';
-            }
+            if (pageTitle) pageTitle.textContent = 'Communities';
             loadCommunityContent();
             break;
-            
-        case 'profile':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'User Profile';
-            }
-            loadProfileContent();
-            break;            
-            
-        case 'programming':
-        case 'general':
-            if (pageTitle)
-            {
-                pageTitle.textContent = pageID.charAt(0).toUpperCase() + pageID.slice(1) + ' Discussions';
-            }
-            updateCreatePostVisibility();
-            loadCategoryContent(pageID);
-            break;
-            
-        case 'login':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Login to Your Account';
-            }
-            loadLoginContent();
-            break;
-            
-        case 'signup':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Sign Up to Your Account';
-            }
-            loadSignupContent();
-            break;   
 
+        // [PERUBAHAN DI SINI]    
         case 'event':
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Ongoing and Upcomming Events';
-            }
-            loadEventContent();
+            if (pageTitle) pageTitle.textContent = 'Ongoing and Upcoming Events';
+            // Panggil fungsi baru untuk memuat halaman daftar event
+            loadEventsListPage();
             break;
+        
+        // ... case lainnya ...
 
         default:
-            if (pageTitle)
-            {
-                pageTitle.textContent = 'Latest Discussions';
-            }
-            updateCreatePostVisibility();
+            if (pageTitle) pageTitle.textContent = 'Latest Discussions';
             initializeThreadsFeature();
     }
+}
+
+function loadEventsListPage() {
+    loadExternalContent(
+        'events.html',            // File HTML baru kita
+        '.events-page-container', // Kontainer utama di dalam events.html
+        '../src/css/events.css',  // File CSS baru kita
+        '../src/js/events.js'     // File JS baru kita
+    );
 }
 
 let isThreadsListenerActive = false; // Prevents adding multiple listeners
