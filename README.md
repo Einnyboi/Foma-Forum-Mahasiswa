@@ -5,6 +5,8 @@
 This is a student forum website project for the Front-end Programming Mid-term exam.
 *Ini adalah website forum mahasiswa untuk projek UTS mata kuliah Front-end Programming.*
 
+**untuk representasi website terbaik, di rekomendasikan untuk menggunakan Live Server extension di VsCode untuk membuka file html**
+
 ---
 ### ## Table of Contents
 * [About The Project](#about-the-project)
@@ -37,32 +39,53 @@ To understand how the website works, let's follow the journey of a fictional stu
 ---
 ### ## Directory Structure
 ```foma-forum-mahasiswa/
-├── index.html              # Main page (Homepage/Dashboard)
-├── community.html          # Community list page
-├── login.html              # User login page
-├── signup.html             # User registration page
-├── profile.html            # User profile page
-├── event.html              # Events page
 ├── README.md               # The file you are reading now
+├── views/
+│   ├── adminpage.html
+│   └── community.html          # Community list page
+│   └── dashboard.html              # Main page (Homepage/Dashboard)
+│   └── history.html
+│   └── Login.html              # User login page
+│   └── searchPage.html
+│   └── signup.html             # User registration page
+│   └── Student.html
+│   └── threads.html
+│   └── userprofile.html            # User profile page
 │
 └── src/
 ├── css/
-│   ├── style.css       # Main stylesheet for global styles (fonts, colors, layout)
+│   ├── adminstyle.css      
 │   └── community.css   # Page-specific styles for the community page
+│   └── dashboard.css
+│   └── historystyle.css
+│   └── Login.css
+│   └── searchstyle.css
+│   └── signuo.css
+│   └── Student.css
+│   └── style.css
+│   └── threads-style.css
+│   └── userprofile.css
+
 │
 ├── js/
-│   ├── script.js       # Main script for global interactions (e.g., sidebar)
-│   └── community.js    # Specific script for community page functionality (API, search)
+│   ├── admin-approval.js       
+│   └── admin-content-manajer.js    # Specific script for community page functionality (API, search)
+│   └── admin-script.js
+│   └── communityscript.js
+│   └── dashboard.js
+│   └── history.js
+│   └── Login.js
+│   └── search.js
+│   └── signup.js
+│   └── Student.js
+│   └── threads.js
+│   └── userprofile.js
 │
-└── assets/
-└── images/
-├── logo.png
-└── ...         # Other image assets
+└── 
 ```
 ---
 ### ## Key Features
 * **User Authentication:** Clean and responsive pages for user Login & Signup.
-* **Dynamic Community Hub:** The Community page fetches and displays data from a live API (`JSONPlaceholder`) to simulate real-world content.
 * **Interactive Functions:** Users can create new communities (simulated with `POST` requests) and search/filter existing ones in real-time.
 * **Responsive Design:** The layout is fully responsive and optimized for mobile, tablet, and desktop screens using modern CSS and media queries.
 * **Modular Components:** Includes reusable components like a navigation sidebar and content cards.
